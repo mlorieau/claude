@@ -1,933 +1,723 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ZONE85 — L'ESPRIT VENDÉE</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --navy:   #10314E;
-      --navy2:  #133756;
-      --coral:  #E95649;
-      --cream:  #FBF7F0;
-      --beige:  #F2EAD8;
-      --beige2: #E8D9C0;
-      --gold:   #D4A853;
-      --glow:   #FFD580;
-      --text:   #1A2D3D;
-      --muted:  #7A8D9E;
-    }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: 'Montserrat', sans-serif;
-      background: var(--cream);
-      color: var(--text);
-      overflow-x: hidden;
-    }
-
-    /* ─── CANVAS PARTICLES ───────────────────────────────────── */
-    #particles-canvas {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* ─── HERO ───────────────────────────────────────────────── */
-    .hero {
-      position: relative;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      z-index: 1;
-    }
-
-    .hero-bg {
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 80% 60% at 50% 40%, rgba(255,213,128,0.18) 0%, transparent 70%),
-        radial-gradient(ellipse 50% 50% at 20% 80%, rgba(233,86,73,0.08) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 60% at 80% 10%, rgba(16,49,78,0.06) 0%, transparent 60%),
-        var(--cream);
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      padding: 2rem;
-    }
-
-    /* ZONE85 Logo SVG inline */
-    .logo-container {
-      display: inline-flex;
-      align-items: center;
-      gap: 0;
-      margin-bottom: 1.2rem;
-      opacity: 0;
-      transform: translateY(30px);
-      animation: fadeUp 1s cubic-bezier(.22,1,.36,1) 0.4s forwards;
-    }
-
-    .logo-icon {
-      width: 64px;
-      height: 64px;
-      margin-right: 14px;
-      flex-shrink: 0;
-    }
-
-    .logo-text-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-    }
-
-    .logo-zone {
-      font-size: 3.2rem;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      line-height: 1;
-      color: var(--navy);
-    }
-
-    .logo-zone .logo-85 {
-      color: var(--coral);
-    }
-
-    .logo-tagline {
-      font-size: 0.72rem;
-      font-weight: 500;
-      letter-spacing: 0.28em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-top: 3px;
-    }
-
-    .hero-headline {
-      font-size: clamp(1rem, 2.5vw, 1.5rem);
-      font-weight: 300;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--navy);
-      margin-top: 0.6rem;
-      opacity: 0;
-      animation: fadeUp 1s cubic-bezier(.22,1,.36,1) 0.7s forwards;
-    }
-
-    .hero-sub {
-      margin-top: 2.4rem;
-      font-size: 0.85rem;
-      font-weight: 500;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--coral);
-      opacity: 0;
-      animation: fadeUp 1s cubic-bezier(.22,1,.36,1) 1s forwards;
-    }
-
-    .scroll-cta {
-      margin-top: 3.5rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      opacity: 0;
-      animation: fadeUp 1s cubic-bezier(.22,1,.36,1) 1.4s forwards;
-    }
-
-    .scroll-cta span {
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    .scroll-arrow {
-      width: 1px;
-      height: 48px;
-      background: linear-gradient(to bottom, var(--gold), transparent);
-      animation: pulse-line 2s ease-in-out infinite 2s;
-    }
-
-    /* ─── SEPARATOR ─────────────────────────────────────────── */
-    .gold-line {
-      width: 60px;
-      height: 1px;
-      background: linear-gradient(to right, transparent, var(--gold), transparent);
-      margin: 0 auto;
-    }
-
-    /* ─── MAP SECTION ────────────────────────────────────────── */
-    .map-section {
-      position: relative;
-      z-index: 1;
-      padding: 6rem 2rem 5rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background:
-        radial-gradient(ellipse 70% 70% at 50% 50%, rgba(255,213,128,0.12) 0%, transparent 70%),
-        var(--beige);
-    }
-
-    .section-label {
-      font-size: 0.68rem;
-      font-weight: 600;
-      letter-spacing: 0.35em;
-      text-transform: uppercase;
-      color: var(--coral);
-      margin-bottom: 1.2rem;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
-    }
-
-    .section-title {
-      font-size: clamp(1.6rem, 4vw, 2.6rem);
-      font-weight: 700;
-      color: var(--navy);
-      text-align: center;
-      line-height: 1.2;
-      margin-bottom: 1rem;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.9s ease 0.1s, transform 0.9s ease 0.1s;
-    }
-
-    .section-desc {
-      font-size: 0.9rem;
-      font-weight: 400;
-      color: var(--muted);
-      text-align: center;
-      max-width: 460px;
-      line-height: 1.8;
-      margin-bottom: 3rem;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.9s ease 0.2s, transform 0.9s ease 0.2s;
-    }
-
-    .visible .section-label,
-    .visible .section-title,
-    .visible .section-desc {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* MAP SVG WRAPPER */
-    .map-wrapper {
-      position: relative;
-      width: min(90vw, 640px);
-      opacity: 0;
-      transform: scale(0.96);
-      transition: opacity 1.2s ease 0.3s, transform 1.2s ease 0.3s;
-    }
-
-    .visible .map-wrapper {
-      opacity: 1;
-      transform: scale(1);
-    }
-
-    #map-svg {
-      width: 100%;
-      height: auto;
-      overflow: visible;
-      filter: drop-shadow(0 20px 60px rgba(16,49,78,0.10));
-    }
-
-    /* SVG fill */
-    .vendee-fill {
-      fill: rgba(255,255,255,0.75);
-      stroke: none;
-    }
-
-    /* Animated trace path */
-    .vendee-trace {
-      fill: none;
-      stroke: url(#traceGrad);
-      stroke-width: 1.4;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    /* Glow duplicate for blur effect */
-    .vendee-glow {
-      fill: none;
-      stroke: var(--glow);
-      stroke-width: 4;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      filter: url(#glowFilter);
-      opacity: 0.5;
-    }
-
-    /* Static outline (dim) */
-    .vendee-outline {
-      fill: none;
-      stroke: var(--beige2);
-      stroke-width: 1;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    /* Luminous dot */
-    .trace-dot {
-      r: 4;
-      fill: white;
-      filter: url(#dotGlow);
-      opacity: 0;
-    }
-
-    /* ─── FEATURES ───────────────────────────────────────────── */
-    .features-section {
-      position: relative;
-      z-index: 1;
-      padding: 6rem 2rem;
-      background: var(--cream);
-    }
-
-    .features-grid {
-      max-width: 1000px;
-      margin: 3rem auto 0;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 2rem;
-    }
-
-    .feature-card {
-      background: white;
-      border: 1px solid rgba(212,168,83,0.2);
-      border-radius: 12px;
-      padding: 2rem 1.8rem;
-      position: relative;
-      overflow: hidden;
-      opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
-    }
-
-    .feature-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--coral), var(--gold));
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.5s ease;
-    }
-
-    .feature-card:hover::before {
-      transform: scaleX(1);
-    }
-
-    .feature-card:hover {
-      box-shadow: 0 12px 40px rgba(16,49,78,0.08);
-      transform: translateY(-4px) !important;
-    }
-
-    .visible .feature-card {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .visible .feature-card:nth-child(2) { transition-delay: 0.1s; }
-    .visible .feature-card:nth-child(3) { transition-delay: 0.2s; }
-
-    .feature-num {
-      font-size: 0.65rem;
-      font-weight: 700;
-      letter-spacing: 0.3em;
-      color: var(--coral);
-      margin-bottom: 1rem;
-    }
-
-    .feature-title {
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: var(--navy);
-      margin-bottom: 0.8rem;
-      line-height: 1.3;
-    }
-
-    .feature-text {
-      font-size: 0.83rem;
-      font-weight: 400;
-      color: var(--muted);
-      line-height: 1.75;
-    }
-
-    /* ─── IMMERSIVE BANNER ──────────────────────────────────── */
-    .banner-section {
-      position: relative;
-      z-index: 1;
-      background: var(--navy);
-      padding: 7rem 2rem;
-      overflow: hidden;
-      text-align: center;
-    }
-
-    .banner-section::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 60% 80% at 20% 50%, rgba(233,86,73,0.15) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 70% at 80% 50%, rgba(255,213,128,0.12) 0%, transparent 60%);
-    }
-
-    .banner-content {
-      position: relative;
-      z-index: 2;
-    }
-
-    .banner-eyebrow {
-      font-size: 0.68rem;
-      font-weight: 600;
-      letter-spacing: 0.35em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 1.5rem;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
-    }
-
-    .banner-headline {
-      font-size: clamp(2rem, 5vw, 3.5rem);
-      font-weight: 800;
-      color: white;
-      line-height: 1.15;
-      margin-bottom: 1.5rem;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.9s ease 0.1s, transform 0.9s ease 0.1s;
-    }
-
-    .banner-headline em {
-      font-style: normal;
-      color: var(--coral);
-    }
-
-    .banner-sub {
-      font-size: 0.95rem;
-      font-weight: 400;
-      color: rgba(255,255,255,0.55);
-      letter-spacing: 0.05em;
-      margin-bottom: 3rem;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.9s ease 0.2s, transform 0.9s ease 0.2s;
-    }
-
-    .visible .banner-eyebrow,
-    .visible .banner-headline,
-    .visible .banner-sub { opacity: 1; transform: translateY(0); }
-
-    .cta-btn {
-      display: inline-block;
-      padding: 0.9rem 2.8rem;
-      background: linear-gradient(135deg, var(--coral), #C84038);
-      color: white;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.8rem;
-      font-weight: 700;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      text-decoration: none;
-      border-radius: 50px;
-      border: none;
-      cursor: pointer;
-      box-shadow: 0 8px 30px rgba(233,86,73,0.4);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      opacity: 0;
-      transition: opacity 0.9s ease 0.35s, transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .visible .cta-btn { opacity: 1; }
-
-    .cta-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 14px 40px rgba(233,86,73,0.5);
-    }
-
-    /* ─── STATS STRIP ────────────────────────────────────────── */
-    .stats-strip {
-      position: relative;
-      z-index: 1;
-      background: var(--beige);
-      padding: 4rem 2rem;
-      border-top: 1px solid rgba(212,168,83,0.2);
-      border-bottom: 1px solid rgba(212,168,83,0.2);
-    }
-
-    .stats-inner {
-      max-width: 900px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-around;
-      flex-wrap: wrap;
-      gap: 2.5rem;
-    }
-
-    .stat-item {
-      text-align: center;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
-    }
-
-    .visible .stat-item:nth-child(2) { transition-delay: 0.1s; }
-    .visible .stat-item:nth-child(3) { transition-delay: 0.2s; }
-    .visible .stat-item { opacity: 1; transform: translateY(0); }
-
-    .stat-num {
-      font-size: 2.6rem;
-      font-weight: 800;
-      color: var(--navy);
-      line-height: 1;
-    }
-
-    .stat-num span {
-      color: var(--coral);
-    }
-
-    .stat-label {
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-top: 6px;
-    }
-
-    /* ─── FOOTER ─────────────────────────────────────────────── */
-    footer {
-      position: relative;
-      z-index: 1;
-      background: var(--navy);
-      padding: 3rem 2rem;
-      text-align: center;
-    }
-
-    footer .footer-logo {
-      font-size: 1.4rem;
-      font-weight: 800;
-      color: white;
-      letter-spacing: 0.08em;
-      margin-bottom: 0.5rem;
-    }
-
-    footer .footer-logo span {
-      color: var(--coral);
-    }
-
-    footer .footer-tag {
-      font-size: 0.65rem;
-      font-weight: 500;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.4);
-      margin-bottom: 2rem;
-    }
-
-    footer .footer-copy {
-      font-size: 0.72rem;
-      color: rgba(255,255,255,0.25);
-      letter-spacing: 0.05em;
-    }
-
-    /* ─── KEYFRAMES ──────────────────────────────────────────── */
-    @keyframes fadeUp {
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes pulse-line {
-      0%, 100% { opacity: 0.4; }
-      50% { opacity: 1; }
-    }
-
-    @keyframes float-particle {
-      0%   { transform: translateY(0) translateX(0); opacity: 0; }
-      10%  { opacity: 1; }
-      90%  { opacity: 0.6; }
-      100% { transform: translateY(-80px) translateX(20px); opacity: 0; }
-    }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ZONE85 — Les Zonautes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700;1,900&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#10314E;--navy-dark:#0A1F30;--coral:#E95649;--gold:#D4A853;
+  --cream:#FBF7F0;--beige:#F2EAD8;--glow:#FFD580;--white:#fff;
+  --text:#1A2D3D;--muted:#7A8D9E;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Montserrat',sans-serif;background:var(--cream);color:var(--text);overflow-x:hidden}
+
+/* ── CANVAS ─────────────────────────── */
+#cvs{position:fixed;inset:0;pointer-events:none;z-index:0}
+
+/* ── TICKER ─────────────────────────── */
+.ticker{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--coral);height:36px;overflow:hidden;display:flex;align-items:center}
+.ticker-track{display:flex;gap:0;animation:ticker 22s linear infinite;white-space:nowrap}
+.ticker-track span{font-size:.62rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#fff;padding:0 2.5rem}
+.ticker-track span.sep{color:rgba(255,255,255,.4);font-size:.8rem}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ── NAV ────────────────────────────── */
+nav{position:fixed;top:36px;left:0;right:0;z-index:99;padding:.8rem 2rem;display:flex;justify-content:space-between;align-items:center;transition:background .4s,backdrop-filter .4s}
+nav.scrolled{background:rgba(10,31,48,.92);backdrop-filter:blur(12px)}
+.nav-logo{font-size:1.1rem;font-weight:800;color:#fff;letter-spacing:.06em;text-shadow:0 0 20px rgba(233,86,73,.5)}
+.nav-logo span{color:var(--coral)}
+.nav-links{display:flex;gap:1.4rem}
+.nav-links a{font-size:.62rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.7);text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:var(--gold)}
+.nav-burger{display:none;flex-direction:column;gap:5px;cursor:pointer}
+.nav-burger span{display:block;width:22px;height:2px;background:#fff;transition:.3s}
+@media(max-width:700px){.nav-links{display:none}.nav-burger{display:flex}}
+
+/* ── HERO ───────────────────────────── */
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-top:80px;overflow:hidden;z-index:1;background:var(--navy-dark)}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(212,168,83,.12) 0%,transparent 65%),radial-gradient(ellipse 40% 50% at 10% 80%,rgba(233,86,73,.1) 0%,transparent 60%)}
+.hero-content{position:relative;z-index:2;text-align:center;padding:2rem}
+.zonautes-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(233,86,73,.15);border:1px solid rgba(233,86,73,.3);border-radius:50px;padding:.35rem 1rem;margin-bottom:1.8rem;opacity:0;animation:fadeUp .8s .3s forwards}
+.zonautes-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--coral);animation:pulse-dot 1.5s infinite}
+.zonautes-badge span{font-size:.62rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--coral)}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
+.hero-big{font-size:clamp(3rem,10vw,7.5rem);font-weight:900;line-height:.95;color:#fff;letter-spacing:-.02em;opacity:0;animation:fadeUp .9s .5s forwards}
+.hero-big em{font-style:normal;color:var(--coral);display:block}
+.hero-sub-line{margin-top:1.2rem;font-size:clamp(.75rem,1.5vw,1rem);font-weight:300;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);opacity:0;animation:fadeUp .8s .8s forwards}
+.hero-map{position:relative;width:min(86vw,540px);margin:2.5rem auto 0;opacity:0;animation:fadeUp 1s 1s forwards}
+#map-svg{width:100%;height:auto;overflow:visible;filter:drop-shadow(0 0 40px rgba(212,168,83,.15))}
+.vendee-fill{fill:rgba(255,255,255,.05);stroke:none}
+.vendee-outline{fill:none;stroke:rgba(255,255,255,.08);stroke-width:1;stroke-linejoin:round}
+.vendee-glow{fill:none;stroke:var(--glow);stroke-width:5;stroke-linecap:round;stroke-linejoin:round;filter:url(#glow1);opacity:.55}
+.vendee-trace{fill:none;stroke:url(#tg);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.trace-dot{fill:#fff;filter:url(#dg);opacity:0}
+.scroll-hint{margin-top:2rem;display:flex;flex-direction:column;align-items:center;gap:6px;opacity:0;animation:fadeUp .6s 1.8s forwards;cursor:pointer}
+.scroll-hint p{font-size:.6rem;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,255,255,.35)}
+.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--gold),transparent);animation:linebeat 2s ease-in-out infinite 2.2s}
+@keyframes linebeat{0%,100%{opacity:.3}50%{opacity:1}}
+
+/* ── RUNNING TEXT ─────────────────────── */
+.run-text{overflow:hidden;background:var(--cream);padding:.9rem 0;border-top:1px solid rgba(212,168,83,.2);border-bottom:1px solid rgba(212,168,83,.2)}
+.run-inner{display:flex;animation:run 18s linear infinite;white-space:nowrap}
+.run-inner span{font-size:1.8rem;font-weight:900;color:var(--beige);letter-spacing:-.01em;padding:0 2rem;text-transform:uppercase;user-select:none}
+.run-inner span.hi{color:var(--navy)}
+@keyframes run{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ── SECTION BASE ─────────────────────── */
+.s{position:relative;z-index:1}
+.s-inner{max-width:1100px;margin:0 auto;padding:5rem 2rem}
+.eyebrow{font-size:.62rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--coral);margin-bottom:.8rem}
+.s-title{font-size:clamp(2rem,5vw,3.5rem);font-weight:900;line-height:1.05;letter-spacing:-.02em;color:var(--navy)}
+.s-title em{font-style:normal;color:var(--coral)}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s ease}
+.reveal.on{opacity:1;transform:translateY(0)}
+
+/* ── INVISIBLES ───────────────────────── */
+#invisibles{background:var(--navy-dark);overflow:hidden}
+.inv-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;padding:5rem 2rem}
+@media(max-width:700px){.inv-grid{grid-template-columns:1fr;gap:2rem;padding:4rem 1.5rem}}
+.inv-left .eyebrow{color:var(--gold)}
+.inv-left .s-title{color:#fff}
+.inv-desc{margin-top:1.2rem;font-size:.9rem;font-weight:400;color:rgba(255,255,255,.55);line-height:1.8;max-width:460px}
+.inv-cta{display:inline-flex;align-items:center;gap:.7rem;margin-top:2rem;padding:.85rem 2rem;background:var(--coral);color:#fff;font-size:.72rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;border-radius:50px;text-decoration:none;transition:transform .3s,box-shadow .3s}
+.inv-cta:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(233,86,73,.4)}
+.inv-cta svg{width:14px;height:14px}
+.inv-right{position:relative;display:flex;justify-content:center}
+.inv-card{background:rgba(255,255,255,.04);border:1px solid rgba(212,168,83,.2);border-radius:16px;padding:2.5rem;max-width:340px;width:100%}
+.inv-card-title{font-size:.65rem;font-weight:700;letter-spacing:.28em;color:var(--gold);margin-bottom:1.5rem}
+.inv-count{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-bottom:2rem}
+.inv-count-unit{text-align:center}
+.inv-count-num{font-size:2.4rem;font-weight:900;color:#fff;line-height:1;font-variant-numeric:tabular-nums}
+.inv-count-label{font-size:.55rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-top:3px}
+.inv-mystery{background:rgba(233,86,73,.1);border:1px solid rgba(233,86,73,.2);border-radius:8px;padding:1rem;font-size:.78rem;color:rgba(255,255,255,.6);line-height:1.6;font-style:italic}
+.glitch{position:relative;display:inline-block;color:var(--coral)}
+.glitch::before,.glitch::after{content:attr(data-text);position:absolute;top:0;left:0;width:100%;height:100%;clip-path:polygon(0 30%,100% 30%,100% 50%,0 50%)}
+.glitch::before{color:#0ff;animation:glitch1 3s infinite;opacity:.6}
+.glitch::after{color:#f0f;animation:glitch2 3s infinite;opacity:.6}
+@keyframes glitch1{0%,95%{transform:translate(0)}96%{transform:translate(-2px,1px)}97%{transform:translate(2px,-1px)}100%{transform:translate(0)}}
+@keyframes glitch2{0%,95%{transform:translate(0)}96%{transform:translate(2px,1px)}97%{transform:translate(-2px,-1px)}100%{transform:translate(0)}}
+
+/* ── RANDOZONES ───────────────────────── */
+#randozones{background:var(--cream)}
+.rando-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:1.5rem;margin-top:2.5rem}
+.rando-card{background:#fff;border-radius:14px;overflow:hidden;border:1px solid rgba(212,168,83,.15);transition:transform .3s,box-shadow .3s;cursor:pointer}
+.rando-card:hover{transform:translateY(-5px);box-shadow:0 16px 48px rgba(16,49,78,.1)}
+.rando-img{height:160px;background:linear-gradient(135deg,var(--navy) 0%,var(--coral) 100%);position:relative;display:flex;align-items:flex-end;padding:1rem}
+.rando-img.g2{background:linear-gradient(135deg,#1a5276 0%,var(--gold) 100%)}
+.rando-img.g3{background:linear-gradient(135deg,#145a32 0%,var(--navy) 100%)}
+.rando-badge{background:rgba(0,0,0,.4);backdrop-filter:blur(8px);border-radius:50px;padding:.3rem .8rem;font-size:.58rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#fff}
+.rando-body{padding:1.2rem}
+.rando-name{font-size:1rem;font-weight:800;color:var(--navy);margin-bottom:.4rem}
+.rando-meta{display:flex;gap:1rem;font-size:.7rem;font-weight:600;color:var(--muted);margin-bottom:.8rem}
+.rando-meta span{display:flex;align-items:center;gap:.25rem}
+.rando-stars{display:flex;gap:2px;margin-bottom:.8rem}
+.rando-stars span{font-size:.7rem}
+.rando-desc{font-size:.78rem;color:var(--muted);line-height:1.6;margin-bottom:1rem}
+.rando-btn{font-size:.62rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--coral);text-decoration:none;display:inline-flex;align-items:center;gap:.4rem}
+.rando-btn::after{content:'→';transition:transform .2s}
+.rando-card:hover .rando-btn::after{transform:translateX(4px)}
+
+/* ── QUIZZ ──────────────────────────── */
+#quizz{background:var(--navy);overflow:hidden}
+#quizz .s-title{color:#fff}
+.quiz-box{background:rgba(255,255,255,.06);border:1px solid rgba(212,168,83,.2);border-radius:20px;padding:2.5rem;max-width:640px;margin:2.5rem auto 0}
+.quiz-progress{height:3px;background:rgba(255,255,255,.1);border-radius:3px;margin-bottom:2rem;overflow:hidden}
+.quiz-progress-bar{height:100%;background:linear-gradient(to right,var(--coral),var(--gold));border-radius:3px;transition:width .5s ease}
+.quiz-q{font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:1.5rem;line-height:1.5;min-height:60px}
+.quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+@media(max-width:500px){.quiz-opts{grid-template-columns:1fr}}
+.quiz-opt{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);border-radius:10px;padding:1rem;font-size:.82rem;font-weight:600;color:rgba(255,255,255,.8);cursor:pointer;text-align:left;transition:all .2s;font-family:'Montserrat',sans-serif}
+.quiz-opt:hover{border-color:var(--gold);background:rgba(212,168,83,.1);color:#fff}
+.quiz-opt.correct{border-color:#4ade80;background:rgba(74,222,128,.12);color:#4ade80}
+.quiz-opt.wrong{border-color:var(--coral);background:rgba(233,86,73,.12);color:var(--coral)}
+.quiz-opt:disabled{cursor:default}
+.quiz-bottom{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem}
+.quiz-score-display{font-size:.72rem;font-weight:700;letter-spacing:.15em;color:var(--gold)}
+.quiz-next{background:var(--coral);color:#fff;border:none;border-radius:50px;padding:.7rem 1.8rem;font-size:.72rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;font-family:'Montserrat',sans-serif;display:none;transition:transform .2s}
+.quiz-next:hover{transform:translateY(-2px)}
+.quiz-result{text-align:center;padding:1rem}
+.quiz-result-num{font-size:4rem;font-weight:900;color:var(--gold);line-height:1}
+.quiz-result-label{font-size:.75rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.5);margin:.5rem 0}
+.quiz-result-msg{font-size:1rem;font-weight:700;color:#fff;margin:.8rem 0 1.5rem}
+.quiz-restart{background:transparent;border:1.5px solid var(--coral);color:var(--coral);border-radius:50px;padding:.7rem 2rem;font-size:.72rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;font-family:'Montserrat',sans-serif;transition:all .2s}
+.quiz-restart:hover{background:var(--coral);color:#fff}
+
+/* ── MÉTÉO ──────────────────────────── */
+#meteo{background:var(--beige)}
+.meteo-header{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:2rem}
+.meteo-location{font-size:.72rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.meteo-today{display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:center;background:#fff;border-radius:16px;padding:2rem;margin-bottom:1.5rem;border:1px solid rgba(212,168,83,.15)}
+.meteo-today-icon{font-size:5rem;line-height:1;text-align:center}
+.meteo-today-temp{font-size:3.5rem;font-weight:900;color:var(--navy);line-height:1}
+.meteo-today-desc{font-size:.85rem;font-weight:600;color:var(--muted);margin-top:.3rem}
+.meteo-today-quip{margin-top:.7rem;font-size:.78rem;font-style:italic;color:var(--coral);font-weight:500}
+.meteo-week{display:grid;grid-template-columns:repeat(5,1fr);gap:.75rem}
+@media(max-width:600px){.meteo-week{grid-template-columns:repeat(3,1fr)}}
+.meteo-day{background:#fff;border-radius:12px;padding:1rem .7rem;text-align:center;border:1px solid rgba(212,168,83,.15)}
+.meteo-day-name{font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem}
+.meteo-day-icon{font-size:1.8rem;margin-bottom:.5rem}
+.meteo-day-temp{font-size:.9rem;font-weight:800;color:var(--navy)}
+.meteo-day-min{font-size:.72rem;color:var(--muted);font-weight:500}
+
+/* ── PATOIS ─────────────────────────── */
+#patois{background:var(--cream)}
+.patois-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;margin-top:2.5rem}
+.patois-card{border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(16,49,78,.1);transition:transform .3s}
+.patois-card:hover{transform:translateY(-4px)}
+.patois-visual{background:var(--navy-dark);padding:2rem 1.8rem 1.2rem;position:relative;overflow:hidden}
+.patois-visual::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(233,86,73,.12)}
+.patois-visual::after{content:'';position:absolute;bottom:-20px;left:-20px;width:80px;height:80px;border-radius:50%;background:rgba(212,168,83,.1)}
+.patois-tag{font-size:.58rem;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.8rem}
+.patois-word{font-size:1.6rem;font-weight:900;font-style:italic;color:var(--coral);line-height:1.2;margin-bottom:.5rem;position:relative;z-index:1}
+.patois-emoji{font-size:2.5rem;position:absolute;right:1.5rem;top:1.5rem;z-index:1}
+.patois-zone-tag{display:inline-block;background:rgba(212,168,83,.15);border:1px solid rgba(212,168,83,.3);border-radius:50px;padding:.2rem .7rem;font-size:.58rem;font-weight:700;letter-spacing:.15em;color:var(--gold);margin-top:.5rem;position:relative;z-index:1}
+.patois-body{background:#fff;padding:1.4rem 1.6rem}
+.patois-text{font-size:.8rem;color:var(--muted);line-height:1.75;margin-bottom:1rem}
+.patois-tags{display:flex;flex-wrap:wrap;gap:.4rem}
+.patois-tags span{font-size:.6rem;font-weight:600;color:var(--navy);background:var(--beige);border-radius:50px;padding:.2rem .7rem}
+
+/* ── COMMUNAUTE ─────────────────────── */
+#communaute{background:linear-gradient(135deg,var(--navy-dark) 0%,var(--navy) 100%);overflow:hidden}
+.com-inner{max-width:1100px;margin:0 auto;padding:5rem 2rem;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+@media(max-width:700px){.com-inner{grid-template-columns:1fr;gap:2.5rem}}
+.com-left .eyebrow{color:var(--gold)}
+.com-left .s-title{color:#fff}
+.com-desc{margin-top:1rem;font-size:.9rem;color:rgba(255,255,255,.55);line-height:1.8}
+.com-cta{display:inline-flex;align-items:center;gap:.7rem;margin-top:2rem;padding:.9rem 2.4rem;background:linear-gradient(135deg,var(--coral),#c43830);color:#fff;font-size:.72rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;border-radius:50px;text-decoration:none;box-shadow:0 8px 28px rgba(233,86,73,.35);transition:transform .3s,box-shadow .3s}
+.com-cta:hover{transform:translateY(-3px);box-shadow:0 14px 36px rgba(233,86,73,.5)}
+.com-right{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.com-stat{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:1.5rem;text-align:center;transition:border-color .3s}
+.com-stat:hover{border-color:rgba(212,168,83,.35)}
+.com-stat-num{font-size:2.2rem;font-weight:900;color:#fff;line-height:1}
+.com-stat-num span{color:var(--coral)}
+.com-stat-label{font-size:.6rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-top:.4rem}
+
+/* ── FOOTER ─────────────────────────── */
+footer{background:var(--navy-dark);padding:3rem 2rem;text-align:center;position:relative;z-index:1}
+.footer-logo{font-size:1.5rem;font-weight:900;color:#fff;letter-spacing:.04em;margin-bottom:.4rem}
+.footer-logo span{color:var(--coral)}
+.footer-sub{font-size:.62rem;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:1.8rem}
+.footer-links{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:2rem}
+.footer-links a{font-size:.65rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.35);text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:var(--gold)}
+.footer-copy{font-size:.65rem;color:rgba(255,255,255,.18)}
+
+/* ── UTILS ───────────────────────────── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.diag{position:relative}
+.diag::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:60px;background:inherit;clip-path:polygon(0 100%,100% 0,100% 100%)}
+</style>
 </head>
 <body>
 
-<!-- PARTICLES -->
-<canvas id="particles-canvas"></canvas>
+<canvas id="cvs"></canvas>
 
-<!-- ─── HERO ──────────────────────────────────────────────────── -->
-<section class="hero">
-  <div class="hero-bg"></div>
-
-  <div class="hero-content">
-
-    <!-- Logo ZONE85 inline SVG inspired by brand -->
-    <div class="logo-container">
-      <svg class="logo-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Hexagon shield shape -->
-        <path d="M50 5 L90 27.5 L90 72.5 L50 95 L10 72.5 L10 27.5 Z"
-              fill="#10314E" />
-        <!-- Inner hex glow ring -->
-        <path d="M50 12 L84 31.5 L84 68.5 L50 88 L16 68.5 L16 31.5 Z"
-              fill="none" stroke="#D4A853" stroke-width="1" opacity="0.5"/>
-        <!-- Vendée outline mini inside shield -->
-        <g transform="translate(22,20) scale(0.056)">
-          <path d="M979.0 165.3 L985.6 160.7 L980.5 146.3 L972.3 142.2 L960.4 130.7 L956.5 135.3 L944.8 138.5 L934.3 123.2 L928.8 124.1 L919.2 116.0 L909.7 131.6 L888.0 128.4 L880.0 123.6 L874.0 124.5 L864.1 118.7 L852.0 117.3 L833.1 108.5 L828.9 103.8 L799.5 93.0 L792.1 83.7 L787.6 80.0 L780.0 70.2 L768.7 65.1 L757.5 50.3 L754.5 51.2 L751.2 56.0 L745.5 56.7 L742.9 62.1 L744.3 73.2 L736.2 84.8 L735.1 87.5 L737.7 88.8 L736.0 94.2 L724.0 93.9 L713.1 84.5 L707.4 82.7 L706.0 88.2 L696.6 87.3 L687.9 96.2 L692.8 107.6 L693.3 116.9 L693.9 120.0 L686.1 133.1 L695.8 140.7 L694.6 149.7 L690.1 153.9 L690.3 162.6 L685.5 166.5 L682.9 164.9 L674.7 169.7 L659.1 172.1 L631.5 187.4 L623.5 180.3 L632.8 159.9 L626.2 149.3 L623.8 136.8 L625.9 131.0 L631.9 129.0 L632.2 123.2 L628.8 118.2 L626.1 100.1 L627.7 91.4 L623.2 87.3 L619.8 82.7 L614.1 81.2 L611.5 81.8 L598.3 94.7 L589.3 96.2 L576.4 103.2 L582.6 113.7 L577.3 124.7 L574.6 136.1 L580.8 152.0 L579.9 155.0 L585.7 165.8 L592.9 171.5 L593.5 177.6 L589.0 185.6 L577.0 184.7 L586.1 200.9 L601.8 215.6 L602.8 224.4 L586.0 232.2 L580.0 230.4 L574.0 232.2 L571.9 243.9 L553.9 238.2 L540.1 230.3 L534.6 231.5 L515.8 223.8 L506.4 223.2 L500.8 226.4 L485.1 211.5 L466.5 215.3 L460.9 212.1 L457.3 204.3 L458.1 190.4 L452.7 183.3 L454.3 180.8 L450.3 172.7 L431.7 176.3 L427.0 172.2 L420.9 173.0 L399.6 168.0 L403.2 163.2 L404.7 154.1 L401.4 149.0 L376.2 147.5 L362.2 140.0 L351.6 128.6 L348.9 116.3 L350.5 110.4 L339.4 106.8 L336.7 108.3 L330.4 101.3 L322.3 80.0 L318.1 75.2 L313.0 74.6 L302.9 82.2 L282.4 90.3 L270.4 116.0 L269.4 128.3 L260.5 141.6 L250.8 149.9 L251.4 156.0 L246.3 153.5 L227.7 170.6 L219.9 184.1 L225.3 186.8 L218.4 192.9 L196.8 195.2 L200.1 223.2 L200.5 258.5 L211.0 270.0 L250.0 301.7 L293.8 354.4 L296.1 370.1 L301.0 378.5 L315.7 379.5 L328.6 400.8 L342.1 429.2 L355.5 442.4 L358.0 451.5 L366.7 460.5 L370.6 482.4 L385.2 543.9 L387.6 565.5 L395.2 570.9 L400.0 567.2 L406.2 566.7 L414.0 572.1 L421.9 585.3 L441.0 600.8 L447.1 601.4 L451.5 609.8 L486.6 630.6 L484.6 636.5 L501.3 645.5 L546.9 656.0 L551.8 653.1 L567.1 657.5 L575.1 663.0 L588.4 689.0 L593.5 710.7 L597.1 715.8 L612.9 718.2 L624.6 713.9 L639.3 719.9 L655.2 718.7 L669.6 723.8 L685.2 734.0 L698.8 768.9 L710.7 773.0 L740.4 784.7 L753.3 780.6 L764.2 763.4 L781.8 747.0 L795.1 750.5 L811.9 745.4 L828.1 754.4 L839.2 750.2 L856.0 723.6 L878.8 721.7 L903.4 724.5 L912.7 712.1 L920.7 716.4 L936.3 708.3 L941.5 758.9 L954.0 758.3 L959.7 749.6 L970.0 753.9 L983.2 758.4 L995.2 737.6 L1015.6 738.6 L1029.1 760.5 L1044.4 774.2 L1059.6 775.8 L1066.5 763.7 L1078.8 756.8 L1094.1 765.7 L1112.4 763.5 L1117.0 750.0 L1128.4 745.8 L1139.5 728.3 L1154.8 732.2 L1168.3 725.6 L1181.5 705.8 L1162.2 697.5 L1154.4 690.2 L1142.8 680.3 L1129.4 699.7 L1119.0 693.5 L1121.2 661.4 L1132.0 655.5 L1135.3 644.1 L1135.5 634.2 L1128.4 618.3 L1131.0 603.2 L1119.9 589.8 L1123.8 582.3 L1130.7 574.7 L1143.0 575.3 L1147.2 570.8 L1144.5 544.1 L1134.9 530.0 L1142.4 521.1 L1134.6 504.5 L1143.4 491.6 L1125.9 474.8 L1116.3 471.9 L1123.0 466.2 L1130.8 451.8 L1118.4 439.1 L1105.8 429.3 L1120.6 417.6 L1101.1 393.5 L1097.8 375.6 L1083.1 365.6 L1079.4 353.6 L1084.0 335.1 L1087.5 323.9 L1098.3 317.9 L1079.7 305.6 L1062.6 295.9 L1048.5 284.4 L1028.8 251.0 L1018.5 245.1 L1028.1 229.4 L1034.1 214.1 L1021.8 203.1 L1008.3 195.9 L992.8 182.6 L1000.3 177.5 L990.4 166.8 L981.0 167.7 L979.0 165.3 Z"
-                fill="none" stroke="#D4A853" stroke-width="8" stroke-linejoin="round"/>
-        </g>
-      </svg>
-
-      <div class="logo-text-wrap">
-        <div class="logo-zone">ZONE<span class="logo-85">85</span></div>
-        <div class="logo-tagline">L'Esprit Vendée</div>
-      </div>
-    </div>
-
-    <div class="hero-headline">Découvrez le territoire</div>
-
-    <div class="gold-line" style="margin-top:1.6rem;"></div>
-
-    <p class="hero-sub">Vendée &nbsp;·&nbsp; Passion &nbsp;·&nbsp; Excellence</p>
-
-    <div class="scroll-cta" onclick="document.getElementById('map-sec').scrollIntoView({behavior:'smooth'})">
-      <span>Explorer</span>
-      <div class="scroll-arrow"></div>
-    </div>
-  </div>
-</section>
-
-<!-- ─── MAP SECTION ───────────────────────────────────────────── -->
-<section class="map-section" id="map-sec">
-  <div class="section-label">Territoire</div>
-  <h2 class="section-title">La Vendée,<br/>dessinée par la lumière</h2>
-  <p class="section-desc">
-    Chaque contour raconte une histoire. Découvrez le département de la Vendée tracé
-    par un pont de lumière cinématographique, révélant l'esprit unique de notre territoire.
-  </p>
-
-  <div class="map-wrapper">
-    <svg id="map-svg" viewBox="30 40 1160 760" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <!-- Gradient for the trace -->
-        <linearGradient id="traceGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stop-color="#FFD580" stop-opacity="0.2"/>
-          <stop offset="50%" stop-color="#FFD580" stop-opacity="1"/>
-          <stop offset="100%" stop-color="#E95649" stop-opacity="0.8"/>
-        </linearGradient>
-
-        <!-- Glow filter for the luminous trace -->
-        <filter id="glowFilter" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="5" result="blur"/>
-          <feMerge>
-            <feMergeNode in="blur"/>
-            <feMergeNode in="blur"/>
-          </feMerge>
-        </filter>
-
-        <!-- Dot glow filter -->
-        <filter id="dotGlow" x="-200%" y="-200%" width="500%" height="500%">
-          <feGaussianBlur stdDeviation="4" result="blur"/>
-          <feMerge>
-            <feMergeNode in="blur"/>
-            <feMergeNode in="blur"/>
-            <feMergeNode in="SourceGraphic"/>
-          </feMerge>
-        </filter>
-
-        <!-- Map soft shadow -->
-        <filter id="mapShadow">
-          <feDropShadow dx="0" dy="8" stdDeviation="20" flood-color="#10314E" flood-opacity="0.12"/>
-        </filter>
-
-        <!-- Clip for the fill -->
-        <clipPath id="vendeeClip">
-          <path id="vendee-clip-path" d="M979.0 165.3 L985.6 160.7 L980.5 146.3 L972.3 142.2 L960.4 130.7 L956.5 135.3 L944.8 138.5 L934.3 123.2 L928.8 124.1 L919.2 116.0 L909.7 131.6 L888.0 128.4 L880.0 123.6 L874.0 124.5 L864.1 118.7 L852.0 117.3 L833.1 108.5 L828.9 103.8 L799.5 93.0 L792.1 83.7 L787.6 80.0 L780.0 70.2 L768.7 65.1 L757.5 50.3 L754.5 51.2 L751.2 56.0 L745.5 56.7 L742.9 62.1 L744.3 73.2 L736.2 84.8 L735.1 87.5 L737.7 88.8 L736.0 94.2 L724.0 93.9 L713.1 84.5 L707.4 82.7 L706.0 88.2 L696.6 87.3 L687.9 96.2 L692.8 107.6 L693.3 116.9 L693.9 120.0 L686.1 133.1 L695.8 140.7 L694.6 149.7 L690.1 153.9 L690.3 162.6 L685.5 166.5 L682.9 164.9 L674.7 169.7 L659.1 172.1 L631.5 187.4 L623.5 180.3 L632.8 159.9 L626.2 149.3 L623.8 136.8 L625.9 131.0 L631.9 129.0 L632.2 123.2 L628.8 118.2 L626.1 100.1 L627.7 91.4 L623.2 87.3 L619.8 82.7 L614.1 81.2 L611.5 81.8 L598.3 94.7 L589.3 96.2 L576.4 103.2 L582.6 113.7 L577.3 124.7 L574.6 136.1 L580.8 152.0 L579.9 155.0 L585.7 165.8 L592.9 171.5 L593.5 177.6 L589.0 185.6 L577.0 184.7 L586.1 200.9 L601.8 215.6 L602.8 224.4 L586.0 232.2 L580.0 230.4 L574.0 232.2 L571.9 243.9 L553.9 238.2 L540.1 230.3 L534.6 231.5 L515.8 223.8 L506.4 223.2 L500.8 226.4 L485.1 211.5 L466.5 215.3 L460.9 212.1 L457.3 204.3 L458.1 190.4 L452.7 183.3 L454.3 180.8 L450.3 172.7 L431.7 176.3 L427.0 172.2 L420.9 173.0 L399.6 168.0 L403.2 163.2 L404.7 154.1 L401.4 149.0 L376.2 147.5 L362.2 140.0 L351.6 128.6 L348.9 116.3 L350.5 110.4 L339.4 106.8 L336.7 108.3 L330.4 101.3 L322.3 80.0 L318.1 75.2 L313.0 74.6 L302.9 82.2 L282.4 90.3 L270.4 116.0 L269.4 128.3 L260.5 141.6 L250.8 149.9 L251.4 156.0 L246.3 153.5 L227.7 170.6 L219.9 184.1 L225.3 186.8 L218.4 192.9 L196.8 195.2 L200.1 223.2 L200.5 258.5 L211.0 270.0 L250.0 301.7 L293.8 354.4 L296.1 370.1 L301.0 378.5 L315.7 379.5 L328.6 400.8 L342.1 429.2 L355.5 442.4 L358.0 451.5 L366.7 460.5 L370.6 482.4 L385.2 543.9 L387.6 565.5 L395.2 570.9 L400.0 567.2 L406.2 566.7 L414.0 572.1 L421.9 585.3 L441.0 600.8 L447.1 601.4 L451.5 609.8 L486.6 630.6 L484.6 636.5 L501.3 645.5 L546.9 656.0 L551.8 653.1 L567.1 657.5 L575.1 663.0 L588.4 689.0 L593.5 710.7 L597.1 715.8 L612.9 718.2 L624.6 713.9 L639.3 719.9 L655.2 718.7 L669.6 723.8 L685.2 734.0 L698.8 768.9 L710.7 773.0 L740.4 784.7 L753.3 780.6 L764.2 763.4 L781.8 747.0 L795.1 750.5 L811.9 745.4 L828.1 754.4 L839.2 750.2 L856.0 723.6 L878.8 721.7 L903.4 724.5 L912.7 712.1 L920.7 716.4 L936.3 708.3 L941.5 758.9 L954.0 758.3 L959.7 749.6 L970.0 753.9 L983.2 758.4 L995.2 737.6 L1015.6 738.6 L1029.1 760.5 L1044.4 774.2 L1059.6 775.8 L1066.5 763.7 L1078.8 756.8 L1094.1 765.7 L1112.4 763.5 L1117.0 750.0 L1128.4 745.8 L1139.5 728.3 L1154.8 732.2 L1168.3 725.6 L1181.5 705.8 L1162.2 697.5 L1154.4 690.2 L1142.8 680.3 L1129.4 699.7 L1119.0 693.5 L1121.2 661.4 L1132.0 655.5 L1135.3 644.1 L1135.5 634.2 L1128.4 618.3 L1131.0 603.2 L1119.9 589.8 L1123.8 582.3 L1130.7 574.7 L1143.0 575.3 L1147.2 570.8 L1144.5 544.1 L1134.9 530.0 L1142.4 521.1 L1134.6 504.5 L1143.4 491.6 L1125.9 474.8 L1116.3 471.9 L1123.0 466.2 L1130.8 451.8 L1118.4 439.1 L1105.8 429.3 L1120.6 417.6 L1101.1 393.5 L1097.8 375.6 L1083.1 365.6 L1079.4 353.6 L1084.0 335.1 L1087.5 323.9 L1098.3 317.9 L1079.7 305.6 L1062.6 295.9 L1048.5 284.4 L1028.8 251.0 L1018.5 245.1 L1028.1 229.4 L1034.1 214.1 L1021.8 203.1 L1008.3 195.9 L992.8 182.6 L1000.3 177.5 L990.4 166.8 L981.0 167.7 L979.0 165.3 Z"/>
-        </clipPath>
-      </defs>
-
-      <!-- Subtle background fill -->
-      <path class="vendee-fill" d="M979.0 165.3 L985.6 160.7 L980.5 146.3 L972.3 142.2 L960.4 130.7 L956.5 135.3 L944.8 138.5 L934.3 123.2 L928.8 124.1 L919.2 116.0 L909.7 131.6 L888.0 128.4 L880.0 123.6 L874.0 124.5 L864.1 118.7 L852.0 117.3 L833.1 108.5 L828.9 103.8 L799.5 93.0 L792.1 83.7 L787.6 80.0 L780.0 70.2 L768.7 65.1 L757.5 50.3 L754.5 51.2 L751.2 56.0 L745.5 56.7 L742.9 62.1 L744.3 73.2 L736.2 84.8 L735.1 87.5 L737.7 88.8 L736.0 94.2 L724.0 93.9 L713.1 84.5 L707.4 82.7 L706.0 88.2 L696.6 87.3 L687.9 96.2 L692.8 107.6 L693.3 116.9 L693.9 120.0 L686.1 133.1 L695.8 140.7 L694.6 149.7 L690.1 153.9 L690.3 162.6 L685.5 166.5 L682.9 164.9 L674.7 169.7 L659.1 172.1 L631.5 187.4 L623.5 180.3 L632.8 159.9 L626.2 149.3 L623.8 136.8 L625.9 131.0 L631.9 129.0 L632.2 123.2 L628.8 118.2 L626.1 100.1 L627.7 91.4 L623.2 87.3 L619.8 82.7 L614.1 81.2 L611.5 81.8 L598.3 94.7 L589.3 96.2 L576.4 103.2 L582.6 113.7 L577.3 124.7 L574.6 136.1 L580.8 152.0 L579.9 155.0 L585.7 165.8 L592.9 171.5 L593.5 177.6 L589.0 185.6 L577.0 184.7 L586.1 200.9 L601.8 215.6 L602.8 224.4 L586.0 232.2 L580.0 230.4 L574.0 232.2 L571.9 243.9 L553.9 238.2 L540.1 230.3 L534.6 231.5 L515.8 223.8 L506.4 223.2 L500.8 226.4 L485.1 211.5 L466.5 215.3 L460.9 212.1 L457.3 204.3 L458.1 190.4 L452.7 183.3 L454.3 180.8 L450.3 172.7 L431.7 176.3 L427.0 172.2 L420.9 173.0 L399.6 168.0 L403.2 163.2 L404.7 154.1 L401.4 149.0 L376.2 147.5 L362.2 140.0 L351.6 128.6 L348.9 116.3 L350.5 110.4 L339.4 106.8 L336.7 108.3 L330.4 101.3 L322.3 80.0 L318.1 75.2 L313.0 74.6 L302.9 82.2 L282.4 90.3 L270.4 116.0 L269.4 128.3 L260.5 141.6 L250.8 149.9 L251.4 156.0 L246.3 153.5 L227.7 170.6 L219.9 184.1 L225.3 186.8 L218.4 192.9 L196.8 195.2 L200.1 223.2 L200.5 258.5 L211.0 270.0 L250.0 301.7 L293.8 354.4 L296.1 370.1 L301.0 378.5 L315.7 379.5 L328.6 400.8 L342.1 429.2 L355.5 442.4 L358.0 451.5 L366.7 460.5 L370.6 482.4 L385.2 543.9 L387.6 565.5 L395.2 570.9 L400.0 567.2 L406.2 566.7 L414.0 572.1 L421.9 585.3 L441.0 600.8 L447.1 601.4 L451.5 609.8 L486.6 630.6 L484.6 636.5 L501.3 645.5 L546.9 656.0 L551.8 653.1 L567.1 657.5 L575.1 663.0 L588.4 689.0 L593.5 710.7 L597.1 715.8 L612.9 718.2 L624.6 713.9 L639.3 719.9 L655.2 718.7 L669.6 723.8 L685.2 734.0 L698.8 768.9 L710.7 773.0 L740.4 784.7 L753.3 780.6 L764.2 763.4 L781.8 747.0 L795.1 750.5 L811.9 745.4 L828.1 754.4 L839.2 750.2 L856.0 723.6 L878.8 721.7 L903.4 724.5 L912.7 712.1 L920.7 716.4 L936.3 708.3 L941.5 758.9 L954.0 758.3 L959.7 749.6 L970.0 753.9 L983.2 758.4 L995.2 737.6 L1015.6 738.6 L1029.1 760.5 L1044.4 774.2 L1059.6 775.8 L1066.5 763.7 L1078.8 756.8 L1094.1 765.7 L1112.4 763.5 L1117.0 750.0 L1128.4 745.8 L1139.5 728.3 L1154.8 732.2 L1168.3 725.6 L1181.5 705.8 L1162.2 697.5 L1154.4 690.2 L1142.8 680.3 L1129.4 699.7 L1119.0 693.5 L1121.2 661.4 L1132.0 655.5 L1135.3 644.1 L1135.5 634.2 L1128.4 618.3 L1131.0 603.2 L1119.9 589.8 L1123.8 582.3 L1130.7 574.7 L1143.0 575.3 L1147.2 570.8 L1144.5 544.1 L1134.9 530.0 L1142.4 521.1 L1134.6 504.5 L1143.4 491.6 L1125.9 474.8 L1116.3 471.9 L1123.0 466.2 L1130.8 451.8 L1118.4 439.1 L1105.8 429.3 L1120.6 417.6 L1101.1 393.5 L1097.8 375.6 L1083.1 365.6 L1079.4 353.6 L1084.0 335.1 L1087.5 323.9 L1098.3 317.9 L1079.7 305.6 L1062.6 295.9 L1048.5 284.4 L1028.8 251.0 L1018.5 245.1 L1028.1 229.4 L1034.1 214.1 L1021.8 203.1 L1008.3 195.9 L992.8 182.6 L1000.3 177.5 L990.4 166.8 L981.0 167.7 L979.0 165.3 Z" filter="url(#mapShadow)"/>
-
-      <!-- Islands fill -->
-      <path class="vendee-fill" d="M162.9 96.2 L162.7 80.3 L142.5 65.3 L129.7 63.8 L113.8 65.1 L118.2 79.7 L111.9 90.8 L111.6 97.1 L121.8 105.0 L131.3 122.0 L138.7 127.2 L146.8 122.1 L159.6 123.0 L173.5 136.4 L184.2 152.4 L191.4 177.0 L196.3 185.4 L198.9 187.2 L200.2 184.4 L202.8 149.3 L197.1 137.9 L159.7 114.0 L153.6 113.3 L151.3 107.9 L153.6 96.6 L151.8 94.2 L145.9 95.6 L151.9 93.3 L160.3 98.1 L162.9 96.2 Z"/>
-      <path class="vendee-fill" d="M66.7 332.0 L51.4 326.9 L46.6 326.9 L41.5 330.8 L35.5 333.0 L34.9 334.4 L34.8 336.0 L35.2 340.9 L37.8 346.9 L43.9 351.9 L44.5 356.6 L50.5 356.0 L55.6 362.0 L58.9 362.4 L62.8 365.1 L67.6 364.5 L73.8 371.4 L84.0 367.1 L87.0 363.5 L100.8 367.4 L104.4 370.4 L105.1 369.0 L103.5 364.5 L97.2 355.2 L89.1 348.0 L84.4 341.4 L71.8 339.9 L66.7 332.0 Z"/>
-
-      <!-- Static dim outline -->
-      <path class="vendee-outline" id="vendee-static"
-        d="M979.0 165.3 L985.6 160.7 L980.5 146.3 L972.3 142.2 L960.4 130.7 L956.5 135.3 L944.8 138.5 L934.3 123.2 L928.8 124.1 L919.2 116.0 L909.7 131.6 L888.0 128.4 L880.0 123.6 L874.0 124.5 L864.1 118.7 L852.0 117.3 L833.1 108.5 L828.9 103.8 L799.5 93.0 L792.1 83.7 L787.6 80.0 L780.0 70.2 L768.7 65.1 L757.5 50.3 L754.5 51.2 L751.2 56.0 L745.5 56.7 L742.9 62.1 L744.3 73.2 L736.2 84.8 L735.1 87.5 L737.7 88.8 L736.0 94.2 L724.0 93.9 L713.1 84.5 L707.4 82.7 L706.0 88.2 L696.6 87.3 L687.9 96.2 L692.8 107.6 L693.3 116.9 L693.9 120.0 L686.1 133.1 L695.8 140.7 L694.6 149.7 L690.1 153.9 L690.3 162.6 L685.5 166.5 L682.9 164.9 L674.7 169.7 L659.1 172.1 L631.5 187.4 L623.5 180.3 L632.8 159.9 L626.2 149.3 L623.8 136.8 L625.9 131.0 L631.9 129.0 L632.2 123.2 L628.8 118.2 L626.1 100.1 L627.7 91.4 L623.2 87.3 L619.8 82.7 L614.1 81.2 L611.5 81.8 L598.3 94.7 L589.3 96.2 L576.4 103.2 L582.6 113.7 L577.3 124.7 L574.6 136.1 L580.8 152.0 L579.9 155.0 L585.7 165.8 L592.9 171.5 L593.5 177.6 L589.0 185.6 L577.0 184.7 L586.1 200.9 L601.8 215.6 L602.8 224.4 L586.0 232.2 L580.0 230.4 L574.0 232.2 L571.9 243.9 L553.9 238.2 L540.1 230.3 L534.6 231.5 L515.8 223.8 L506.4 223.2 L500.8 226.4 L485.1 211.5 L466.5 215.3 L460.9 212.1 L457.3 204.3 L458.1 190.4 L452.7 183.3 L454.3 180.8 L450.3 172.7 L431.7 176.3 L427.0 172.2 L420.9 173.0 L399.6 168.0 L403.2 163.2 L404.7 154.1 L401.4 149.0 L376.2 147.5 L362.2 140.0 L351.6 128.6 L348.9 116.3 L350.5 110.4 L339.4 106.8 L336.7 108.3 L330.4 101.3 L322.3 80.0 L318.1 75.2 L313.0 74.6 L302.9 82.2 L282.4 90.3 L270.4 116.0 L269.4 128.3 L260.5 141.6 L250.8 149.9 L251.4 156.0 L246.3 153.5 L227.7 170.6 L219.9 184.1 L225.3 186.8 L218.4 192.9 L196.8 195.2 L200.1 223.2 L200.5 258.5 L211.0 270.0 L250.0 301.7 L293.8 354.4 L296.1 370.1 L301.0 378.5 L315.7 379.5 L328.6 400.8 L342.1 429.2 L355.5 442.4 L358.0 451.5 L366.7 460.5 L370.6 482.4 L385.2 543.9 L387.6 565.5 L395.2 570.9 L400.0 567.2 L406.2 566.7 L414.0 572.1 L421.9 585.3 L441.0 600.8 L447.1 601.4 L451.5 609.8 L486.6 630.6 L484.6 636.5 L501.3 645.5 L546.9 656.0 L551.8 653.1 L567.1 657.5 L575.1 663.0 L588.4 689.0 L593.5 710.7 L597.1 715.8 L612.9 718.2 L624.6 713.9 L639.3 719.9 L655.2 718.7 L669.6 723.8 L685.2 734.0 L698.8 768.9 L710.7 773.0 L740.4 784.7 L753.3 780.6 L764.2 763.4 L781.8 747.0 L795.1 750.5 L811.9 745.4 L828.1 754.4 L839.2 750.2 L856.0 723.6 L878.8 721.7 L903.4 724.5 L912.7 712.1 L920.7 716.4 L936.3 708.3 L941.5 758.9 L954.0 758.3 L959.7 749.6 L970.0 753.9 L983.2 758.4 L995.2 737.6 L1015.6 738.6 L1029.1 760.5 L1044.4 774.2 L1059.6 775.8 L1066.5 763.7 L1078.8 756.8 L1094.1 765.7 L1112.4 763.5 L1117.0 750.0 L1128.4 745.8 L1139.5 728.3 L1154.8 732.2 L1168.3 725.6 L1181.5 705.8 L1162.2 697.5 L1154.4 690.2 L1142.8 680.3 L1129.4 699.7 L1119.0 693.5 L1121.2 661.4 L1132.0 655.5 L1135.3 644.1 L1135.5 634.2 L1128.4 618.3 L1131.0 603.2 L1119.9 589.8 L1123.8 582.3 L1130.7 574.7 L1143.0 575.3 L1147.2 570.8 L1144.5 544.1 L1134.9 530.0 L1142.4 521.1 L1134.6 504.5 L1143.4 491.6 L1125.9 474.8 L1116.3 471.9 L1123.0 466.2 L1130.8 451.8 L1118.4 439.1 L1105.8 429.3 L1120.6 417.6 L1101.1 393.5 L1097.8 375.6 L1083.1 365.6 L1079.4 353.6 L1084.0 335.1 L1087.5 323.9 L1098.3 317.9 L1079.7 305.6 L1062.6 295.9 L1048.5 284.4 L1028.8 251.0 L1018.5 245.1 L1028.1 229.4 L1034.1 214.1 L1021.8 203.1 L1008.3 195.9 L992.8 182.6 L1000.3 177.5 L990.4 166.8 L981.0 167.7 L979.0 165.3 Z"/>
-
-      <!-- Glow layer (blurred) — animated -->
-      <path class="vendee-glow" id="vendee-glow-path"
-        d="M979.0 165.3 L985.6 160.7 L980.5 146.3 L972.3 142.2 L960.4 130.7 L956.5 135.3 L944.8 138.5 L934.3 123.2 L928.8 124.1 L919.2 116.0 L909.7 131.6 L888.0 128.4 L880.0 123.6 L874.0 124.5 L864.1 118.7 L852.0 117.3 L833.1 108.5 L828.9 103.8 L799.5 93.0 L792.1 83.7 L787.6 80.0 L780.0 70.2 L768.7 65.1 L757.5 50.3 L754.5 51.2 L751.2 56.0 L745.5 56.7 L742.9 62.1 L744.3 73.2 L736.2 84.8 L735.1 87.5 L737.7 88.8 L736.0 94.2 L724.0 93.9 L713.1 84.5 L707.4 82.7 L706.0 88.2 L696.6 87.3 L687.9 96.2 L692.8 107.6 L693.3 116.9 L693.9 120.0 L686.1 133.1 L695.8 140.7 L694.6 149.7 L690.1 153.9 L690.3 162.6 L685.5 166.5 L682.9 164.9 L674.7 169.7 L659.1 172.1 L631.5 187.4 L623.5 180.3 L632.8 159.9 L626.2 149.3 L623.8 136.8 L625.9 131.0 L631.9 129.0 L632.2 123.2 L628.8 118.2 L626.1 100.1 L627.7 91.4 L623.2 87.3 L619.8 82.7 L614.1 81.2 L611.5 81.8 L598.3 94.7 L589.3 96.2 L576.4 103.2 L582.6 113.7 L577.3 124.7 L574.6 136.1 L580.8 152.0 L579.9 155.0 L585.7 165.8 L592.9 171.5 L593.5 177.6 L589.0 185.6 L577.0 184.7 L586.1 200.9 L601.8 215.6 L602.8 224.4 L586.0 232.2 L580.0 230.4 L574.0 232.2 L571.9 243.9 L553.9 238.2 L540.1 230.3 L534.6 231.5 L515.8 223.8 L506.4 223.2 L500.8 226.4 L485.1 211.5 L466.5 215.3 L460.9 212.1 L457.3 204.3 L458.1 190.4 L452.7 183.3 L454.3 180.8 L450.3 172.7 L431.7 176.3 L427.0 172.2 L420.9 173.0 L399.6 168.0 L403.2 163.2 L404.7 154.1 L401.4 149.0 L376.2 147.5 L362.2 140.0 L351.6 128.6 L348.9 116.3 L350.5 110.4 L339.4 106.8 L336.7 108.3 L330.4 101.3 L322.3 80.0 L318.1 75.2 L313.0 74.6 L302.9 82.2 L282.4 90.3 L270.4 116.0 L269.4 128.3 L260.5 141.6 L250.8 149.9 L251.4 156.0 L246.3 153.5 L227.7 170.6 L219.9 184.1 L225.3 186.8 L218.4 192.9 L196.8 195.2 L200.1 223.2 L200.5 258.5 L211.0 270.0 L250.0 301.7 L293.8 354.4 L296.1 370.1 L301.0 378.5 L315.7 379.5 L328.6 400.8 L342.1 429.2 L355.5 442.4 L358.0 451.5 L366.7 460.5 L370.6 482.4 L385.2 543.9 L387.6 565.5 L395.2 570.9 L400.0 567.2 L406.2 566.7 L414.0 572.1 L421.9 585.3 L441.0 600.8 L447.1 601.4 L451.5 609.8 L486.6 630.6 L484.6 636.5 L501.3 645.5 L546.9 656.0 L551.8 653.1 L567.1 657.5 L575.1 663.0 L588.4 689.0 L593.5 710.7 L597.1 715.8 L612.9 718.2 L624.6 713.9 L639.3 719.9 L655.2 718.7 L669.6 723.8 L685.2 734.0 L698.8 768.9 L710.7 773.0 L740.4 784.7 L753.3 780.6 L764.2 763.4 L781.8 747.0 L795.1 750.5 L811.9 745.4 L828.1 754.4 L839.2 750.2 L856.0 723.6 L878.8 721.7 L903.4 724.5 L912.7 712.1 L920.7 716.4 L936.3 708.3 L941.5 758.9 L954.0 758.3 L959.7 749.6 L970.0 753.9 L983.2 758.4 L995.2 737.6 L1015.6 738.6 L1029.1 760.5 L1044.4 774.2 L1059.6 775.8 L1066.5 763.7 L1078.8 756.8 L1094.1 765.7 L1112.4 763.5 L1117.0 750.0 L1128.4 745.8 L1139.5 728.3 L1154.8 732.2 L1168.3 725.6 L1181.5 705.8 L1162.2 697.5 L1154.4 690.2 L1142.8 680.3 L1129.4 699.7 L1119.0 693.5 L1121.2 661.4 L1132.0 655.5 L1135.3 644.1 L1135.5 634.2 L1128.4 618.3 L1131.0 603.2 L1119.9 589.8 L1123.8 582.3 L1130.7 574.7 L1143.0 575.3 L1147.2 570.8 L1144.5 544.1 L1134.9 530.0 L1142.4 521.1 L1134.6 504.5 L1143.4 491.6 L1125.9 474.8 L1116.3 471.9 L1123.0 466.2 L1130.8 451.8 L1118.4 439.1 L1105.8 429.3 L1120.6 417.6 L1101.1 393.5 L1097.8 375.6 L1083.1 365.6 L1079.4 353.6 L1084.0 335.1 L1087.5 323.9 L1098.3 317.9 L1079.7 305.6 L1062.6 295.9 L1048.5 284.4 L1028.8 251.0 L1018.5 245.1 L1028.1 229.4 L1034.1 214.1 L1021.8 203.1 L1008.3 195.9 L992.8 182.6 L1000.3 177.5 L990.4 166.8 L981.0 167.7 L979.0 165.3 Z"/>
-
-      <!-- Sharp luminous trace line — animated -->
-      <path class="vendee-trace" id="vendee-trace-path"
-        d="M979.0 165.3 L985.6 160.7 L980.5 146.3 L972.3 142.2 L960.4 130.7 L956.5 135.3 L944.8 138.5 L934.3 123.2 L928.8 124.1 L919.2 116.0 L909.7 131.6 L888.0 128.4 L880.0 123.6 L874.0 124.5 L864.1 118.7 L852.0 117.3 L833.1 108.5 L828.9 103.8 L799.5 93.0 L792.1 83.7 L787.6 80.0 L780.0 70.2 L768.7 65.1 L757.5 50.3 L754.5 51.2 L751.2 56.0 L745.5 56.7 L742.9 62.1 L744.3 73.2 L736.2 84.8 L735.1 87.5 L737.7 88.8 L736.0 94.2 L724.0 93.9 L713.1 84.5 L707.4 82.7 L706.0 88.2 L696.6 87.3 L687.9 96.2 L692.8 107.6 L693.3 116.9 L693.9 120.0 L686.1 133.1 L695.8 140.7 L694.6 149.7 L690.1 153.9 L690.3 162.6 L685.5 166.5 L682.9 164.9 L674.7 169.7 L659.1 172.1 L631.5 187.4 L623.5 180.3 L632.8 159.9 L626.2 149.3 L623.8 136.8 L625.9 131.0 L631.9 129.0 L632.2 123.2 L628.8 118.2 L626.1 100.1 L627.7 91.4 L623.2 87.3 L619.8 82.7 L614.1 81.2 L611.5 81.8 L598.3 94.7 L589.3 96.2 L576.4 103.2 L582.6 113.7 L577.3 124.7 L574.6 136.1 L580.8 152.0 L579.9 155.0 L585.7 165.8 L592.9 171.5 L593.5 177.6 L589.0 185.6 L577.0 184.7 L586.1 200.9 L601.8 215.6 L602.8 224.4 L586.0 232.2 L580.0 230.4 L574.0 232.2 L571.9 243.9 L553.9 238.2 L540.1 230.3 L534.6 231.5 L515.8 223.8 L506.4 223.2 L500.8 226.4 L485.1 211.5 L466.5 215.3 L460.9 212.1 L457.3 204.3 L458.1 190.4 L452.7 183.3 L454.3 180.8 L450.3 172.7 L431.7 176.3 L427.0 172.2 L420.9 173.0 L399.6 168.0 L403.2 163.2 L404.7 154.1 L401.4 149.0 L376.2 147.5 L362.2 140.0 L351.6 128.6 L348.9 116.3 L350.5 110.4 L339.4 106.8 L336.7 108.3 L330.4 101.3 L322.3 80.0 L318.1 75.2 L313.0 74.6 L302.9 82.2 L282.4 90.3 L270.4 116.0 L269.4 128.3 L260.5 141.6 L250.8 149.9 L251.4 156.0 L246.3 153.5 L227.7 170.6 L219.9 184.1 L225.3 186.8 L218.4 192.9 L196.8 195.2 L200.1 223.2 L200.5 258.5 L211.0 270.0 L250.0 301.7 L293.8 354.4 L296.1 370.1 L301.0 378.5 L315.7 379.5 L328.6 400.8 L342.1 429.2 L355.5 442.4 L358.0 451.5 L366.7 460.5 L370.6 482.4 L385.2 543.9 L387.6 565.5 L395.2 570.9 L400.0 567.2 L406.2 566.7 L414.0 572.1 L421.9 585.3 L441.0 600.8 L447.1 601.4 L451.5 609.8 L486.6 630.6 L484.6 636.5 L501.3 645.5 L546.9 656.0 L551.8 653.1 L567.1 657.5 L575.1 663.0 L588.4 689.0 L593.5 710.7 L597.1 715.8 L612.9 718.2 L624.6 713.9 L639.3 719.9 L655.2 718.7 L669.6 723.8 L685.2 734.0 L698.8 768.9 L710.7 773.0 L740.4 784.7 L753.3 780.6 L764.2 763.4 L781.8 747.0 L795.1 750.5 L811.9 745.4 L828.1 754.4 L839.2 750.2 L856.0 723.6 L878.8 721.7 L903.4 724.5 L912.7 712.1 L920.7 716.4 L936.3 708.3 L941.5 758.9 L954.0 758.3 L959.7 749.6 L970.0 753.9 L983.2 758.4 L995.2 737.6 L1015.6 738.6 L1029.1 760.5 L1044.4 774.2 L1059.6 775.8 L1066.5 763.7 L1078.8 756.8 L1094.1 765.7 L1112.4 763.5 L1117.0 750.0 L1128.4 745.8 L1139.5 728.3 L1154.8 732.2 L1168.3 725.6 L1181.5 705.8 L1162.2 697.5 L1154.4 690.2 L1142.8 680.3 L1129.4 699.7 L1119.0 693.5 L1121.2 661.4 L1132.0 655.5 L1135.3 644.1 L1135.5 634.2 L1128.4 618.3 L1131.0 603.2 L1119.9 589.8 L1123.8 582.3 L1130.7 574.7 L1143.0 575.3 L1147.2 570.8 L1144.5 544.1 L1134.9 530.0 L1142.4 521.1 L1134.6 504.5 L1143.4 491.6 L1125.9 474.8 L1116.3 471.9 L1123.0 466.2 L1130.8 451.8 L1118.4 439.1 L1105.8 429.3 L1120.6 417.6 L1101.1 393.5 L1097.8 375.6 L1083.1 365.6 L1079.4 353.6 L1084.0 335.1 L1087.5 323.9 L1098.3 317.9 L1079.7 305.6 L1062.6 295.9 L1048.5 284.4 L1028.8 251.0 L1018.5 245.1 L1028.1 229.4 L1034.1 214.1 L1021.8 203.1 L1008.3 195.9 L992.8 182.6 L1000.3 177.5 L990.4 166.8 L981.0 167.7 L979.0 165.3 Z"/>
-
-      <!-- The luminous travelling dot -->
-      <circle class="trace-dot" id="trace-dot" cx="979" cy="165.3" r="5"/>
-    </svg>
-  </div>
-</section>
-
-<!-- ─── FEATURES ──────────────────────────────────────────────── -->
-<section class="features-section">
-  <div style="text-align:center;" class="features-header">
-    <div class="section-label">Notre territoire</div>
-    <h2 class="section-title">L'Esprit ZONE85</h2>
-    <p class="section-desc" style="margin:1rem auto 0;">
-      Un territoire façonné par l'Atlantique, les bocages et la plaine vendéenne.
-      Une identité forte, une âme authentique.
-    </p>
-  </div>
-  <div class="features-grid">
-    <div class="feature-card">
-      <div class="feature-num">01</div>
-      <div class="feature-title">Bocage Vendéen</div>
-      <p class="feature-text">Haies, chemins creux et vallées verdoyantes. Le bocage est l'identité profonde d'une Vendée intime, loin des clichés balnéaires.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-num">02</div>
-      <div class="feature-title">Marais & Atlantique</div>
-      <p class="feature-text">Entre ciel et eau, les marais breton et poitevin dessinent des paysages d'une lumière incomparable. La mer comme horizon permanent.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-num">03</div>
-      <div class="feature-title">Plaine & Histoire</div>
-      <p class="feature-text">Terre des guerres de Vendée, de résistance et de renaissance. Un terroir chargé de mémoire et de fierté collective.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ─── STATS STRIP ───────────────────────────────────────────── -->
-<div class="stats-strip">
-  <div class="stats-inner">
-    <div class="stat-item">
-      <div class="stat-num">6<span>569</span></div>
-      <div class="stat-label">km² de territoire</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num"><span>+</span>700<span>km</span></div>
-      <div class="stat-label">de pistes cyclables</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num">1<span>er</span></div>
-      <div class="stat-label">département touristique</div>
-    </div>
+<!-- ── TICKER ──────────────────────────── -->
+<div class="ticker">
+  <div class="ticker-track">
+    <span>Zonautes</span><span class="sep">✦</span>
+    <span>Les Invisibles</span><span class="sep">✦</span>
+    <span>RandoZones</span><span class="sep">✦</span>
+    <span>Quizz Vendée</span><span class="sep">✦</span>
+    <span>Chez nous on ne dit pas</span><span class="sep">✦</span>
+    <span>Météo 85</span><span class="sep">✦</span>
+    <span>L'Esprit Vendée</span><span class="sep">✦</span>
+    <span>Zonautes</span><span class="sep">✦</span>
+    <span>Les Invisibles</span><span class="sep">✦</span>
+    <span>RandoZones</span><span class="sep">✦</span>
+    <span>Quizz Vendée</span><span class="sep">✦</span>
+    <span>Chez nous on ne dit pas</span><span class="sep">✦</span>
+    <span>Météo 85</span><span class="sep">✦</span>
+    <span>L'Esprit Vendée</span><span class="sep">✦</span>
   </div>
 </div>
 
-<!-- ─── BANNER ────────────────────────────────────────────────── -->
-<section class="banner-section">
-  <div class="banner-content">
-    <div class="banner-eyebrow">Zone 85 · 2025</div>
-    <h2 class="banner-headline">
-      Vivez la Vendée<br/><em>autrement</em>
-    </h2>
-    <p class="banner-sub">Découvrez nos expériences, nos adresses et nos récits du territoire.</p>
-    <a href="#" class="cta-btn">Découvrir</a>
+<!-- ── NAV ─────────────────────────────── -->
+<nav id="nav">
+  <div class="nav-logo">ZONE<span>85</span></div>
+  <div class="nav-links">
+    <a href="#invisibles">Les Invisibles</a>
+    <a href="#randozones">RandoZones</a>
+    <a href="#quizz">Quizz</a>
+    <a href="#meteo">Météo</a>
+    <a href="#patois">Patois</a>
+  </div>
+  <div class="nav-burger" onclick="this.classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- ── HERO ─────────────────────────────── -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+
+    <div class="zonautes-badge">
+      <div class="dot"></div>
+      <span>Bienvenue chez les Zonautes</span>
+    </div>
+
+    <h1 class="hero-big">
+      ZONE<em>85</em>
+    </h1>
+    <p class="hero-sub-line">L'esprit Vendée · La tribu des Zonautes</p>
+
+    <div class="hero-map">
+      <svg id="map-svg" viewBox="25 45 1165 760" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="tg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#FFD580" stop-opacity=".3"/>
+            <stop offset="60%" stop-color="#FFD580"/>
+            <stop offset="100%" stop-color="#E95649"/>
+          </linearGradient>
+          <filter id="glow1" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="6" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="b"/></feMerge>
+          </filter>
+          <filter id="dg" x="-300%" y="-300%" width="700%" height="700%">
+            <feGaussianBlur stdDeviation="5" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <!-- mainland fill -->
+        <path class="vendee-fill" d="M979.0 165.3 L985.6 160.7 L980.5 146.3 L972.3 142.2 L960.4 130.7 L956.5 135.3 L944.8 138.5 L934.3 123.2 L928.8 124.1 L919.2 116.0 L909.7 131.6 L888.0 128.4 L880.0 123.6 L874.0 124.5 L864.1 118.7 L852.0 117.3 L833.1 108.5 L828.9 103.8 L799.5 93.0 L792.1 83.7 L787.6 80.0 L780.0 70.2 L768.7 65.1 L757.5 50.3 L754.5 51.2 L751.2 56.0 L745.5 56.7 L742.9 62.1 L744.3 73.2 L736.2 84.8 L735.1 87.5 L737.7 88.8 L736.0 94.2 L724.0 93.9 L713.1 84.5 L707.4 82.7 L706.0 88.2 L696.6 87.3 L687.9 96.2 L692.8 107.6 L693.3 116.9 L693.9 120.0 L686.1 133.1 L695.8 140.7 L694.6 149.7 L690.1 153.9 L690.3 162.6 L685.5 166.5 L682.9 164.9 L674.7 169.7 L659.1 172.1 L631.5 187.4 L623.5 180.3 L632.8 159.9 L626.2 149.3 L623.8 136.8 L625.9 131.0 L631.9 129.0 L632.2 123.2 L628.8 118.2 L626.1 100.1 L627.7 91.4 L623.2 87.3 L619.8 82.7 L614.1 81.2 L611.5 81.8 L598.3 94.7 L589.3 96.2 L576.4 103.2 L582.6 113.7 L577.3 124.7 L574.6 136.1 L580.8 152.0 L579.9 155.0 L585.7 165.8 L592.9 171.5 L593.5 177.6 L589.0 185.6 L577.0 184.7 L586.1 200.9 L601.8 215.6 L602.8 224.4 L586.0 232.2 L580.0 230.4 L574.0 232.2 L571.9 243.9 L553.9 238.2 L540.1 230.3 L534.6 231.5 L515.8 223.8 L506.4 223.2 L500.8 226.4 L485.1 211.5 L466.5 215.3 L460.9 212.1 L457.3 204.3 L458.1 190.4 L452.7 183.3 L454.3 180.8 L450.3 172.7 L431.7 176.3 L427.0 172.2 L420.9 173.0 L399.6 168.0 L403.2 163.2 L404.7 154.1 L401.4 149.0 L376.2 147.5 L362.2 140.0 L351.6 128.6 L348.9 116.3 L350.5 110.4 L339.4 106.8 L336.7 108.3 L330.4 101.3 L322.3 80.0 L318.1 75.2 L313.0 74.6 L302.9 82.2 L282.4 90.3 L270.4 116.0 L269.4 128.3 L260.5 141.6 L250.8 149.9 L251.4 156.0 L246.3 153.5 L227.7 170.6 L219.9 184.1 L225.3 186.8 L218.4 192.9 L196.8 195.2 L200.1 223.2 L200.5 258.5 L211.0 270.0 L250.0 301.7 L293.8 354.4 L296.1 370.1 L301.0 378.5 L315.7 379.5 L328.6 400.8 L342.1 429.2 L355.5 442.4 L358.0 451.5 L366.7 460.5 L370.6 482.4 L385.2 543.9 L387.6 565.5 L395.2 570.9 L400.0 567.2 L406.2 566.7 L414.0 572.1 L421.9 585.3 L441.0 600.8 L447.1 601.4 L451.5 609.8 L486.6 630.6 L484.6 636.5 L501.3 645.5 L546.9 656.0 L551.8 653.1 L567.1 657.5 L575.1 663.0 L588.4 689.0 L593.5 710.7 L597.1 715.8 L612.9 718.2 L624.6 713.9 L639.3 719.9 L655.2 718.7 L669.6 723.8 L685.2 734.0 L698.8 768.9 L710.7 773.0 L740.4 784.7 L753.3 780.6 L764.2 763.4 L781.8 747.0 L795.1 750.5 L811.9 745.4 L828.1 754.4 L839.2 750.2 L856.0 723.6 L878.8 721.7 L903.4 724.5 L912.7 712.1 L920.7 716.4 L936.3 708.3 L941.5 758.9 L954.0 758.3 L959.7 749.6 L970.0 753.9 L983.2 758.4 L995.2 737.6 L1015.6 738.6 L1029.1 760.5 L1044.4 774.2 L1059.6 775.8 L1066.5 763.7 L1078.8 756.8 L1094.1 765.7 L1112.4 763.5 L1117.0 750.0 L1128.4 745.8 L1139.5 728.3 L1154.8 732.2 L1168.3 725.6 L1181.5 705.8 L1162.2 697.5 L1154.4 690.2 L1142.8 680.3 L1129.4 699.7 L1119.0 693.5 L1121.2 661.4 L1132.0 655.5 L1135.3 644.1 L1135.5 634.2 L1128.4 618.3 L1131.0 603.2 L1119.9 589.8 L1123.8 582.3 L1130.7 574.7 L1143.0 575.3 L1147.2 570.8 L1144.5 544.1 L1134.9 530.0 L1142.4 521.1 L1134.6 504.5 L1143.4 491.6 L1125.9 474.8 L1116.3 471.9 L1123.0 466.2 L1130.8 451.8 L1118.4 439.1 L1105.8 429.3 L1120.6 417.6 L1101.1 393.5 L1097.8 375.6 L1083.1 365.6 L1079.4 353.6 L1084.0 335.1 L1087.5 323.9 L1098.3 317.9 L1079.7 305.6 L1062.6 295.9 L1048.5 284.4 L1028.8 251.0 L1018.5 245.1 L1028.1 229.4 L1034.1 214.1 L1021.8 203.1 L1008.3 195.9 L992.8 182.6 L1000.3 177.5 L990.4 166.8 L981.0 167.7 L979.0 165.3 Z"/>
+        <!-- Noirmoutier fill -->
+        <path class="vendee-fill" d="M162.9 96.2 L162.7 80.3 L142.5 65.3 L129.7 63.8 L113.8 65.1 L118.2 79.7 L111.9 90.8 L111.6 97.1 L121.8 105.0 L131.3 122.0 L138.7 127.2 L146.8 122.1 L159.6 123.0 L173.5 136.4 L184.2 152.4 L191.4 177.0 L196.3 185.4 L198.9 187.2 L200.2 184.4 L202.8 149.3 L197.1 137.9 L159.7 114.0 L153.6 113.3 L151.3 107.9 L153.6 96.6 L151.8 94.2 L145.9 95.6 L151.9 93.3 L160.3 98.1 L162.9 96.2 Z"/>
+        <!-- Île d'Yeu fill -->
+        <path class="vendee-fill" d="M66.7 332.0 L51.4 326.9 L46.6 326.9 L41.5 330.8 L35.5 333.0 L34.9 334.4 L34.8 336.0 L35.2 340.9 L37.8 346.9 L43.9 351.9 L44.5 356.6 L50.5 356.0 L55.6 362.0 L58.9 362.4 L62.8 365.1 L67.6 364.5 L73.8 371.4 L84.0 367.1 L87.0 363.5 L100.8 367.4 L104.4 370.4 L105.1 369.0 L103.5 364.5 L97.2 355.2 L89.1 348.0 L84.4 341.4 L71.8 339.9 L66.7 332.0 Z"/>
+
+        <!-- static dim outlines -->
+        <path class="vendee-outline" d="M979.0 165.3 L985.6 160.7 L980.5 146.3 L972.3 142.2 L960.4 130.7 L956.5 135.3 L944.8 138.5 L934.3 123.2 L928.8 124.1 L919.2 116.0 L909.7 131.6 L888.0 128.4 L880.0 123.6 L874.0 124.5 L864.1 118.7 L852.0 117.3 L833.1 108.5 L828.9 103.8 L799.5 93.0 L792.1 83.7 L787.6 80.0 L780.0 70.2 L768.7 65.1 L757.5 50.3 L754.5 51.2 L751.2 56.0 L745.5 56.7 L742.9 62.1 L744.3 73.2 L736.2 84.8 L735.1 87.5 L737.7 88.8 L736.0 94.2 L724.0 93.9 L713.1 84.5 L707.4 82.7 L706.0 88.2 L696.6 87.3 L687.9 96.2 L692.8 107.6 L693.3 116.9 L693.9 120.0 L686.1 133.1 L695.8 140.7 L694.6 149.7 L690.1 153.9 L690.3 162.6 L685.5 166.5 L682.9 164.9 L674.7 169.7 L659.1 172.1 L631.5 187.4 L623.5 180.3 L632.8 159.9 L626.2 149.3 L623.8 136.8 L625.9 131.0 L631.9 129.0 L632.2 123.2 L628.8 118.2 L626.1 100.1 L627.7 91.4 L623.2 87.3 L619.8 82.7 L614.1 81.2 L611.5 81.8 L598.3 94.7 L589.3 96.2 L576.4 103.2 L582.6 113.7 L577.3 124.7 L574.6 136.1 L580.8 152.0 L579.9 155.0 L585.7 165.8 L592.9 171.5 L593.5 177.6 L589.0 185.6 L577.0 184.7 L586.1 200.9 L601.8 215.6 L602.8 224.4 L586.0 232.2 L580.0 230.4 L574.0 232.2 L571.9 243.9 L553.9 238.2 L540.1 230.3 L534.6 231.5 L515.8 223.8 L506.4 223.2 L500.8 226.4 L485.1 211.5 L466.5 215.3 L460.9 212.1 L457.3 204.3 L458.1 190.4 L452.7 183.3 L454.3 180.8 L450.3 172.7 L431.7 176.3 L427.0 172.2 L420.9 173.0 L399.6 168.0 L403.2 163.2 L404.7 154.1 L401.4 149.0 L376.2 147.5 L362.2 140.0 L351.6 128.6 L348.9 116.3 L350.5 110.4 L339.4 106.8 L336.7 108.3 L330.4 101.3 L322.3 80.0 L318.1 75.2 L313.0 74.6 L302.9 82.2 L282.4 90.3 L270.4 116.0 L269.4 128.3 L260.5 141.6 L250.8 149.9 L251.4 156.0 L246.3 153.5 L227.7 170.6 L219.9 184.1 L225.3 186.8 L218.4 192.9 L196.8 195.2 L200.1 223.2 L200.5 258.5 L211.0 270.0 L250.0 301.7 L293.8 354.4 L296.1 370.1 L301.0 378.5 L315.7 379.5 L328.6 400.8 L342.1 429.2 L355.5 442.4 L358.0 451.5 L366.7 460.5 L370.6 482.4 L385.2 543.9 L387.6 565.5 L395.2 570.9 L400.0 567.2 L406.2 566.7 L414.0 572.1 L421.9 585.3 L441.0 600.8 L447.1 601.4 L451.5 609.8 L486.6 630.6 L484.6 636.5 L501.3 645.5 L546.9 656.0 L551.8 653.1 L567.1 657.5 L575.1 663.0 L588.4 689.0 L593.5 710.7 L597.1 715.8 L612.9 718.2 L624.6 713.9 L639.3 719.9 L655.2 718.7 L669.6 723.8 L685.2 734.0 L698.8 768.9 L710.7 773.0 L740.4 784.7 L753.3 780.6 L764.2 763.4 L781.8 747.0 L795.1 750.5 L811.9 745.4 L828.1 754.4 L839.2 750.2 L856.0 723.6 L878.8 721.7 L903.4 724.5 L912.7 712.1 L920.7 716.4 L936.3 708.3 L941.5 758.9 L954.0 758.3 L959.7 749.6 L970.0 753.9 L983.2 758.4 L995.2 737.6 L1015.6 738.6 L1029.1 760.5 L1044.4 774.2 L1059.6 775.8 L1066.5 763.7 L1078.8 756.8 L1094.1 765.7 L1112.4 763.5 L1117.0 750.0 L1128.4 745.8 L1139.5 728.3 L1154.8 732.2 L1168.3 725.6 L1181.5 705.8 L1162.2 697.5 L1154.4 690.2 L1142.8 680.3 L1129.4 699.7 L1119.0 693.5 L1121.2 661.4 L1132.0 655.5 L1135.3 644.1 L1135.5 634.2 L1128.4 618.3 L1131.0 603.2 L1119.9 589.8 L1123.8 582.3 L1130.7 574.7 L1143.0 575.3 L1147.2 570.8 L1144.5 544.1 L1134.9 530.0 L1142.4 521.1 L1134.6 504.5 L1143.4 491.6 L1125.9 474.8 L1116.3 471.9 L1123.0 466.2 L1130.8 451.8 L1118.4 439.1 L1105.8 429.3 L1120.6 417.6 L1101.1 393.5 L1097.8 375.6 L1083.1 365.6 L1079.4 353.6 L1084.0 335.1 L1087.5 323.9 L1098.3 317.9 L1079.7 305.6 L1062.6 295.9 L1048.5 284.4 L1028.8 251.0 L1018.5 245.1 L1028.1 229.4 L1034.1 214.1 L1021.8 203.1 L1008.3 195.9 L992.8 182.6 L1000.3 177.5 L990.4 166.8 L981.0 167.7 L979.0 165.3 Z"/>
+        <path class="vendee-outline" d="M162.9 96.2 L162.7 80.3 L142.5 65.3 L129.7 63.8 L113.8 65.1 L118.2 79.7 L111.9 90.8 L111.6 97.1 L121.8 105.0 L131.3 122.0 L138.7 127.2 L146.8 122.1 L159.6 123.0 L173.5 136.4 L184.2 152.4 L191.4 177.0 L196.3 185.4 L198.9 187.2 L200.2 184.4 L202.8 149.3 L197.1 137.9 L159.7 114.0 L153.6 113.3 L151.3 107.9 L153.6 96.6 L151.8 94.2 L145.9 95.6 L151.9 93.3 L160.3 98.1 L162.9 96.2 Z"/>
+        <path class="vendee-outline" d="M66.7 332.0 L51.4 326.9 L46.6 326.9 L41.5 330.8 L35.5 333.0 L34.9 334.4 L34.8 336.0 L35.2 340.9 L37.8 346.9 L43.9 351.9 L44.5 356.6 L50.5 356.0 L55.6 362.0 L58.9 362.4 L62.8 365.1 L67.6 364.5 L73.8 371.4 L84.0 367.1 L87.0 363.5 L100.8 367.4 L104.4 370.4 L105.1 369.0 L103.5 364.5 L97.2 355.2 L89.1 348.0 L84.4 341.4 L71.8 339.9 L66.7 332.0 Z"/>
+
+        <!-- glow animated traces -->
+        <path class="vendee-glow" id="gp0" d="M979.0 165.3 L985.6 160.7 L980.5 146.3 L972.3 142.2 L960.4 130.7 L956.5 135.3 L944.8 138.5 L934.3 123.2 L928.8 124.1 L919.2 116.0 L909.7 131.6 L888.0 128.4 L880.0 123.6 L874.0 124.5 L864.1 118.7 L852.0 117.3 L833.1 108.5 L828.9 103.8 L799.5 93.0 L792.1 83.7 L787.6 80.0 L780.0 70.2 L768.7 65.1 L757.5 50.3 L754.5 51.2 L751.2 56.0 L745.5 56.7 L742.9 62.1 L744.3 73.2 L736.2 84.8 L735.1 87.5 L737.7 88.8 L736.0 94.2 L724.0 93.9 L713.1 84.5 L707.4 82.7 L706.0 88.2 L696.6 87.3 L687.9 96.2 L692.8 107.6 L693.3 116.9 L693.9 120.0 L686.1 133.1 L695.8 140.7 L694.6 149.7 L690.1 153.9 L690.3 162.6 L685.5 166.5 L682.9 164.9 L674.7 169.7 L659.1 172.1 L631.5 187.4 L623.5 180.3 L632.8 159.9 L626.2 149.3 L623.8 136.8 L625.9 131.0 L631.9 129.0 L632.2 123.2 L628.8 118.2 L626.1 100.1 L627.7 91.4 L623.2 87.3 L619.8 82.7 L614.1 81.2 L611.5 81.8 L598.3 94.7 L589.3 96.2 L576.4 103.2 L582.6 113.7 L577.3 124.7 L574.6 136.1 L580.8 152.0 L579.9 155.0 L585.7 165.8 L592.9 171.5 L593.5 177.6 L589.0 185.6 L577.0 184.7 L586.1 200.9 L601.8 215.6 L602.8 224.4 L586.0 232.2 L580.0 230.4 L574.0 232.2 L571.9 243.9 L553.9 238.2 L540.1 230.3 L534.6 231.5 L515.8 223.8 L506.4 223.2 L500.8 226.4 L485.1 211.5 L466.5 215.3 L460.9 212.1 L457.3 204.3 L458.1 190.4 L452.7 183.3 L454.3 180.8 L450.3 172.7 L431.7 176.3 L427.0 172.2 L420.9 173.0 L399.6 168.0 L403.2 163.2 L404.7 154.1 L401.4 149.0 L376.2 147.5 L362.2 140.0 L351.6 128.6 L348.9 116.3 L350.5 110.4 L339.4 106.8 L336.7 108.3 L330.4 101.3 L322.3 80.0 L318.1 75.2 L313.0 74.6 L302.9 82.2 L282.4 90.3 L270.4 116.0 L269.4 128.3 L260.5 141.6 L250.8 149.9 L251.4 156.0 L246.3 153.5 L227.7 170.6 L219.9 184.1 L225.3 186.8 L218.4 192.9 L196.8 195.2 L200.1 223.2 L200.5 258.5 L211.0 270.0 L250.0 301.7 L293.8 354.4 L296.1 370.1 L301.0 378.5 L315.7 379.5 L328.6 400.8 L342.1 429.2 L355.5 442.4 L358.0 451.5 L366.7 460.5 L370.6 482.4 L385.2 543.9 L387.6 565.5 L395.2 570.9 L400.0 567.2 L406.2 566.7 L414.0 572.1 L421.9 585.3 L441.0 600.8 L447.1 601.4 L451.5 609.8 L486.6 630.6 L484.6 636.5 L501.3 645.5 L546.9 656.0 L551.8 653.1 L567.1 657.5 L575.1 663.0 L588.4 689.0 L593.5 710.7 L597.1 715.8 L612.9 718.2 L624.6 713.9 L639.3 719.9 L655.2 718.7 L669.6 723.8 L685.2 734.0 L698.8 768.9 L710.7 773.0 L740.4 784.7 L753.3 780.6 L764.2 763.4 L781.8 747.0 L795.1 750.5 L811.9 745.4 L828.1 754.4 L839.2 750.2 L856.0 723.6 L878.8 721.7 L903.4 724.5 L912.7 712.1 L920.7 716.4 L936.3 708.3 L941.5 758.9 L954.0 758.3 L959.7 749.6 L970.0 753.9 L983.2 758.4 L995.2 737.6 L1015.6 738.6 L1029.1 760.5 L1044.4 774.2 L1059.6 775.8 L1066.5 763.7 L1078.8 756.8 L1094.1 765.7 L1112.4 763.5 L1117.0 750.0 L1128.4 745.8 L1139.5 728.3 L1154.8 732.2 L1168.3 725.6 L1181.5 705.8 L1162.2 697.5 L1154.4 690.2 L1142.8 680.3 L1129.4 699.7 L1119.0 693.5 L1121.2 661.4 L1132.0 655.5 L1135.3 644.1 L1135.5 634.2 L1128.4 618.3 L1131.0 603.2 L1119.9 589.8 L1123.8 582.3 L1130.7 574.7 L1143.0 575.3 L1147.2 570.8 L1144.5 544.1 L1134.9 530.0 L1142.4 521.1 L1134.6 504.5 L1143.4 491.6 L1125.9 474.8 L1116.3 471.9 L1123.0 466.2 L1130.8 451.8 L1118.4 439.1 L1105.8 429.3 L1120.6 417.6 L1101.1 393.5 L1097.8 375.6 L1083.1 365.6 L1079.4 353.6 L1084.0 335.1 L1087.5 323.9 L1098.3 317.9 L1079.7 305.6 L1062.6 295.9 L1048.5 284.4 L1028.8 251.0 L1018.5 245.1 L1028.1 229.4 L1034.1 214.1 L1021.8 203.1 L1008.3 195.9 L992.8 182.6 L1000.3 177.5 L990.4 166.8 L981.0 167.7 L979.0 165.3 Z"/>
+        <path class="vendee-glow" id="gp1" d="M162.9 96.2 L162.7 80.3 L142.5 65.3 L129.7 63.8 L113.8 65.1 L118.2 79.7 L111.9 90.8 L111.6 97.1 L121.8 105.0 L131.3 122.0 L138.7 127.2 L146.8 122.1 L159.6 123.0 L173.5 136.4 L184.2 152.4 L191.4 177.0 L196.3 185.4 L198.9 187.2 L200.2 184.4 L202.8 149.3 L197.1 137.9 L159.7 114.0 L153.6 113.3 L151.3 107.9 L153.6 96.6 L151.8 94.2 L145.9 95.6 L151.9 93.3 L160.3 98.1 L162.9 96.2 Z"/>
+        <path class="vendee-glow" id="gp2" d="M66.7 332.0 L51.4 326.9 L46.6 326.9 L41.5 330.8 L35.5 333.0 L34.9 334.4 L34.8 336.0 L35.2 340.9 L37.8 346.9 L43.9 351.9 L44.5 356.6 L50.5 356.0 L55.6 362.0 L58.9 362.4 L62.8 365.1 L67.6 364.5 L73.8 371.4 L84.0 367.1 L87.0 363.5 L100.8 367.4 L104.4 370.4 L105.1 369.0 L103.5 364.5 L97.2 355.2 L89.1 348.0 L84.4 341.4 L71.8 339.9 L66.7 332.0 Z"/>
+
+        <!-- sharp traces -->
+        <path class="vendee-trace" id="tp0" d="M979.0 165.3 L985.6 160.7 L980.5 146.3 L972.3 142.2 L960.4 130.7 L956.5 135.3 L944.8 138.5 L934.3 123.2 L928.8 124.1 L919.2 116.0 L909.7 131.6 L888.0 128.4 L880.0 123.6 L874.0 124.5 L864.1 118.7 L852.0 117.3 L833.1 108.5 L828.9 103.8 L799.5 93.0 L792.1 83.7 L787.6 80.0 L780.0 70.2 L768.7 65.1 L757.5 50.3 L754.5 51.2 L751.2 56.0 L745.5 56.7 L742.9 62.1 L744.3 73.2 L736.2 84.8 L735.1 87.5 L737.7 88.8 L736.0 94.2 L724.0 93.9 L713.1 84.5 L707.4 82.7 L706.0 88.2 L696.6 87.3 L687.9 96.2 L692.8 107.6 L693.3 116.9 L693.9 120.0 L686.1 133.1 L695.8 140.7 L694.6 149.7 L690.1 153.9 L690.3 162.6 L685.5 166.5 L682.9 164.9 L674.7 169.7 L659.1 172.1 L631.5 187.4 L623.5 180.3 L632.8 159.9 L626.2 149.3 L623.8 136.8 L625.9 131.0 L631.9 129.0 L632.2 123.2 L628.8 118.2 L626.1 100.1 L627.7 91.4 L623.2 87.3 L619.8 82.7 L614.1 81.2 L611.5 81.8 L598.3 94.7 L589.3 96.2 L576.4 103.2 L582.6 113.7 L577.3 124.7 L574.6 136.1 L580.8 152.0 L579.9 155.0 L585.7 165.8 L592.9 171.5 L593.5 177.6 L589.0 185.6 L577.0 184.7 L586.1 200.9 L601.8 215.6 L602.8 224.4 L586.0 232.2 L580.0 230.4 L574.0 232.2 L571.9 243.9 L553.9 238.2 L540.1 230.3 L534.6 231.5 L515.8 223.8 L506.4 223.2 L500.8 226.4 L485.1 211.5 L466.5 215.3 L460.9 212.1 L457.3 204.3 L458.1 190.4 L452.7 183.3 L454.3 180.8 L450.3 172.7 L431.7 176.3 L427.0 172.2 L420.9 173.0 L399.6 168.0 L403.2 163.2 L404.7 154.1 L401.4 149.0 L376.2 147.5 L362.2 140.0 L351.6 128.6 L348.9 116.3 L350.5 110.4 L339.4 106.8 L336.7 108.3 L330.4 101.3 L322.3 80.0 L318.1 75.2 L313.0 74.6 L302.9 82.2 L282.4 90.3 L270.4 116.0 L269.4 128.3 L260.5 141.6 L250.8 149.9 L251.4 156.0 L246.3 153.5 L227.7 170.6 L219.9 184.1 L225.3 186.8 L218.4 192.9 L196.8 195.2 L200.1 223.2 L200.5 258.5 L211.0 270.0 L250.0 301.7 L293.8 354.4 L296.1 370.1 L301.0 378.5 L315.7 379.5 L328.6 400.8 L342.1 429.2 L355.5 442.4 L358.0 451.5 L366.7 460.5 L370.6 482.4 L385.2 543.9 L387.6 565.5 L395.2 570.9 L400.0 567.2 L406.2 566.7 L414.0 572.1 L421.9 585.3 L441.0 600.8 L447.1 601.4 L451.5 609.8 L486.6 630.6 L484.6 636.5 L501.3 645.5 L546.9 656.0 L551.8 653.1 L567.1 657.5 L575.1 663.0 L588.4 689.0 L593.5 710.7 L597.1 715.8 L612.9 718.2 L624.6 713.9 L639.3 719.9 L655.2 718.7 L669.6 723.8 L685.2 734.0 L698.8 768.9 L710.7 773.0 L740.4 784.7 L753.3 780.6 L764.2 763.4 L781.8 747.0 L795.1 750.5 L811.9 745.4 L828.1 754.4 L839.2 750.2 L856.0 723.6 L878.8 721.7 L903.4 724.5 L912.7 712.1 L920.7 716.4 L936.3 708.3 L941.5 758.9 L954.0 758.3 L959.7 749.6 L970.0 753.9 L983.2 758.4 L995.2 737.6 L1015.6 738.6 L1029.1 760.5 L1044.4 774.2 L1059.6 775.8 L1066.5 763.7 L1078.8 756.8 L1094.1 765.7 L1112.4 763.5 L1117.0 750.0 L1128.4 745.8 L1139.5 728.3 L1154.8 732.2 L1168.3 725.6 L1181.5 705.8 L1162.2 697.5 L1154.4 690.2 L1142.8 680.3 L1129.4 699.7 L1119.0 693.5 L1121.2 661.4 L1132.0 655.5 L1135.3 644.1 L1135.5 634.2 L1128.4 618.3 L1131.0 603.2 L1119.9 589.8 L1123.8 582.3 L1130.7 574.7 L1143.0 575.3 L1147.2 570.8 L1144.5 544.1 L1134.9 530.0 L1142.4 521.1 L1134.6 504.5 L1143.4 491.6 L1125.9 474.8 L1116.3 471.9 L1123.0 466.2 L1130.8 451.8 L1118.4 439.1 L1105.8 429.3 L1120.6 417.6 L1101.1 393.5 L1097.8 375.6 L1083.1 365.6 L1079.4 353.6 L1084.0 335.1 L1087.5 323.9 L1098.3 317.9 L1079.7 305.6 L1062.6 295.9 L1048.5 284.4 L1028.8 251.0 L1018.5 245.1 L1028.1 229.4 L1034.1 214.1 L1021.8 203.1 L1008.3 195.9 L992.8 182.6 L1000.3 177.5 L990.4 166.8 L981.0 167.7 L979.0 165.3 Z"/>
+        <path class="vendee-trace" id="tp1" d="M162.9 96.2 L162.7 80.3 L142.5 65.3 L129.7 63.8 L113.8 65.1 L118.2 79.7 L111.9 90.8 L111.6 97.1 L121.8 105.0 L131.3 122.0 L138.7 127.2 L146.8 122.1 L159.6 123.0 L173.5 136.4 L184.2 152.4 L191.4 177.0 L196.3 185.4 L198.9 187.2 L200.2 184.4 L202.8 149.3 L197.1 137.9 L159.7 114.0 L153.6 113.3 L151.3 107.9 L153.6 96.6 L151.8 94.2 L145.9 95.6 L151.9 93.3 L160.3 98.1 L162.9 96.2 Z"/>
+        <path class="vendee-trace" id="tp2" d="M66.7 332.0 L51.4 326.9 L46.6 326.9 L41.5 330.8 L35.5 333.0 L34.9 334.4 L34.8 336.0 L35.2 340.9 L37.8 346.9 L43.9 351.9 L44.5 356.6 L50.5 356.0 L55.6 362.0 L58.9 362.4 L62.8 365.1 L67.6 364.5 L73.8 371.4 L84.0 367.1 L87.0 363.5 L100.8 367.4 L104.4 370.4 L105.1 369.0 L103.5 364.5 L97.2 355.2 L89.1 348.0 L84.4 341.4 L71.8 339.9 L66.7 332.0 Z"/>
+
+        <circle class="trace-dot" id="td" r="5" cx="979" cy="165.3"/>
+      </svg>
+    </div>
+
+    <div class="scroll-hint" onclick="document.getElementById('invisibles').scrollIntoView({behavior:'smooth'})">
+      <p>Explorer</p>
+      <div class="scroll-line"></div>
+    </div>
   </div>
 </section>
 
-<!-- ─── FOOTER ────────────────────────────────────────────────── -->
+<!-- ── RUNNING TEXT ─────────────────────── -->
+<div class="run-text">
+  <div class="run-inner">
+    <span>ZONAUTES</span><span class="hi">·</span>
+    <span>LES INVISIBLES</span><span class="hi">·</span>
+    <span>RANDO<span class="hi">ZONES</span></span><span class="hi">·</span>
+    <span>QUIZZ</span><span class="hi">·</span>
+    <span>MÉTÉO 85</span><span class="hi">·</span>
+    <span>PATOIS</span><span class="hi">·</span>
+    <span>ZONAUTES</span><span class="hi">·</span>
+    <span>LES INVISIBLES</span><span class="hi">·</span>
+    <span>RANDO<span class="hi">ZONES</span></span><span class="hi">·</span>
+    <span>QUIZZ</span><span class="hi">·</span>
+    <span>MÉTÉO 85</span><span class="hi">·</span>
+    <span>PATOIS</span><span class="hi">·</span>
+  </div>
+</div>
+
+<!-- ── LES INVISIBLES ─────────────────── -->
+<section class="s" id="invisibles">
+  <div style="max-width:1100px;margin:0 auto;" class="inv-grid">
+    <div class="inv-left reveal">
+      <div class="eyebrow">Jeu événement 2025</div>
+      <h2 class="s-title"><span class="glitch" data-text="LES">LES</span><br/>INVISIBLES</h2>
+      <p class="inv-desc">Un jeu grandeur nature inédit créé par ZONE85. Des énigmes cachées dans le territoire vendéen. Des indices, des défis, des rencontres. Oserez-vous devenir l'un des Invisibles&nbsp;?</p>
+      <a href="#" class="inv-cta">
+        Je veux en savoir plus
+        <svg viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+    <div class="inv-right reveal" style="transition-delay:.15s">
+      <div class="inv-card">
+        <div class="inv-card-title">⏳ Lancement dans</div>
+        <div class="inv-count">
+          <div class="inv-count-unit"><div class="inv-count-num" id="c-j">--</div><div class="inv-count-label">Jours</div></div>
+          <div class="inv-count-unit"><div class="inv-count-num" id="c-h">--</div><div class="inv-count-label">Heures</div></div>
+          <div class="inv-count-unit"><div class="inv-count-num" id="c-m">--</div><div class="inv-count-label">Min</div></div>
+          <div class="inv-count-unit"><div class="inv-count-num" id="c-s">--</div><div class="inv-count-label">Sec</div></div>
+        </div>
+        <div class="inv-mystery">
+          "Ils sont parmi vous. Ils ne parlent pas. Ils observent. Et le 21 septembre 2025, ils se révèlent…"
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── RANDOZONES ─────────────────────── -->
+<section class="s" id="randozones" style="background:var(--cream)">
+  <div class="s-inner">
+    <div class="reveal">
+      <div class="eyebrow">Randonnées ZONE85</div>
+      <h2 class="s-title">Rando<em>Zones</em></h2>
+      <p style="margin-top:.8rem;font-size:.88rem;color:var(--muted);line-height:1.7;max-width:500px">Les Zonautes ont arpenté la Vendée pour toi. Retrouve ici leurs randonnées coups de cœur pour les refaire à ton rythme.</p>
+    </div>
+    <div class="rando-grid">
+      <div class="rando-card reveal" style="transition-delay:.05s">
+        <div class="rando-img"><span class="rando-badge">🌊 Côte</span></div>
+        <div class="rando-body">
+          <div class="rando-name">La Côte de Lumière</div>
+          <div class="rando-meta"><span>📍 Saint-Jean-de-Monts</span><span>⏱ 3h30</span><span>📏 14 km</span></div>
+          <div class="rando-stars"><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span></div>
+          <p class="rando-desc">Entre dunes et pinèdes, ce sentier longe l'Atlantique avec des panoramas époustouflants au coucher du soleil. Niveau facile, idéal en famille.</p>
+          <a href="#" class="rando-btn">Je la refais</a>
+        </div>
+      </div>
+      <div class="rando-card reveal" style="transition-delay:.1s">
+        <div class="rando-img g2"><span class="rando-badge">🌿 Bocage</span></div>
+        <div class="rando-body">
+          <div class="rando-name">Les Chemins du Bocage</div>
+          <div class="rando-meta"><span>📍 Pouzauges</span><span>⏱ 4h</span><span>📏 16 km</span></div>
+          <div class="rando-stars"><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>☆</span></div>
+          <p class="rando-desc">Haies, chemins creux et petits ponts de pierre. Le bocage vendéen dans toute son intimité. Quelques montées mais rien d'insurmontable.</p>
+          <a href="#" class="rando-btn">Je la refais</a>
+        </div>
+      </div>
+      <div class="rando-card reveal" style="transition-delay:.15s">
+        <div class="rando-img g3"><span class="rando-badge">🦢 Marais</span></div>
+        <div class="rando-body">
+          <div class="rando-name">Le Marais Breton au Lever</div>
+          <div class="rando-meta"><span>📍 Beauvoir-sur-Mer</span><span>⏱ 2h</span><span>📏 8 km</span></div>
+          <div class="rando-stars"><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span></div>
+          <p class="rando-desc">Partir à l'aube dans le marais breton vendéen — brume sur les canaux, aigrettes blanches, silence absolu. Un moment de grâce rare.</p>
+          <a href="#" class="rando-btn">Je la refais</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── QUIZZ ──────────────────────────── -->
+<section class="s" id="quizz">
+  <div class="s-inner">
+    <div class="reveal" style="text-align:center">
+      <div class="eyebrow" style="color:var(--gold)">Pour les vrais Zonautes</div>
+      <h2 class="s-title" style="color:#fff">Tu connais ta <em>Vendée</em>&nbsp;?</h2>
+      <p style="margin-top:.8rem;font-size:.88rem;color:rgba(255,255,255,.45);max-width:460px;margin-left:auto;margin-right:auto;line-height:1.7">5 questions pour tester ton esprit Zonaute. Partage ton score sur les réseaux !</p>
+    </div>
+    <div class="quiz-box reveal" style="transition-delay:.1s">
+      <div class="quiz-progress"><div class="quiz-progress-bar" id="qbar" style="width:0%"></div></div>
+      <div id="quiz-area">
+        <div class="quiz-q" id="qq">Chargement…</div>
+        <div class="quiz-opts" id="qopts"></div>
+        <div class="quiz-bottom">
+          <div class="quiz-score-display" id="qsc">Score : 0 / 5</div>
+          <button class="quiz-next" id="qnext" onclick="quizNext()">Suivant →</button>
+        </div>
+      </div>
+      <div id="quiz-result" class="quiz-result" style="display:none">
+        <div class="quiz-result-num" id="qrnum">0/5</div>
+        <div class="quiz-result-label">Score final</div>
+        <div class="quiz-result-msg" id="qrmsg"></div>
+        <button class="quiz-restart" onclick="quizStart()">Recommencer</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── MÉTÉO ──────────────────────────── -->
+<section class="s" id="meteo" style="background:var(--beige)">
+  <div class="s-inner">
+    <div class="meteo-header reveal">
+      <div>
+        <div class="eyebrow">La semaine en Vendée</div>
+        <h2 class="s-title">Météo<em>85</em></h2>
+      </div>
+      <div class="meteo-location">📍 Département de la Vendée</div>
+    </div>
+    <div class="meteo-today reveal" style="transition-delay:.1s">
+      <div class="meteo-today-icon">☀️</div>
+      <div>
+        <div class="meteo-today-temp">23°C</div>
+        <div class="meteo-today-desc">Ensoleillé · Vent O 15 km/h</div>
+        <div class="meteo-today-quip">"Tché bé temps ! On sort les vélos Zonautes !"</div>
+      </div>
+    </div>
+    <div class="meteo-week reveal" style="transition-delay:.15s">
+      <div class="meteo-day"><div class="meteo-day-name">Mer</div><div class="meteo-day-icon">🌤️</div><div class="meteo-day-temp">21°C</div><div class="meteo-day-min">14°</div></div>
+      <div class="meteo-day"><div class="meteo-day-name">Jeu</div><div class="meteo-day-icon">⛅</div><div class="meteo-day-temp">18°C</div><div class="meteo-day-min">12°</div></div>
+      <div class="meteo-day"><div class="meteo-day-name">Ven</div><div class="meteo-day-icon">🌧️</div><div class="meteo-day-temp">16°C</div><div class="meteo-day-min">11°</div></div>
+      <div class="meteo-day"><div class="meteo-day-name">Sam</div><div class="meteo-day-icon">🌦️</div><div class="meteo-day-temp">19°C</div><div class="meteo-day-min">13°</div></div>
+      <div class="meteo-day"><div class="meteo-day-name">Dim</div><div class="meteo-day-icon">☀️</div><div class="meteo-day-temp">24°C</div><div class="meteo-day-min">15°</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CHEZ NOUS ON NE DIT PAS ────────── -->
+<section class="s" id="patois" style="background:var(--cream)">
+  <div class="s-inner">
+    <div class="reveal">
+      <div class="eyebrow">Parler local</div>
+      <h2 class="s-title">Chez nous<br/>on ne dit pas…</h2>
+      <p style="margin-top:.8rem;font-size:.88rem;color:var(--muted);line-height:1.7;max-width:480px">Le patois vendéen, c'est une langue à part entière. Riche, drôle, imagée. Chaque semaine, les Zonautes te font découvrir une expression du terroir.</p>
+    </div>
+    <div class="patois-grid">
+
+      <div class="patois-card reveal" style="transition-delay:.05s">
+        <div class="patois-visual">
+          <div class="patois-tag">Expression vendéenne</div>
+          <div class="patois-word">"pétaï de volàie"</div>
+          <div class="patois-emoji">🐄</div>
+          <div class="patois-zone-tag">ZONE85</div>
+        </div>
+        <div class="patois-body">
+          <p class="patois-text">Allez, aujourd'hui, on parle de talent ! "Pétaï de volàie", ce n'est pas juste faire du bruit avec son derrière, non ! C'est une vraie maîtrise, régulière, presque artistique… Regard droit, air innocent, immobilité parfaite — comme si de rien n'était. Et puis là… paf : <em>"Bon d'là… i en pète de volàie !"</em> Rideau. En Vendée, on assume… mais toujours après le suspense 🤪</p>
+          <div class="patois-tags"><span>#vendée</span><span>#parlerlocal</span><span>#zone85</span><span>#expressionsvendéennes</span></div>
+        </div>
+      </div>
+
+      <div class="patois-card reveal" style="transition-delay:.1s">
+        <div class="patois-visual" style="background:#1a3a2a">
+          <div class="patois-tag">Expression vendéenne</div>
+          <div class="patois-word">"tché bé temps"</div>
+          <div class="patois-emoji">☀️</div>
+          <div class="patois-zone-tag">ZONE85</div>
+        </div>
+        <div class="patois-body">
+          <p class="patois-text">Le Vendéen ne dit pas "quel beau temps !" Non. Il lève les yeux au ciel, hoche la tête avec satisfaction et lâche simplement : <em>"Tché bé temps !"</em> C'est la même chose… mais en mieux. Plus sincère. Plus ancré. Et quand un Vendéen dit ça, c'est que la journée va être parfaite, garanti 🌞</p>
+          <div class="patois-tags"><span>#vendée</span><span>#parlerlocal</span><span>#zone85</span><span>#soleil85</span></div>
+        </div>
+      </div>
+
+      <div class="patois-card reveal" style="transition-delay:.15s">
+        <div class="patois-visual" style="background:#2d1a0a">
+          <div class="patois-tag">Expression vendéenne</div>
+          <div class="patois-word">"i fait frette"</div>
+          <div class="patois-emoji">🥶</div>
+          <div class="patois-zone-tag">ZONE85</div>
+        </div>
+        <div class="patois-body">
+          <p class="patois-text">En Vendée, on ne dit pas "il fait froid". On dit <em>"i fait frette"</em>. Et là, c'est différent. C'est pas juste une info météo — c'est un ressenti, un frisson partagé, une manière de dire que ce matin, le givre est sur les feuilles et que le café va être encore meilleur 🫖</p>
+          <div class="patois-tags"><span>#vendée</span><span>#parlerlocal</span><span>#zone85</span><span>#frette</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── COMMUNAUTÉ ─────────────────────── -->
+<section class="s" id="communaute">
+  <div class="com-inner">
+    <div class="com-left reveal">
+      <div class="eyebrow">La tribu</div>
+      <h2 class="s-title" style="color:#fff">Rejoins les<br/><em>Zonautes</em></h2>
+      <p class="com-desc">Une communauté de passionnés de la Vendée. Des gens qui aiment leur territoire, qui le parcourent, qui le racontent. Pas des touristes — des Zonautes.</p>
+      <a href="#" class="com-cta">Devenir Zonaute</a>
+    </div>
+    <div class="com-right reveal" style="transition-delay:.1s">
+      <div class="com-stat"><div class="com-stat-num">4<span>k+</span></div><div class="com-stat-label">Zonautes</div></div>
+      <div class="com-stat"><div class="com-stat-num"><span>+</span>120</div><div class="com-stat-label">Randos partagées</div></div>
+      <div class="com-stat"><div class="com-stat-num">85<span>!</span></div><div class="com-stat-label">Le département</div></div>
+      <div class="com-stat"><div class="com-stat-num"><span>∞</span></div><div class="com-stat-label">L'esprit Vendée</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────── -->
 <footer>
   <div class="footer-logo">ZONE<span>85</span></div>
-  <div class="footer-tag">L'Esprit Vendée · 2025</div>
+  <div class="footer-sub">L'esprit Vendée · Les Zonautes · 2025</div>
+  <div class="footer-links">
+    <a href="#invisibles">Les Invisibles</a>
+    <a href="#randozones">RandoZones</a>
+    <a href="#quizz">Quizz</a>
+    <a href="#meteo">Météo</a>
+    <a href="#patois">Patois</a>
+    <a href="#">zone85.fr</a>
+  </div>
   <div class="footer-copy">© 2025 ZONE85.FR — Tous droits réservés</div>
 </footer>
 
 <script>
-/* ═══════════════════════════════════════════════════════════════
-   PARTICLES
-   ════════════════════════════════════════════════════════════ */
-(function() {
-  const canvas = document.getElementById('particles-canvas');
-  const ctx = canvas.getContext('2d');
-  let W, H, particles = [];
-
-  function resize() {
-    W = canvas.width = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-  }
-  resize();
-  window.addEventListener('resize', resize);
-
-  const COLORS = ['#FFD580','#D4A853','#E95649','#10314E','#F2EAD8'];
-
-  function rand(a, b) { return a + Math.random() * (b - a); }
-
-  function createParticle() {
-    const r = rand(1, 3.5);
-    return {
-      x: rand(0, W),
-      y: rand(0, H),
-      r,
-      vx: rand(-0.3, 0.3),
-      vy: rand(-0.8, -0.2),
-      alpha: rand(0.3, 0.85),
-      color: COLORS[Math.floor(Math.random() * COLORS.length)],
-      life: 0,
-      maxLife: rand(120, 260),
-    };
-  }
-
-  for (let i = 0; i < 80; i++) particles.push(createParticle());
-
-  function draw() {
-    ctx.clearRect(0, 0, W, H);
-
-    for (let i = particles.length - 1; i >= 0; i--) {
-      const p = particles[i];
-      p.x += p.vx;
-      p.y += p.vy;
-      p.life++;
-
-      const prog = p.life / p.maxLife;
-      const alpha = prog < 0.1 ? prog * 10 * p.alpha
-                  : prog > 0.8 ? (1 - prog) * 5 * p.alpha
-                  : p.alpha;
-
-      ctx.save();
-      ctx.globalAlpha = alpha * 0.45;
-      ctx.fillStyle = p.color;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fill();
-
-      // soft glow halo
-      const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 3);
-      grad.addColorStop(0, p.color + '55');
-      grad.addColorStop(1, 'transparent');
-      ctx.fillStyle = grad;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r * 3, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-
-      if (p.life >= p.maxLife) particles[i] = createParticle();
-    }
-
-    // replenish
-    while (particles.length < 80) particles.push(createParticle());
-
+/* ── PARTICLES ────────────────────────── */
+(()=>{
+  const cv=document.getElementById('cvs'),cx=cv.getContext('2d');
+  let W,H,ps=[];
+  const resize=()=>{W=cv.width=innerWidth;H=cv.height=innerHeight};
+  resize(); addEventListener('resize',resize);
+  const C=['#FFD580','#D4A853','#E95649','#10314E'];
+  const r=(a,b)=>a+Math.random()*(b-a);
+  const mk=()=>({x:r(0,W),y:r(0,H),rad:r(.8,2.8),vx:r(-.2,.2),vy:r(-.5,-.15),a:r(.2,.7),c:C[~~(Math.random()*C.length)],l:0,ml:r(140,300)});
+  for(let i=0;i<60;i++)ps.push(mk());
+  const draw=()=>{
+    cx.clearRect(0,0,W,H);
+    ps.forEach((p,i)=>{
+      p.x+=p.vx;p.y+=p.vy;p.l++;
+      const pr=p.l/p.ml,al=pr<.1?pr*10*p.a:pr>.8?(1-pr)*5*p.a:p.a;
+      cx.save();cx.globalAlpha=al*.4;cx.fillStyle=p.c;
+      cx.beginPath();cx.arc(p.x,p.y,p.rad,0,Math.PI*2);cx.fill();
+      cx.restore();
+      if(p.l>=p.ml)ps[i]=mk();
+    });
     requestAnimationFrame(draw);
-  }
+  };
   draw();
 })();
 
-/* ═══════════════════════════════════════════════════════════════
-   SCROLL REVEAL
-   ════════════════════════════════════════════════════════════ */
-const revealObs = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) e.target.classList.add('visible');
-  });
-}, { threshold: 0.15 });
+/* ── NAV SCROLL ──────────────────────── */
+addEventListener('scroll',()=>{
+  document.getElementById('nav').classList.toggle('scrolled',scrollY>60);
+});
 
-document.querySelectorAll('.map-section, .features-section, .banner-section, .stats-strip')
-  .forEach(el => revealObs.observe(el));
+/* ── REVEAL ──────────────────────────── */
+const ro=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('on')}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
 
-/* ═══════════════════════════════════════════════════════════════
-   MAP TRACE ANIMATION
-   ════════════════════════════════════════════════════════════ */
-(function() {
-  const tracePath  = document.getElementById('vendee-trace-path');
-  const glowPath   = document.getElementById('vendee-glow-path');
-  const dot        = document.getElementById('trace-dot');
-  const mapSection = document.getElementById('map-sec');
+/* ── MAP TRACE (mainland + 2 islands) ── */
+(()=>{
+  const paths=[
+    {t:document.getElementById('tp0'),g:document.getElementById('gp0')},
+    {t:document.getElementById('tp1'),g:document.getElementById('gp1')},
+    {t:document.getElementById('tp2'),g:document.getElementById('gp2')},
+  ];
+  const dot=document.getElementById('td');
+  let running=false;
 
-  let animated = false;
-
-  function startAnimation() {
-    if (animated) return;
-    animated = true;
-
-    const len = tracePath.getTotalLength();
-    const glowLen = glowPath.getTotalLength();
-
-    // Init: hide everything behind dasharray trick
-    [tracePath, glowPath].forEach(p => {
-      p.style.strokeDasharray  = len;
-      p.style.strokeDashoffset = len;
+  const hide=()=>{
+    paths.forEach(({t,g})=>{
+      const l=t.getTotalLength();
+      [t,g].forEach(p=>{p.style.strokeDasharray=l;p.style.strokeDashoffset=l});
     });
+    dot.style.opacity='0';
+  };
 
-    dot.style.opacity = '1';
+  const animPath=(idx,onDone)=>{
+    const {t,g}=paths[idx];
+    const len=t.getTotalLength();
+    const dur=idx===0?4800:1200;
+    let st=null;
+    const step=ts=>{
+      if(!st)st=ts;
+      const p=Math.min((ts-st)/dur,1);
+      const e=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
+      const drawn=e*len;
+      t.style.strokeDashoffset=len-drawn;
+      g.style.strokeDashoffset=len-drawn;
+      const pt=t.getPointAtLength(drawn);
+      dot.style.opacity='1';
+      dot.setAttribute('cx',pt.x);dot.setAttribute('cy',pt.y);
+      if(p<1)requestAnimationFrame(step);
+      else onDone();
+    };
+    requestAnimationFrame(step);
+  };
 
-    const duration = 5000; // ms for one full trace
-    let start = null;
-
-    function step(ts) {
-      if (!start) start = ts;
-      const elapsed = ts - start;
-      const progress = Math.min(elapsed / duration, 1);
-
-      // Easing: ease-in-out
-      const eased = progress < 0.5
-        ? 2 * progress * progress
-        : 1 - Math.pow(-2 * progress + 2, 2) / 2;
-
-      const drawn = eased * len;
-
-      tracePath.style.strokeDashoffset = len - drawn;
-      glowPath.style.strokeDashoffset  = len - drawn;
-
-      // Move dot to current position
-      const pt = tracePath.getPointAtLength(drawn);
-      dot.setAttribute('cx', pt.x);
-      dot.setAttribute('cy', pt.y);
-
-      if (progress < 1) {
-        requestAnimationFrame(step);
-      } else {
-        // Fade out dot after completion
-        dot.style.transition = 'opacity 1s ease';
-        dot.style.opacity = '0';
-
-        // After a pause, replay
-        setTimeout(() => {
-          animated = false;
-          dot.style.transition = '';
-          dot.style.opacity = '0';
-          [tracePath, glowPath].forEach(p => {
-            p.style.strokeDashoffset = len;
+  const startAll=()=>{
+    if(running)return; running=true;
+    hide();
+    setTimeout(()=>{
+      animPath(0,()=>{
+        animPath(1,()=>{
+          animPath(2,()=>{
+            dot.style.transition='opacity 1s';dot.style.opacity='0';
+            setTimeout(()=>{
+              dot.style.transition='';running=false;
+              setTimeout(startAll,1200);
+            },2800);
           });
-          setTimeout(() => startAnimation(), 800);
-        }, 3000);
-      }
-    }
+        });
+      });
+    },600);
+  };
 
-    // Small delay before starting
-    setTimeout(() => requestAnimationFrame(step), 400);
-  }
-
-  // Trigger when map section enters viewport
-  const mapObs = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) startAnimation();
-    });
-  }, { threshold: 0.3 });
-
-  mapObs.observe(mapSection);
+  new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)startAll()})},{threshold:.2})
+    .observe(document.querySelector('.hero-map'));
 })();
-</script>
 
+/* ── COUNTDOWN (Les Invisibles) ────────── */
+(()=>{
+  const target=new Date('2025-09-21T10:00:00');
+  const update=()=>{
+    const now=new Date(),diff=target-now;
+    if(diff<=0){['c-j','c-h','c-m','c-s'].forEach(id=>document.getElementById(id).textContent='00');return}
+    const j=Math.floor(diff/864e5),h=Math.floor(diff%864e5/36e5),m=Math.floor(diff%36e5/6e4),s=Math.floor(diff%6e4/1e3);
+    document.getElementById('c-j').textContent=String(j).padStart(2,'0');
+    document.getElementById('c-h').textContent=String(h).padStart(2,'0');
+    document.getElementById('c-m').textContent=String(m).padStart(2,'0');
+    document.getElementById('c-s').textContent=String(s).padStart(2,'0');
+  };
+  update();setInterval(update,1000);
+})();
+
+/* ── QUIZ ─────────────────────────────── */
+const QS=[
+  {q:"Quel est le chef-lieu du département de la Vendée ?",opts:["La Roche-sur-Yon","Les Sables-d'Olonne","Fontenay-le-Comte","Challans"],a:0},
+  {q:"Quelle est l'île vendéenne la plus au large en Atlantique ?",opts:["Noirmoutier","L'île d'Yeu","Belle-Île","Ré"],a:1},
+  {q:"Le Puy du Fou est classé parmi les meilleurs parcs du monde. Dans quelle commune se trouve-t-il ?",opts:["Cholet","Les Épesses","La Roche-sur-Yon","Bressuire"],a:1},
+  {q:"Quel célèbre personnage historique est né à Noirmoutier en 1756 ?",opts:["Napoléon","Le général Charette","Richard de la Vergne","La Rochejaquelein"],a:3},
+  {q:"Combien de kilomètres de littoral atlantique possède la Vendée ?",opts:["80 km","120 km","160 km","200 km"],a:2},
+];
+let qi=0,sc=0;
+const msgs=["Aïe… Tu n'es pas encore Zonaute 😅","Pas mal ! Tu connais ton 85 🙂","Bien joué ! L'esprit Vendée est en toi 💪","Presque parfait ! Tu es presque Zonaute ⭐","5/5 ! Tu es un vrai Zonaute 🏆"];
+
+function quizStart(){
+  qi=0;sc=0;
+  document.getElementById('quiz-area').style.display='';
+  document.getElementById('quiz-result').style.display='none';
+  document.getElementById('qsc').textContent='Score : 0 / 5';
+  quizRender();
+}
+
+function quizRender(){
+  const q=QS[qi];
+  document.getElementById('qbar').style.width=`${qi/QS.length*100}%`;
+  document.getElementById('qq').textContent=`Q${qi+1}/5 — ${q.q}`;
+  const container=document.getElementById('qopts');
+  container.innerHTML='';
+  q.opts.forEach((o,i)=>{
+    const btn=document.createElement('button');
+    btn.className='quiz-opt';btn.textContent=o;
+    btn.onclick=()=>quizAnswer(i);
+    container.appendChild(btn);
+  });
+  document.getElementById('qnext').style.display='none';
+}
+
+function quizAnswer(i){
+  const q=QS[qi];
+  const btns=document.querySelectorAll('.quiz-opt');
+  btns.forEach(b=>b.disabled=true);
+  if(i===q.a){sc++;btns[i].classList.add('correct')}
+  else{btns[i].classList.add('wrong');btns[q.a].classList.add('correct')}
+  document.getElementById('qsc').textContent=`Score : ${sc} / 5`;
+  document.getElementById('qnext').style.display='block';
+}
+
+function quizNext(){
+  qi++;
+  if(qi>=QS.length){
+    document.getElementById('qbar').style.width='100%';
+    document.getElementById('quiz-area').style.display='none';
+    document.getElementById('quiz-result').style.display='block';
+    document.getElementById('qrnum').textContent=`${sc}/5`;
+    document.getElementById('qrmsg').textContent=msgs[sc];
+  } else quizRender();
+}
+
+quizStart();
+</script>
 </body>
 </html>
