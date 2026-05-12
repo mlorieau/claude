@@ -3,547 +3,627 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>ZONE85</title>
+<title>ZONE85 — L'Esprit Vendée</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{width:100%;height:100%;overflow:hidden;font-family:'Montserrat',sans-serif;background:#070d14;color:#fff;cursor:none}
-:root{--navy:#11314e;--dark:#070d14;--coral:#ea5649;--gold:#D4A853;--glow:#FFD580;--blue2:#133757}
+:root{--navy:#11314e;--dark:#070d14;--coral:#ea5649;--gold:#D4A853;--light:#f5f2ed;--mid:#e8e3dc}
+html{scroll-behavior:smooth}
+body{font-family:'Montserrat',sans-serif;background:#fff;color:var(--dark);overflow-x:hidden}
 
-/* ── CUSTOM CURSOR ─────────────────── */
-#cursor{position:fixed;pointer-events:none;z-index:9999;mix-blend-mode:difference}
-#cursor .ring{width:32px;height:32px;border:1.5px solid rgba(255,255,255,.6);border-radius:50%;position:absolute;transform:translate(-50%,-50%);transition:width .25s,height .25s,border-color .25s}
-#cursor .dot{width:5px;height:5px;background:#fff;border-radius:50%;position:absolute;transform:translate(-50%,-50%)}
-body.hovering #cursor .ring{width:56px;height:56px;border-color:var(--coral)}
+/* ── HEADER ─────────────────────────── */
+header{position:fixed;top:0;left:0;right:0;z-index:100;height:68px;display:flex;align-items:center;padding:0 5vw;background:rgba(7,13,20,.92);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.06)}
+.h-logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
+.h-logo svg{width:36px;height:36px}
+.h-logo-txt{font-size:.62rem;font-weight:800;letter-spacing:.3em;color:#fff;text-transform:uppercase}
+nav{display:flex;align-items:center;gap:2rem;margin:0 auto;padding:0 2rem}
+nav a{font-size:.62rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.55);text-decoration:none;transition:color .2s}
+nav a:hover{color:#fff}
+.h-cta{margin-left:auto;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.btn-outline{padding:.5rem 1.4rem;border:1.5px solid rgba(255,255,255,.25);border-radius:50px;font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.7);text-decoration:none;transition:all .25s}
+.btn-outline:hover{border-color:var(--coral);color:#fff}
+.btn-cta{padding:.55rem 1.6rem;background:var(--coral);border-radius:50px;font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#fff;text-decoration:none;transition:all .25s}
+.btn-cta:hover{background:#c43830;transform:translateY(-1px)}
+@media(max-width:768px){nav{display:none}.h-logo-txt{display:none}}
 
-/* ── CANVAS ─────────────────────────── */
-#stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+/* ── HERO ───────────────────────────── */
+#hero{position:relative;min-height:100vh;background:var(--dark);display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;padding:90px 5vw 60px}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(17,49,78,.8) 0%,rgba(7,13,20,1) 70%)}
+#stars{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.hero-content{position:relative;z-index:2;text-align:center;width:100%;max-width:1100px}
+.hero-eyebrow{font-size:.62rem;font-weight:700;letter-spacing:.45em;text-transform:uppercase;color:var(--coral);margin-bottom:1.5rem;opacity:0;animation:fadeUp .8s .3s forwards}
+.hero-title{font-size:clamp(2.8rem,6vw,6rem);font-weight:900;line-height:.95;letter-spacing:-.03em;color:#fff;margin-bottom:.8rem;opacity:0;animation:fadeUp .9s .5s forwards}
+.hero-title em{font-style:normal;color:var(--gold)}
+.hero-sub{font-size:clamp(.85rem,1.5vw,1.1rem);font-weight:400;color:rgba(255,255,255,.45);letter-spacing:.04em;margin-bottom:3rem;opacity:0;animation:fadeUp .9s .7s forwards}
+.map-wrap{width:min(88vw,680px);margin:0 auto 3rem;opacity:0;animation:fadeUp .9s .9s forwards}
+#map-svg{width:100%;height:auto;overflow:visible;display:block}
+.vf{fill:rgba(255,255,255,.04);stroke:none}
+.vo{fill:none;stroke:rgba(255,255,255,.08);stroke-width:.7;stroke-linejoin:round}
+.vg{fill:none;stroke:var(--gold);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;filter:url(#glow-f);opacity:0}
+.vt{fill:none;stroke:url(#trace-grad);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.vdot{fill:#fff;filter:url(#dot-f);opacity:0}
+.hero-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;opacity:0;animation:fadeUp .9s 1.8s forwards}
+.hero-btn{padding:.85rem 2.8rem;border-radius:50px;font-size:.68rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;transition:all .3s}
+.hero-btn-primary{background:var(--coral);color:#fff;box-shadow:0 8px 32px rgba(234,86,73,.4)}
+.hero-btn-primary:hover{transform:translateY(-3px);box-shadow:0 14px 40px rgba(234,86,73,.5)}
+.hero-btn-secondary{border:1.5px solid rgba(255,255,255,.2);color:rgba(255,255,255,.7)}
+.hero-btn-secondary:hover{border-color:rgba(255,255,255,.5);color:#fff}
+.hero-scroll{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:.35}
+.hero-scroll span{font-size:.5rem;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:#fff}
+.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,rgba(255,255,255,.5),transparent);animation:scpulse 2s ease-in-out infinite}
+@keyframes scpulse{0%,100%{opacity:.3}50%{opacity:1}}
 
-/* ── INTRO ──────────────────────────── */
-#intro{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--dark);transition:opacity 1.2s ease,visibility 1.2s ease}
-#intro.gone{opacity:0;visibility:hidden;pointer-events:none}
+/* ── SECTION BASE ─────────────────── */
+section{padding:100px 5vw}
+.s-label{font-size:.58rem;font-weight:700;letter-spacing:.4em;text-transform:uppercase;color:var(--coral);margin-bottom:1.2rem;display:block}
+.s-title{font-size:clamp(2rem,4vw,3.5rem);font-weight:900;line-height:1;letter-spacing:-.025em;margin-bottom:1.5rem}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
 
-.intro-logo{width:min(200px,45vw);opacity:0;animation:appear 1.2s cubic-bezier(.22,1,.36,1) .6s forwards}
-.intro-tagline{margin-top:2.4rem;font-size:clamp(.55rem,1.5vw,.72rem);font-weight:600;letter-spacing:.5em;text-transform:uppercase;color:rgba(255,255,255,.4);opacity:0;animation:appear .8s ease 1.8s forwards}
-.intro-enter{margin-top:4rem;opacity:0;animation:appear .8s ease 2.8s forwards}
-.enter-btn{background:transparent;border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.7);font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:700;letter-spacing:.35em;text-transform:uppercase;padding:.9rem 3rem;border-radius:50px;cursor:none;transition:border-color .3s,color .3s,background .3s}
-.enter-btn:hover{border-color:var(--coral);color:#fff;background:rgba(234,86,73,.1)}
-.intro-scroll-hint{margin-top:1.5rem;font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.2)}
-
-/* ── WORLD (map experience) ─────────── */
-#world{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 1s ease}
-#world.active{opacity:1;pointer-events:all}
-
-.world-logo{position:absolute;top:24px;left:32px;display:flex;align-items:center;gap:12px}
-.world-logo svg{width:44px;height:44px}
-.world-logo-text{font-size:.6rem;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.4)}
-.world-hint{position:absolute;bottom:32px;font-size:.58rem;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,255,255,.22);text-align:center;animation:pulse-opacity 3s ease-in-out infinite}
-@keyframes pulse-opacity{0%,100%{opacity:.4}50%{opacity:1}}
-
-.map-container{position:relative;width:min(92vw,680px)}
-#map-svg{width:100%;height:auto;overflow:visible}
-.vf{fill:rgba(255,255,255,.03);stroke:none}
-.vo{fill:none;stroke:rgba(255,255,255,.07);stroke-width:.8;stroke-linejoin:round}
-.vg{fill:none;stroke:var(--glow);stroke-width:4;stroke-linecap:round;stroke-linejoin:round;filter:url(#gf);opacity:.5}
-.vt{fill:none;stroke:url(#tg);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-.vdot{fill:#fff;filter:url(#df);opacity:0}
-
-/* ── NAVIGATION SPHERES ─────────────── */
-.sphere{position:absolute;transform:translate(-50%,-50%);cursor:none;opacity:0;transition:opacity .6s ease}
-.sphere.visible{opacity:1}
-.sphere-ring{width:52px;height:52px;border-radius:50%;border:1.5px solid rgba(255,255,255,.2);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);animation:sphere-pulse 2.5s ease-in-out infinite}
-.sphere-core{width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,.9);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);box-shadow:0 0 16px 4px rgba(255,213,128,.7),0 0 40px 8px rgba(255,213,128,.3);transition:width .3s,height .3s,box-shadow .3s}
-.sphere:hover .sphere-core{width:24px;height:24px;box-shadow:0 0 24px 8px rgba(234,86,73,.8),0 0 60px 16px rgba(234,86,73,.4)}
-.sphere:hover .sphere-ring{border-color:rgba(234,86,73,.6)}
-.sphere-label{position:absolute;top:calc(100% + 10px);left:50%;transform:translateX(-50%);white-space:nowrap;font-size:.58rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.5);transition:color .3s}
-.sphere:hover .sphere-label{color:var(--coral)}
-@keyframes sphere-pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.3}50%{transform:translate(-50%,-50%) scale(1.4);opacity:.7}}
-
-/* ── PANELS ─────────────────────────── */
-.panel{position:fixed;inset:0;z-index:40;opacity:0;pointer-events:none;transition:opacity .8s ease;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
-.panel.open{opacity:1;pointer-events:all}
-.panel-close{position:fixed;top:24px;right:28px;z-index:100;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.4);backdrop-filter:blur(12px);border-radius:50%;border:1px solid rgba(255,255,255,.15);cursor:none;font-size:1.1rem;transition:border-color .3s,background .3s}
-.panel-close:hover{border-color:var(--coral);background:rgba(234,86,73,.15)}
-
-/* ── PANEL: INVISIBLES ──────────────── */
-#p-invisibles{background:var(--dark)}
-.inv-scene{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:7rem 5vw 4rem}
-@media(max-width:700px){.inv-scene{grid-template-columns:1fr;padding:5rem 1.5rem 3rem}}
-.inv-eyebrow{font-size:.6rem;font-weight:700;letter-spacing:.35em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem}
-.inv-title{font-size:clamp(3rem,8vw,7rem);font-weight:900;line-height:.9;letter-spacing:-.03em;margin-bottom:1.5rem}
+/* ── INVISIBLES ─────────────────── */
+#invisibles{background:var(--dark);color:#fff;position:relative;overflow:hidden}
+#invisibles::before{content:'';position:absolute;top:-200px;right:-200px;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(234,86,73,.12) 0%,transparent 70%);pointer-events:none}
+.inv-grid{display:grid;grid-template-columns:1fr 1fr;gap:6vw;align-items:center;max-width:1200px;margin:0 auto}
+@media(max-width:700px){.inv-grid{grid-template-columns:1fr;gap:3rem}}
+.inv-title{font-size:clamp(2.5rem,5vw,5rem);font-weight:900;letter-spacing:-.03em;line-height:.95;margin-bottom:1rem}
 .inv-title .glitch{color:var(--coral);display:block;position:relative}
-.inv-title .glitch::before{content:attr(data-t);position:absolute;left:-2px;clip-path:polygon(0 20%,100% 20%,100% 40%,0 40%);color:#0ff;animation:g1 3s infinite;opacity:.5}
-.inv-title .glitch::after{content:attr(data-t);position:absolute;left:2px;clip-path:polygon(0 60%,100% 60%,100% 80%,0 80%);color:#f0f;animation:g2 3s infinite;opacity:.5}
-@keyframes g1{0%,94%{transform:none}95%{transform:translate(-3px,1px)}96%{transform:translate(3px,-1px)}100%{transform:none}}
-@keyframes g2{0%,94%{transform:none}95%{transform:translate(3px,1px)}96%{transform:translate(-3px,-1px)}100%{transform:none}}
-.inv-desc{font-size:.9rem;color:rgba(255,255,255,.5);line-height:1.9;max-width:480px;margin-bottom:2rem}
-.inv-count-row{display:flex;gap:1.5rem;margin-bottom:2.5rem}
-.inv-c{text-align:center}
-.inv-c-n{font-size:3rem;font-weight:900;color:#fff;font-variant-numeric:tabular-nums;line-height:1}
-.inv-c-l{font-size:.52rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-top:4px}
-.inv-right-panel{position:relative;display:flex;align-items:center;justify-content:center;padding:3rem 0}
-.inv-mystery-box{background:rgba(234,86,73,.06);border:1px solid rgba(234,86,73,.2);border-radius:20px;padding:2.5rem;max-width:360px}
-.inv-mystery-quote{font-size:1.05rem;font-style:italic;color:rgba(255,255,255,.7);line-height:1.7;margin-bottom:1.5rem}
-.inv-mystery-sig{font-size:.62rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--coral)}
-.inv-btn{display:inline-flex;align-items:center;gap:.7rem;padding:.9rem 2.4rem;background:var(--coral);color:#fff;font-size:.68rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;border-radius:50px;text-decoration:none;transition:transform .3s,box-shadow .3s;border:none;cursor:none;font-family:'Montserrat',sans-serif}
-.inv-btn:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(234,86,73,.5)}
+.inv-title .glitch::before,.inv-title .glitch::after{content:attr(data-t);position:absolute;left:0;top:0}
+.inv-title .glitch::before{color:#0ff;clip-path:polygon(0 20%,100% 20%,100% 40%,0 40%);animation:g1 4s infinite;opacity:.4}
+.inv-title .glitch::after{color:#f0f;clip-path:polygon(0 60%,100% 60%,100% 80%,0 80%);animation:g2 4s infinite;opacity:.4}
+@keyframes g1{0%,93%{transform:none}95%{transform:translate(-3px,1px)}97%{transform:translate(3px,-1px)}100%{transform:none}}
+@keyframes g2{0%,93%{transform:none}95%{transform:translate(3px,1px)}97%{transform:translate(-3px,-1px)}100%{transform:none}}
+.inv-desc{margin:1.5rem 0 2rem;font-size:.9rem;color:rgba(255,255,255,.5);line-height:1.9}
+.countdown{display:flex;gap:1.2rem;margin-bottom:2.5rem}
+.cd-unit{text-align:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:.9rem 1.2rem;min-width:72px}
+.cd-n{font-size:2.2rem;font-weight:900;color:#fff;font-variant-numeric:tabular-nums;line-height:1}
+.cd-l{font-size:.48rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-top:4px}
+.inv-mystery{background:rgba(234,86,73,.07);border:1px solid rgba(234,86,73,.18);border-radius:20px;padding:2.5rem}
+.inv-mystery-quote{font-size:1.05rem;font-style:italic;color:rgba(255,255,255,.7);line-height:1.8;margin-bottom:1.5rem}
+.inv-mystery-sig{font-size:.58rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--coral)}
+.inv-date{margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:.8rem}
+.inv-date-icon{width:36px;height:36px;border-radius:8px;background:rgba(234,86,73,.2);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.inv-date-info{font-size:.7rem;color:rgba(255,255,255,.4)}
+.inv-date-info strong{display:block;color:#fff;font-size:.82rem}
+.btn-coral{display:inline-flex;align-items:center;gap:.6rem;padding:.85rem 2.4rem;background:var(--coral);color:#fff;border-radius:50px;font-size:.65rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;border:none;cursor:pointer;font-family:'Montserrat',sans-serif;transition:all .3s}
+.btn-coral:hover{background:#c43830;transform:translateY(-2px);box-shadow:0 10px 32px rgba(234,86,73,.5)}
 
-/* ── PANEL: RANDOZONES ──────────────── */
-#p-rando{background:#0c1a0e}
-.rando-scene{min-height:100vh;padding:7rem 5vw 4rem}
-@media(max-width:700px){.rando-scene{padding:5rem 1.5rem 3rem}}
-.rando-eyebrow{font-size:.6rem;font-weight:700;letter-spacing:.35em;text-transform:uppercase;color:#4ade80;margin-bottom:1rem}
-.rando-title{font-size:clamp(2.5rem,6vw,5.5rem);font-weight:900;line-height:.95;letter-spacing:-.02em;margin-bottom:3rem}
-.rando-title span{color:#4ade80}
-.rando-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.2rem}
-.rc{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden;transition:border-color .3s,transform .3s}
-.rc:hover{border-color:rgba(74,222,128,.35);transform:translateY(-4px)}
-.rc-img{height:140px;position:relative;display:flex;align-items:flex-end;padding:.8rem}
-.rc-img.c1{background:linear-gradient(135deg,#0c2d1a,#1a5235)}
-.rc-img.c2{background:linear-gradient(135deg,#0a1f2d,#1a3a52)}
-.rc-img.c3{background:linear-gradient(135deg,#1a1a0a,#3a3510)}
-.rc-tag{background:rgba(0,0,0,.5);backdrop-filter:blur(8px);border-radius:30px;padding:.25rem .7rem;font-size:.55rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.8)}
-.rc-body{padding:1.2rem}
-.rc-name{font-size:1rem;font-weight:800;margin-bottom:.5rem}
-.rc-meta{display:flex;gap:.8rem;font-size:.65rem;color:rgba(255,255,255,.4);font-weight:600;margin-bottom:.8rem}
-.rc-desc{font-size:.78rem;color:rgba(255,255,255,.5);line-height:1.7;margin-bottom:1rem}
-.rc-link{font-size:.6rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#4ade80;text-decoration:none}
+/* ── RANDO ─────────────────────────── */
+#rando{background:var(--light)}
+.rando-inner{max-width:1200px;margin:0 auto}
+.rando-header{display:grid;grid-template-columns:1fr auto;align-items:flex-end;gap:2rem;margin-bottom:3.5rem}
+@media(max-width:600px){.rando-header{grid-template-columns:1fr}}
+.rando-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+@media(max-width:900px){.rando-cards{grid-template-columns:1fr 1fr}}
+@media(max-width:580px){.rando-cards{grid-template-columns:1fr}}
+.rc{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,.07);transition:transform .3s,box-shadow .3s}
+.rc:hover{transform:translateY(-6px);box-shadow:0 16px 48px rgba(0,0,0,.13)}
+.rc-thumb{height:180px;position:relative;display:flex;align-items:flex-end;padding:1rem}
+.rc-thumb.g1{background:linear-gradient(160deg,#0b2015,#1a5232)}
+.rc-thumb.g2{background:linear-gradient(160deg,#091d2c,#1a3a52)}
+.rc-thumb.g3{background:linear-gradient(160deg,#1a190a,#3a350e)}
+.rc-badge{background:rgba(0,0,0,.45);backdrop-filter:blur(10px);border-radius:30px;padding:.3rem .85rem;font-size:.52rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.85)}
+.rc-body{padding:1.5rem}
+.rc-name{font-size:1.05rem;font-weight:800;color:var(--dark);margin-bottom:.5rem}
+.rc-meta{display:flex;gap:1rem;font-size:.62rem;color:rgba(0,0,0,.4);font-weight:600;margin-bottom:.9rem}
+.rc-desc{font-size:.78rem;color:rgba(0,0,0,.5);line-height:1.8;margin-bottom:1.2rem}
+.rc-link{font-size:.6rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--navy);text-decoration:none}
+.rc-link:hover{color:var(--coral)}
 
-/* ── PANEL: QUIZZ ───────────────────── */
-#p-quizz{background:#0d0a1a;display:flex;align-items:center;justify-content:center;min-height:100vh}
-.quizz-scene{width:min(94vw,600px);padding:7rem 0 4rem;margin:0 auto}
-.qz-eyebrow{font-size:.6rem;font-weight:700;letter-spacing:.35em;text-transform:uppercase;color:#a78bfa;margin-bottom:1rem}
-.qz-title{font-size:clamp(2rem,5vw,4rem);font-weight:900;line-height:1;letter-spacing:-.02em;margin-bottom:2.5rem}
-.qz-title span{color:#a78bfa}
-.qz-box{background:rgba(255,255,255,.04);border:1px solid rgba(167,139,250,.2);border-radius:20px;padding:2.5rem}
-.qz-bar{height:2px;background:rgba(255,255,255,.08);border-radius:2px;margin-bottom:2rem;overflow:hidden}
-.qz-bar-fill{height:100%;background:linear-gradient(to right,#a78bfa,var(--coral));border-radius:2px;transition:width .5s}
-.qz-q{font-size:1rem;font-weight:700;color:#fff;line-height:1.5;margin-bottom:1.5rem;min-height:56px}
-.qz-opts{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
-@media(max-width:480px){.qz-opts{grid-template-columns:1fr}}
-.qz-opt{background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:10px;padding:.9rem;font-size:.8rem;font-weight:600;color:rgba(255,255,255,.7);cursor:none;text-align:left;transition:all .2s;font-family:'Montserrat',sans-serif}
-.qz-opt:hover:not(:disabled){border-color:#a78bfa;background:rgba(167,139,250,.1);color:#fff}
+/* ── QUIZZ ─────────────────────────── */
+#quizz{background:var(--navy);color:#fff}
+.quizz-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:6vw;align-items:center}
+@media(max-width:750px){.quizz-inner{grid-template-columns:1fr;gap:3rem}}
+.qz-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:2rem;backdrop-filter:blur(8px)}
+.qz-prog{height:3px;background:rgba(255,255,255,.1);border-radius:3px;margin-bottom:1.8rem;overflow:hidden}
+.qz-prog-fill{height:100%;background:linear-gradient(to right,var(--gold),var(--coral));border-radius:3px;transition:width .5s ease}
+.qz-q{font-size:.95rem;font-weight:700;color:#fff;line-height:1.5;min-height:52px;margin-bottom:1.5rem}
+.qz-opts{display:grid;gap:.6rem}
+.qz-opt{background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:10px;padding:.9rem 1.1rem;font-size:.8rem;font-weight:600;color:rgba(255,255,255,.65);cursor:pointer;text-align:left;transition:all .2s;font-family:'Montserrat',sans-serif;width:100%}
+.qz-opt:hover:not(:disabled){border-color:var(--gold);background:rgba(212,168,83,.1);color:#fff}
 .qz-opt.ok{border-color:#4ade80;background:rgba(74,222,128,.12);color:#4ade80}
 .qz-opt.ko{border-color:var(--coral);background:rgba(234,86,73,.12);color:var(--coral)}
 .qz-opt:disabled{cursor:default}
-.qz-footer{display:flex;align-items:center;justify-content:space-between;margin-top:1.5rem}
-.qz-sc{font-size:.68rem;font-weight:700;letter-spacing:.15em;color:#a78bfa}
-.qz-next{background:#a78bfa;color:#fff;border:none;border-radius:50px;padding:.65rem 1.8rem;font-size:.68rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:none;font-family:'Montserrat',sans-serif;display:none;transition:transform .2s}
-.qz-next:hover{transform:translateY(-2px)}
+.qz-foot{display:flex;align-items:center;justify-content:space-between;margin-top:1.4rem}
+.qz-sc{font-size:.65rem;font-weight:700;letter-spacing:.15em;color:rgba(255,255,255,.4)}
+.qz-next,.qz-restart{background:var(--coral);color:#fff;border:none;border-radius:50px;padding:.65rem 1.8rem;font-size:.65rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;font-family:'Montserrat',sans-serif;transition:all .2s}
+.qz-next{display:none}
+.qz-next:hover,.qz-restart:hover{background:#c43830;transform:translateY(-1px)}
 .qz-result{text-align:center;padding:1rem 0}
-.qz-res-num{font-size:5rem;font-weight:900;color:#a78bfa;line-height:1}
-.qz-res-msg{font-size:1rem;font-weight:700;color:#fff;margin:1rem 0 2rem}
-.qz-restart{background:transparent;border:1.5px solid #a78bfa;color:#a78bfa;border-radius:50px;padding:.75rem 2.5rem;font-size:.68rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;cursor:none;font-family:'Montserrat',sans-serif;transition:all .2s}
-.qz-restart:hover{background:#a78bfa;color:#fff}
+.qz-res-n{font-size:5rem;font-weight:900;color:var(--gold);line-height:1}
+.qz-res-m{font-size:.95rem;font-weight:700;color:#fff;margin:1rem 0 2rem}
 
-/* ── PANEL: MÉTÉO ───────────────────── */
-#p-meteo{background:#051018}
-.meteo-scene{min-height:100vh;padding:7rem 5vw 4rem}
-@media(max-width:700px){.meteo-scene{padding:5rem 1.5rem 3rem}}
-.mt-eyebrow{font-size:.6rem;font-weight:700;letter-spacing:.35em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem}
-.mt-title{font-size:clamp(2.5rem,6vw,5.5rem);font-weight:900;line-height:.95;letter-spacing:-.02em;margin-bottom:3rem}
-.mt-title span{color:var(--gold)}
-.mt-today{display:grid;grid-template-columns:auto 1fr;gap:2.5rem;align-items:center;background:rgba(255,255,255,.04);border:1px solid rgba(212,168,83,.15);border-radius:20px;padding:2.5rem;margin-bottom:2rem}
-@media(max-width:600px){.mt-today{grid-template-columns:1fr;gap:1.5rem}}
-.mt-today-icon{font-size:6rem;line-height:1}
-.mt-today-temp{font-size:4.5rem;font-weight:900;color:#fff;line-height:1}
-.mt-today-cond{font-size:.9rem;font-weight:500;color:rgba(255,255,255,.5);margin-top:.3rem}
-.mt-quip{margin-top:.7rem;font-size:.82rem;font-style:italic;color:var(--gold);font-weight:500}
+/* ── MÉTÉO ─────────────────────────── */
+#meteo{background:#fff}
+.meteo-inner{max-width:1100px;margin:0 auto}
+.meteo-header{margin-bottom:3rem}
+.meteo-grid{display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start}
+@media(max-width:700px){.meteo-grid{grid-template-columns:1fr}}
+.mt-now{background:var(--navy);color:#fff;border-radius:20px;padding:2.5rem;min-width:260px}
+.mt-now-top{display:flex;align-items:center;gap:1.5rem;margin-bottom:1.5rem}
+.mt-icon{font-size:4rem;line-height:1}
+.mt-temp{font-size:3.5rem;font-weight:900;line-height:1}
+.mt-cond{font-size:.75rem;color:rgba(255,255,255,.5);margin-top:.3rem}
+.mt-quip{font-size:.82rem;font-style:italic;color:var(--gold);margin-top:.8rem;padding-top:.8rem;border-top:1px solid rgba(255,255,255,.1)}
+.mt-details{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-top:1.2rem}
+.mt-det{background:rgba(255,255,255,.06);border-radius:10px;padding:.7rem;text-align:center}
+.mt-det-l{font-size:.5rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.35)}
+.mt-det-v{font-size:.9rem;font-weight:700;color:#fff;margin-top:2px}
 .mt-week{display:grid;grid-template-columns:repeat(5,1fr);gap:.8rem}
-@media(max-width:600px){.mt-week{grid-template-columns:repeat(3,1fr)}}
-.mt-day{background:rgba(255,255,255,.04);border:1px solid rgba(212,168,83,.1);border-radius:14px;padding:1.2rem .8rem;text-align:center}
-.mt-day-n{font-size:.58rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:.7rem}
-.mt-day-i{font-size:2rem;margin-bottom:.5rem}
-.mt-day-t{font-size:.95rem;font-weight:800;color:#fff}
-.mt-day-m{font-size:.72rem;color:rgba(255,255,255,.35)}
+@media(max-width:580px){.mt-week{grid-template-columns:repeat(3,1fr)}}
+.mt-day{background:var(--light);border-radius:14px;padding:1.2rem .8rem;text-align:center;border:1px solid var(--mid)}
+.mt-day-n{font-size:.55rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(0,0,0,.35);margin-bottom:.6rem}
+.mt-day-i{font-size:2rem;margin-bottom:.4rem}
+.mt-day-h{font-size:.92rem;font-weight:800}
+.mt-day-l{font-size:.72rem;color:rgba(0,0,0,.4)}
 
-/* ── PANEL: PATOIS ──────────────────── */
-#p-patois{background:#0f0a04}
-.patois-scene{min-height:100vh;padding:7rem 5vw 4rem}
-@media(max-width:700px){.patois-scene{padding:5rem 1.5rem 3rem}}
-.pa-eyebrow{font-size:.6rem;font-weight:700;letter-spacing:.35em;text-transform:uppercase;color:var(--coral);margin-bottom:1rem}
-.pa-title{font-size:clamp(1.8rem,4.5vw,4rem);font-weight:900;line-height:1.05;letter-spacing:-.02em;margin-bottom:3rem}
-.pa-title span{color:var(--coral)}
-.pa-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem}
-.pc{border-radius:18px;overflow:hidden}
-.pc-visual{padding:2.2rem 2rem 1.4rem;position:relative;overflow:hidden;min-height:180px}
-.pc-visual::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.04)}
-.pc-tag{font-size:.55rem;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:.9rem}
-.pc-word{font-size:1.7rem;font-weight:900;font-style:italic;color:var(--coral);line-height:1.1;position:relative;z-index:1}
-.pc-emoji{position:absolute;right:1.5rem;top:1.5rem;font-size:3rem;z-index:1}
-.pc-badge{display:inline-block;background:rgba(212,168,83,.15);border:1px solid rgba(212,168,83,.3);border-radius:30px;padding:.2rem .8rem;font-size:.55rem;font-weight:700;letter-spacing:.15em;color:var(--gold);margin-top:.7rem;position:relative;z-index:1}
-.pc-body{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.06);border-top:none;border-radius:0 0 18px 18px;padding:1.5rem}
-.pc-text{font-size:.8rem;color:rgba(255,255,255,.55);line-height:1.8;margin-bottom:1rem}
-.pc-tags{display:flex;flex-wrap:wrap;gap:.4rem}
-.pc-tags span{font-size:.58rem;font-weight:600;color:rgba(255,255,255,.3);background:rgba(255,255,255,.05);border-radius:30px;padding:.2rem .7rem}
+/* ── PATOIS ─────────────────────────── */
+#patois{background:var(--dark);color:#fff;position:relative;overflow:hidden}
+#patois::before{content:'';position:absolute;bottom:-300px;left:-200px;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(212,168,83,.08) 0%,transparent 70%);pointer-events:none}
+.patois-inner{max-width:1200px;margin:0 auto}
+.patois-header{margin-bottom:3.5rem}
+.pc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+@media(max-width:900px){.pc-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.pc-grid{grid-template-columns:1fr}}
+.pc{border-radius:18px;overflow:hidden;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);transition:border-color .3s,transform .3s}
+.pc:hover{border-color:rgba(212,168,83,.3);transform:translateY(-4px)}
+.pc-top{padding:2rem;position:relative;overflow:hidden;min-height:170px;display:flex;flex-direction:column;justify-content:flex-end}
+.pc-bg1{background:linear-gradient(140deg,#0d1a26,#152a3d)}
+.pc-bg2{background:linear-gradient(140deg,#1a2d0a,#253d12)}
+.pc-bg3{background:linear-gradient(140deg,#1a0a0a,#2d1212)}
+.pc-emoji{position:absolute;top:1.4rem;right:1.4rem;font-size:3rem}
+.pc-tag-s{font-size:.5rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:.7rem}
+.pc-word{font-size:1.5rem;font-weight:900;font-style:italic;color:var(--coral);line-height:1.1}
+.pc-bottom{padding:1.4rem}
+.pc-text{font-size:.78rem;color:rgba(255,255,255,.5);line-height:1.8;margin-bottom:.9rem}
+.pc-pills{display:flex;gap:.4rem;flex-wrap:wrap}
+.pc-pill{font-size:.55rem;font-weight:600;color:rgba(255,255,255,.3);background:rgba(255,255,255,.05);border-radius:30px;padding:.2rem .7rem}
 
-/* ── PANEL: ZONAUTES ────────────────── */
-#p-zonautes{background:linear-gradient(160deg,#0a1f30 0%,#130a1a 100%)}
-.zon-scene{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:7rem 5vw 4rem;text-align:center}
-.zon-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(234,86,73,.12);border:1px solid rgba(234,86,73,.25);border-radius:50px;padding:.4rem 1.2rem;margin-bottom:2rem}
-.zon-badge .dot{width:7px;height:7px;border-radius:50%;background:var(--coral);animation:pd 1.5s infinite}
-@keyframes pd{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
-.zon-badge span{font-size:.6rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--coral)}
-.zon-title{font-size:clamp(3rem,9vw,8rem);font-weight:900;line-height:.9;letter-spacing:-.03em;margin-bottom:1.5rem}
-.zon-title em{font-style:normal;display:block;color:var(--coral)}
-.zon-desc{font-size:.95rem;color:rgba(255,255,255,.5);line-height:1.9;max-width:520px;margin:0 auto 3rem}
-.zon-stats{display:flex;gap:3rem;justify-content:center;flex-wrap:wrap;margin-bottom:3rem}
-.zon-stat{text-align:center}
-.zon-stat-n{font-size:2.8rem;font-weight:900;color:#fff;line-height:1}
-.zon-stat-n span{color:var(--coral)}
-.zon-stat-l{font-size:.58rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-top:5px}
-.zon-cta{display:inline-flex;align-items:center;gap:.7rem;padding:1rem 3rem;background:linear-gradient(135deg,var(--coral),#c43830);color:#fff;font-size:.72rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;border-radius:50px;text-decoration:none;box-shadow:0 8px 32px rgba(234,86,73,.35);border:none;cursor:none;font-family:'Montserrat',sans-serif;transition:transform .3s,box-shadow .3s}
-.zon-cta:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(234,86,73,.5)}
+/* ── ZONAUTES ─────────────────────── */
+#zonautes{background:var(--light)}
+.zon-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:6vw;align-items:start}
+@media(max-width:800px){.zon-inner{grid-template-columns:1fr;gap:3rem}}
+.zon-desc{font-size:.95rem;color:rgba(0,0,0,.5);line-height:1.9;margin-bottom:2rem}
+.zon-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2.5rem}
+.zon-stat{background:#fff;border-radius:14px;padding:1.2rem;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.zon-stat-n{font-size:2rem;font-weight:900;color:var(--navy);line-height:1}
+.zon-stat-n sup{font-size:.9rem;color:var(--coral)}
+.zon-stat-l{font-size:.52rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(0,0,0,.4);margin-top:4px}
+.zon-perks{display:grid;gap:.8rem}
+.zon-perk{display:flex;align-items:flex-start;gap:.9rem;background:#fff;border-radius:12px;padding:1rem 1.2rem;box-shadow:0 1px 8px rgba(0,0,0,.05)}
+.zon-perk-icon{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--navy),#1a4a70);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.zon-perk-text h4{font-size:.8rem;font-weight:700;margin-bottom:.2rem}
+.zon-perk-text p{font-size:.72rem;color:rgba(0,0,0,.45);line-height:1.5}
+.zon-card{background:var(--navy);border-radius:24px;padding:2.5rem;color:#fff;position:relative;overflow:hidden}
+.zon-card::before{content:'';position:absolute;top:-80px;right:-80px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(212,168,83,.15) 0%,transparent 70%);pointer-events:none}
+.zon-card-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(234,86,73,.15);border:1px solid rgba(234,86,73,.25);border-radius:50px;padding:.4rem 1.1rem;margin-bottom:1.8rem}
+.zon-badge-dot{width:7px;height:7px;border-radius:50%;background:var(--coral);animation:bpulse 1.5s ease-in-out infinite}
+@keyframes bpulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.4)}}
+.zon-card-badge span{font-size:.58rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--coral)}
+.zon-card h3{font-size:1.8rem;font-weight:900;line-height:1;margin-bottom:.8rem}
+.zon-card-desc{font-size:.82rem;color:rgba(255,255,255,.5);line-height:1.7;margin-bottom:2rem}
+.zon-form{display:flex;flex-direction:column;gap:.8rem;position:relative;z-index:1}
+.zon-input{background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.12);border-radius:10px;padding:.85rem 1.1rem;font-size:.82rem;font-weight:500;color:#fff;font-family:'Montserrat',sans-serif;transition:border-color .2s;width:100%}
+.zon-input::placeholder{color:rgba(255,255,255,.3)}
+.zon-input:focus{outline:none;border-color:var(--gold)}
+.zon-submit{background:var(--coral);color:#fff;border:none;border-radius:50px;padding:.9rem;font-size:.68rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;font-family:'Montserrat',sans-serif;transition:all .25s;width:100%}
+.zon-submit:hover{background:#c43830;transform:translateY(-1px)}
+.zon-sep{text-align:center;font-size:.6rem;color:rgba(255,255,255,.25);margin:.4rem 0}
+.zon-login{display:block;text-align:center;font-size:.65rem;font-weight:600;color:rgba(255,255,255,.5);text-decoration:none;padding:.7rem;border:1.5px solid rgba(255,255,255,.12);border-radius:50px;transition:all .2s}
+.zon-login:hover{color:#fff;border-color:rgba(255,255,255,.3)}
+.zon-note{text-align:center;font-size:.55rem;color:rgba(255,255,255,.2);margin-top:1rem}
 
-/* ── KEYFRAMES ────────────────────── */
-@keyframes appear{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+/* ── FOOTER ─────────────────────────── */
+footer{background:var(--dark);color:rgba(255,255,255,.4);padding:60px 5vw 40px}
+.footer-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem}
+@media(max-width:800px){.footer-inner{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.footer-inner{grid-template-columns:1fr}}
+.footer-brand svg{width:42px;height:42px;margin-bottom:1rem}
+.footer-brand p{font-size:.75rem;line-height:1.7;max-width:240px;margin-top:.7rem}
+.footer-col h4{font-size:.58rem;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:1rem}
+.footer-col a{display:block;font-size:.75rem;color:rgba(255,255,255,.35);text-decoration:none;margin-bottom:.5rem;transition:color .2s}
+.footer-col a:hover{color:#fff}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.07);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;font-size:.6rem;flex-wrap:wrap;gap:1rem}
+.footer-socials{display:flex;gap:1rem}
+.footer-socials a{font-size:.6rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);text-decoration:none;transition:color .2s}
+.footer-socials a:hover{color:#fff}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body>
 
-<!-- CURSOR -->
-<div id="cursor"><div class="ring"></div><div class="dot"></div></div>
-
-<!-- STARS CANVAS -->
-<canvas id="stars"></canvas>
-
-<!-- ══════════════════════════════════
-     INTRO
-══════════════════════════════════ -->
-<div id="intro">
-  <!-- Real ZONE85 logo extracted from AI file -->
-  <svg class="intro-logo" viewBox="0 0 340.157 340.157" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <clipPath id="cl1"><path transform="matrix(1,0,0,-1,0,340.157)" d="M0 340.157H340.157V0H0Z"/></clipPath>
-      <clipPath id="cl2"><path transform="matrix(1,0,0,-1,0,340.157)" d="M703.112-3.905H357.36V341.84703H703.112Z"/></clipPath>
-    </defs>
-    <path transform="matrix(1,0,0,-1,0,340.157)" d="M0 0H340.158V340.158H0Z" fill="#11314e"/>
-    <g clip-path="url(#cl1)">
-      <path transform="matrix(1,0,0,-1,70.878,155.01451)" d="M0 0C5.001 2.447 9.718 3.689 14.021 3.695 10.684 8.792 2.848 11.98-9.487 5.945-15.118 3.189-33.267-12.827-33.267-12.827H-17.073C-11.218-7.899-3.607-1.765 0 0" fill="#ea5649"/>
-      <path transform="matrix(1,0,0,-1,84.9302,155.33112)" d="M0 0C-3.425 0-7.52-.955-12.288-3.288-17.919-6.043-36.069-22.06-36.069-22.06H5.539C5.539-22.06 10.339-20.747 12.542-14.747 14.67-8.948 10.479 0 0 0" fill="#ea5649"/>
-      <path transform="matrix(1,0,0,-1,135.1704,144.73252)" d="M0 0V-5.861L-16.737-25.136H.544V-32.508L-28.339-32.447V-26.586L-11.601-7.311-27.734-7.25V0Z" fill="#ffffff"/>
-      <path transform="matrix(1,0,0,-1,147.1318,161.0467)" d="M0 0C0-5.317 3.324-8.943 8.157-8.943 12.931-8.943 16.254-5.317 16.254 0 16.254 5.317 12.931 8.943 8.157 8.943 3.324 8.943 0 5.317 0 0M25.559.121C25.559-9.788 18.55-16.496 8.157-16.496-2.296-16.496-9.305-9.788-9.305.121-9.305 10.091-2.296 16.677 8.157 16.677 18.55 16.677 25.559 10.091 25.559.121" fill="#ffffff"/>
-      <path transform="matrix(1,0,0,-1,208.2788,156.75652)" d="M0 0V-20.423H-9.305V-2.719C-9.305 1.39-11.722 3.927-15.71 3.927-20.363 3.867-23.142.363-23.142-4.411V-20.423H-32.447V12.085H-23.142V6.405C-20.846 10.453-16.979 12.387-11.903 12.447-4.653 12.447 0 7.614 0 0" fill="#ffffff"/>
-      <path transform="matrix(1,0,0,-1,220.9052,159.71721)" d="M0 0 14.26 3.867C13.233 7.009 10.997 8.459 7.855 8.459 3.263 8.459.302 5.498 0 0M17.281-6.344 22.599-11.179C18.852-15.59 13.897-17.825 7.976-17.825-2.356-17.825-9.305-11.179-9.305-1.269-9.305 8.519-2.839 15.287 7.372 15.347 16.798 15.408 23.021 9.668 23.384.363L.906-5.559C2.296-8.701 5.076-10.574 8.641-10.574 11.783-10.574 14.804-9.124 17.281-6.344" fill="#ffffff"/>
-      <path transform="matrix(1,0,0,-1,255.783,152.91942)" d="M0 0C0-2.283 1.57-3.568 4.425-3.568 7.326-3.568 8.896-2.283 8.896 0 8.896 2.378 7.326 3.663 4.425 3.663 1.57 3.663 0 2.378 0 0M-.808-14.081C-.808-16.792 1.047-18.267 4.425-18.267 7.849-18.267 9.752-16.792 9.752-14.081 9.752-11.417 7.849-9.942 4.472-9.942 1.047-9.942-.808-11.417-.808-14.081M16.174.476C16.174-2.331 14.652-4.947 12.178-6.375 15.651-7.944 17.886-11.131 17.886-14.842 17.886-20.835 12.606-24.641 4.425-24.641-3.709-24.641-8.942-20.883-8.942-14.984-8.942-11.226-6.564-7.944-2.853-6.375-5.565-4.805-7.278-2.093-7.278.713-7.278 6.089-2.663 9.514 4.376 9.514 11.607 9.514 16.174 5.994 16.174.476" fill="#ea5649"/>
-      <path transform="matrix(1,0,0,-1,289.6086,155.86882)" d="M0 0C7.848 0 12.938-4.139 12.938-10.085 12.938-17.125 7.564-21.692-.666-21.692-5.137-21.692-10.275-20.027-13.89-17.505L-10.418-10.751C-7.801-13.51-4.757-14.937-1.712-14.937 1.665-14.937 3.568-13.415 3.568-10.703 3.568-8.182 1.665-6.755-1.665-6.755-3.425-6.755-8.896-6.802-10.988-6.945V12.083H11.416V5.042H-2.997V-.048C-2.284 0-.666 0 0 0" fill="#ea5649"/>
-      <!-- L'ESPRIT VENDÉE small text -->
-      <path transform="matrix(1,0,0,-1,178.0006,186.57012)" d="M0 0V-8.361H4.361V-10.108H-1.935V0Z" fill="#ffffff"/>
-      <path transform="matrix(1,0,0,-1,185.2166,187.58101)" d="M0 0C0-.318-.116-.578-.274-.823L-1.155-2.166H-2.094L-1.531-.823C-1.805-.635-1.935-.332-1.935 0-1.935.592-1.516 1.011-.968 1.011-.448 1.011 0 .65 0 0" fill="#ffffff"/>
-      <path transform="matrix(1,0,0,-1,194.471,186.57012)" d="M0 0V-1.69H-5.473V-4.188H-.563V-5.877H-5.473V-8.418H.173V-10.108H-7.408V0Z" fill="#ffffff"/>
-      <path transform="matrix(1,0,0,-1,199.9248,188.24552)" d="M0 0C-.91 0-1.502-.332-1.502-.953-1.502-3.003 3.928-1.891 3.913-5.516 3.913-7.408 2.267-8.505.043-8.505-1.574-8.505-3.148-7.855-4.231-6.888L-3.422-5.256C-2.383-6.18-1.011-6.743.072-6.743 1.155-6.743 1.805-6.339 1.805-5.631 1.805-3.523-3.625-4.722-3.625-1.126-3.625.635-2.108 1.762.159 1.762 1.502 1.762 2.844 1.329 3.812.694L3.032-.982C1.949-.332.78 0 0 0" fill="#ffffff"/>
-      <path transform="matrix(1,0,0,-1,211.9774,190.10811)" d="M0 0C0 1.242-.823 1.848-2.267 1.848H-4.375V-1.892H-2.267C-.823-1.892 0-1.27 0 0M1.834.058C1.834-2.253.376-3.596-2.166-3.596H-4.375V-6.57H-6.31V3.538H-2.166C.376 3.538 1.834 2.282 1.834.058" fill="#ffffff"/>
-      <path transform="matrix(1,0,0,-1,217.3445,191.99982)" d="M0 0H2.281C3.725 0 4.534.621 4.534 1.892 4.534 3.134 3.725 3.74 2.281 3.74H0ZM4.39-4.678 2.642-1.689C2.527-1.704 2.411-1.704 2.281-1.704H0V-4.678H-1.935V5.43H2.281C4.895 5.43 6.382 4.174 6.382 1.949 6.382.361 5.675-.78 4.375-1.329L6.599-4.678Z" fill="#ffffff"/>
-      <path transform="matrix(1,0,0,-1,0,340.157)" d="M227.779 143.479H225.84401V153.587H227.779Z" fill="#ffffff"/>
-      <path transform="matrix(1,0,0,-1,237.3795,186.57012)" d="M0 0V-1.718H-3.148V-10.108H-5.097V-1.718H-8.246V0Z" fill="#ffffff"/>
-      <path transform="matrix(1,0,0,-1,243.9433,186.57012)" d="M0 0 2.975-7.956 5.978 0H7.972L3.928-10.108H1.921L-2.079 0Z" fill="#ffffff"/>
-      <path transform="matrix(1,0,0,-1,260.6018,186.57012)" d="M0 0V-1.69H-5.473V-4.188H-.564V-5.877H-5.473V-8.418H.173V-10.108H-7.408V0Z" fill="#ffffff"/>
-      <path transform="matrix(1,0,0,-1,264.5685,186.57012)" d="M0 0 5.213-6.917V0H7.09V-10.108H5.256L.057-3.206V-10.108H-1.835V0Z" fill="#ffffff"/>
-      <path transform="matrix(1,0,0,-1,281.631,191.63872)" d="M0 0C0 1.978-1.43 3.365-3.321 3.365H-5.56V-3.336H-3.249C-1.386-3.336 0-1.964 0 0M1.978.014C1.978-2.931-.245-5.04-3.365-5.04H-7.495V5.069H-3.293C-.231 5.069 1.978 2.974 1.978.014" fill="#ffffff"/>
-      <path transform="matrix(1,0,0,-1,291.4598,184.05771)" d="M0 0-1.791-1.487H-3.379L-1.848.736ZM1.241-2.512V-4.202H-4.232V-6.7H.678V-8.389H-4.232V-10.931H1.415V-12.621H-6.167V-2.512Z" fill="#ffffff"/>
-      <path transform="matrix(1,0,0,-1,302.2414,186.57012)" d="M0 0V-1.69H-5.473V-4.188H-.563V-5.877H-5.473V-8.418H.173V-10.108H-7.408V0Z" fill="#ffffff"/>
-      <g clip-path="url(#cl2)">
-        <path transform="matrix(1,0,0,-1,423.958,29.997315)" d="M0 0C31.044 34.279 63.609 58.391 96.791 71.689 55.352 100.729-14.923 101.195-91.496 16.645-126.451-21.951-217.146-201.41-217.146-201.41L-92.208-151.536C-62.217-95.49-22.394-24.727 0 0" fill="#133757"/>
-        <path transform="matrix(1,0,0,-1,533.3423,-10.835693)" d="M0 0C-26.424-10.548-55.076-30.525-84.676-63.21-119.631-101.806-210.326-281.265-210.326-281.265L110.666-153.129C110.666-153.129 143.66-128.218 142.172-75.143 140.734-23.851 80.844 32.272 0 0" fill="#133757"/>
-        <path transform="matrix(1,0,0,-1,677.1815,427.7189)" d="M0 0C-26.388-10.637-60.903-15.999-104.885-12.832-156.823-9.093-346.396 57.937-346.396 57.937L-25.839 187.157C-25.839 187.157 15.224 191.954 50.827 152.565 85.235 114.498 80.735 32.545 0 0" fill="#133757"/>
-      </g>
-    </g>
-  </svg>
-
-  <p class="intro-tagline">L'esprit Vendée · La tribu des Zonautes</p>
-  <div class="intro-enter">
-    <button class="enter-btn" onclick="enterWorld()">Entrer dans la Zone</button>
-    <p class="intro-scroll-hint">Tap ou click pour commencer</p>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════
-     WORLD — MAP NAVIGATION
-══════════════════════════════════ -->
-<div id="world">
-  <div class="world-logo">
-    <svg width="44" height="44" viewBox="0 0 340.157 340.157" xmlns="http://www.w3.org/2000/svg">
+<!-- HEADER -->
+<header>
+  <a class="h-logo" href="#">
+    <svg viewBox="0 0 340.157 340.157" xmlns="http://www.w3.org/2000/svg">
       <path transform="matrix(1,0,0,-1,0,340.157)" d="M0 0H340.158V340.158H0Z" fill="#11314e"/>
-      <g clip-path="url(#cl1)">
+      <defs><clipPath id="hcl"><path transform="matrix(1,0,0,-1,0,340.157)" d="M0 340.157H340.157V0H0Z"/></clipPath></defs>
+      <g clip-path="url(#hcl)">
         <path transform="matrix(1,0,0,-1,70.878,155.01451)" d="M0 0C5.001 2.447 9.718 3.689 14.021 3.695 10.684 8.792 2.848 11.98-9.487 5.945-15.118 3.189-33.267-12.827-33.267-12.827H-17.073C-11.218-7.899-3.607-1.765 0 0" fill="#ea5649"/>
         <path transform="matrix(1,0,0,-1,84.9302,155.33112)" d="M0 0C-3.425 0-7.52-.955-12.288-3.288-17.919-6.043-36.069-22.06-36.069-22.06H5.539C5.539-22.06 10.339-20.747 12.542-14.747 14.67-8.948 10.479 0 0 0" fill="#ea5649"/>
         <path transform="matrix(1,0,0,-1,135.1704,144.73252)" d="M0 0V-5.861L-16.737-25.136H.544V-32.508L-28.339-32.447V-26.586L-11.601-7.311-27.734-7.25V0Z" fill="#ffffff"/>
+        <path transform="matrix(1,0,0,-1,147.1318,161.0467)" d="M0 0C0-5.317 3.324-8.943 8.157-8.943 12.931-8.943 16.254-5.317 16.254 0 16.254 5.317 12.931 8.943 8.157 8.943 3.324 8.943 0 5.317 0 0M25.559.121C25.559-9.788 18.55-16.496 8.157-16.496-2.296-16.496-9.305-9.788-9.305.121-9.305 10.091-2.296 16.677 8.157 16.677 18.55 16.677 25.559 10.091 25.559.121" fill="#ffffff"/>
+        <path transform="matrix(1,0,0,-1,208.2788,156.75652)" d="M0 0V-20.423H-9.305V-2.719C-9.305 1.39-11.722 3.927-15.71 3.927-20.363 3.867-23.142.363-23.142-4.411V-20.423H-32.447V12.085H-23.142V6.405C-20.846 10.453-16.979 12.387-11.903 12.447-4.653 12.447 0 7.614 0 0" fill="#ffffff"/>
+        <path transform="matrix(1,0,0,-1,220.9052,159.71721)" d="M0 0 14.26 3.867C13.233 7.009 10.997 8.459 7.855 8.459 3.263 8.459.302 5.498 0 0M17.281-6.344 22.599-11.179C18.852-15.59 13.897-17.825 7.976-17.825-2.356-17.825-9.305-11.179-9.305-1.269-9.305 8.519-2.839 15.287 7.372 15.347 16.798 15.408 23.021 9.668 23.384.363L.906-5.559C2.296-8.701 5.076-10.574 8.641-10.574 11.783-10.574 14.804-9.124 17.281-6.344" fill="#ffffff"/>
         <path transform="matrix(1,0,0,-1,255.783,152.91942)" d="M0 0C0-2.283 1.57-3.568 4.425-3.568 7.326-3.568 8.896-2.283 8.896 0 8.896 2.378 7.326 3.663 4.425 3.663 1.57 3.663 0 2.378 0 0M-.808-14.081C-.808-16.792 1.047-18.267 4.425-18.267 7.849-18.267 9.752-16.792 9.752-14.081 9.752-11.417 7.849-9.942 4.472-9.942 1.047-9.942-.808-11.417-.808-14.081M16.174.476C16.174-2.331 14.652-4.947 12.178-6.375 15.651-7.944 17.886-11.131 17.886-14.842 17.886-20.835 12.606-24.641 4.425-24.641-3.709-24.641-8.942-20.883-8.942-14.984-8.942-11.226-6.564-7.944-2.853-6.375-5.565-4.805-7.278-2.093-7.278.713-7.278 6.089-2.663 9.514 4.376 9.514 11.607 9.514 16.174 5.994 16.174.476" fill="#ea5649"/>
         <path transform="matrix(1,0,0,-1,289.6086,155.86882)" d="M0 0C7.848 0 12.938-4.139 12.938-10.085 12.938-17.125 7.564-21.692-.666-21.692-5.137-21.692-10.275-20.027-13.89-17.505L-10.418-10.751C-7.801-13.51-4.757-14.937-1.712-14.937 1.665-14.937 3.568-13.415 3.568-10.703 3.568-8.182 1.665-6.755-1.665-6.755-3.425-6.755-8.896-6.802-10.988-6.945V12.083H11.416V5.042H-2.997V-.048C-2.284 0-.666 0 0 0" fill="#ea5649"/>
       </g>
     </svg>
-    <div class="world-logo-text">Les Zonautes</div>
+    <span class="h-logo-txt">Zone85</span>
+  </a>
+  <nav>
+    <a href="#invisibles">Les Invisibles</a>
+    <a href="#rando">RandoZones</a>
+    <a href="#quizz">Quizz</a>
+    <a href="#meteo">Météo</a>
+    <a href="#patois">Patois</a>
+    <a href="#zonautes">Zonautes</a>
+  </nav>
+  <div class="h-cta">
+    <a class="btn-outline" href="#zonautes">Connexion</a>
+    <a class="btn-cta" href="#zonautes">Rejoindre</a>
   </div>
+</header>
 
-  <div class="map-container" id="map-wrap">
-    <svg id="map-svg" viewBox="25 45 1165 760" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="tg" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#FFD580" stop-opacity=".2"/>
-          <stop offset="60%" stop-color="#FFD580"/>
-          <stop offset="100%" stop-color="#ea5649"/>
-        </linearGradient>
-        <filter id="gf" x="-60%" y="-60%" width="220%" height="220%">
-          <feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/></feMerge>
-        </filter>
-        <filter id="df" x="-400%" y="-400%" width="900%" height="900%">
-          <feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
-      </defs>
-      <!-- fills -->
-      <path class="vf" d="M979.0 165.3 L985.6 160.7 L980.5 146.3 L972.3 142.2 L960.4 130.7 L956.5 135.3 L944.8 138.5 L934.3 123.2 L928.8 124.1 L919.2 116.0 L909.7 131.6 L888.0 128.4 L880.0 123.6 L874.0 124.5 L864.1 118.7 L852.0 117.3 L833.1 108.5 L828.9 103.8 L799.5 93.0 L792.1 83.7 L787.6 80.0 L780.0 70.2 L768.7 65.1 L757.5 50.3 L754.5 51.2 L751.2 56.0 L745.5 56.7 L742.9 62.1 L744.3 73.2 L736.2 84.8 L736.0 94.2 L724.0 93.9 L713.1 84.5 L707.4 82.7 L706.0 88.2 L696.6 87.3 L687.9 96.2 L692.8 107.6 L693.9 120.0 L686.1 133.1 L695.8 140.7 L694.6 149.7 L690.3 162.6 L685.5 166.5 L674.7 169.7 L659.1 172.1 L631.5 187.4 L623.5 180.3 L632.8 159.9 L626.2 149.3 L626.1 100.1 L614.1 81.2 L598.3 94.7 L576.4 103.2 L577.3 124.7 L580.8 152.0 L585.7 165.8 L589.0 185.6 L577.0 184.7 L586.1 200.9 L602.8 224.4 L586.0 232.2 L571.9 243.9 L553.9 238.2 L534.6 231.5 L500.8 226.4 L485.1 211.5 L466.5 215.3 L457.3 204.3 L458.1 190.4 L450.3 172.7 L431.7 176.3 L399.6 168.0 L401.4 149.0 L376.2 147.5 L362.2 140.0 L348.9 116.3 L330.4 101.3 L313.0 74.6 L282.4 90.3 L270.4 116.0 L260.5 141.6 L246.3 153.5 L218.4 192.9 L196.8 195.2 L200.5 258.5 L211.0 270.0 L250.0 301.7 L293.8 354.4 L301.0 378.5 L315.7 379.5 L328.6 400.8 L342.1 429.2 L358.0 451.5 L366.7 460.5 L370.6 482.4 L387.6 565.5 L395.2 570.9 L406.2 566.7 L421.9 585.3 L441.0 600.8 L451.5 609.8 L486.6 630.6 L501.3 645.5 L546.9 656.0 L567.1 657.5 L575.1 663.0 L588.4 689.0 L597.1 715.8 L624.6 713.9 L655.2 718.7 L685.2 734.0 L698.8 768.9 L710.7 773.0 L740.4 784.7 L764.2 763.4 L781.8 747.0 L795.1 750.5 L811.9 745.4 L828.1 754.4 L856.0 723.6 L903.4 724.5 L912.7 712.1 L936.3 708.3 L941.5 758.9 L959.7 749.6 L970.0 753.9 L983.2 758.4 L995.2 737.6 L1029.1 760.5 L1044.4 774.2 L1059.6 775.8 L1078.8 756.8 L1094.1 765.7 L1117.0 750.0 L1139.5 728.3 L1168.3 725.6 L1181.5 705.8 L1154.4 690.2 L1129.4 699.7 L1119.0 693.5 L1121.2 661.4 L1135.5 634.2 L1131.0 603.2 L1119.9 589.8 L1130.7 574.7 L1147.2 570.8 L1144.5 544.1 L1134.9 530.0 L1142.4 521.1 L1143.4 491.6 L1125.9 474.8 L1123.0 466.2 L1130.8 451.8 L1118.4 439.1 L1105.8 429.3 L1120.6 417.6 L1097.8 375.6 L1083.1 365.6 L1079.4 353.6 L1084.0 335.1 L1098.3 317.9 L1079.7 305.6 L1062.6 295.9 L1048.5 284.4 L1028.8 251.0 L1018.5 245.1 L1028.1 229.4 L1034.1 214.1 L1021.8 203.1 L1008.3 195.9 L990.4 166.8 L981.0 167.7 L979.0 165.3 Z"/>
-      <path class="vf" d="M162.9 96.2 L142.5 65.3 L113.8 65.1 L111.9 90.8 L121.8 105.0 L138.7 127.2 L173.5 136.4 L196.3 185.4 L202.8 149.3 L197.1 137.9 L159.7 114.0 L162.9 96.2 Z"/>
-      <path class="vf" d="M66.7 332.0 L41.5 330.8 L34.8 336.0 L37.8 346.9 L44.5 356.6 L55.6 362.0 L67.6 364.5 L84.0 367.1 L100.8 367.4 L103.5 364.5 L89.1 348.0 L66.7 332.0 Z"/>
-      <!-- outlines -->
-      <path class="vo" d="M979.0 165.3 L985.6 160.7 L980.5 146.3 L972.3 142.2 L960.4 130.7 L956.5 135.3 L944.8 138.5 L934.3 123.2 L928.8 124.1 L919.2 116.0 L909.7 131.6 L888.0 128.4 L880.0 123.6 L874.0 124.5 L864.1 118.7 L852.0 117.3 L833.1 108.5 L828.9 103.8 L799.5 93.0 L792.1 83.7 L787.6 80.0 L780.0 70.2 L768.7 65.1 L757.5 50.3 L754.5 51.2 L751.2 56.0 L745.5 56.7 L742.9 62.1 L744.3 73.2 L736.2 84.8 L735.1 87.5 L737.7 88.8 L736.0 94.2 L724.0 93.9 L713.1 84.5 L707.4 82.7 L706.0 88.2 L696.6 87.3 L687.9 96.2 L692.8 107.6 L693.3 116.9 L693.9 120.0 L686.1 133.1 L695.8 140.7 L694.6 149.7 L690.1 153.9 L690.3 162.6 L685.5 166.5 L682.9 164.9 L674.7 169.7 L659.1 172.1 L631.5 187.4 L623.5 180.3 L632.8 159.9 L626.2 149.3 L623.8 136.8 L625.9 131.0 L631.9 129.0 L632.2 123.2 L628.8 118.2 L626.1 100.1 L627.7 91.4 L623.2 87.3 L619.8 82.7 L614.1 81.2 L611.5 81.8 L598.3 94.7 L589.3 96.2 L576.4 103.2 L582.6 113.7 L577.3 124.7 L574.6 136.1 L580.8 152.0 L579.9 155.0 L585.7 165.8 L592.9 171.5 L593.5 177.6 L589.0 185.6 L577.0 184.7 L586.1 200.9 L601.8 215.6 L602.8 224.4 L586.0 232.2 L580.0 230.4 L574.0 232.2 L571.9 243.9 L553.9 238.2 L540.1 230.3 L534.6 231.5 L515.8 223.8 L506.4 223.2 L500.8 226.4 L485.1 211.5 L466.5 215.3 L460.9 212.1 L457.3 204.3 L458.1 190.4 L452.7 183.3 L454.3 180.8 L450.3 172.7 L431.7 176.3 L427.0 172.2 L420.9 173.0 L399.6 168.0 L403.2 163.2 L404.7 154.1 L401.4 149.0 L376.2 147.5 L362.2 140.0 L351.6 128.6 L348.9 116.3 L350.5 110.4 L339.4 106.8 L336.7 108.3 L330.4 101.3 L322.3 80.0 L318.1 75.2 L313.0 74.6 L302.9 82.2 L282.4 90.3 L270.4 116.0 L269.4 128.3 L260.5 141.6 L250.8 149.9 L251.4 156.0 L246.3 153.5 L227.7 170.6 L219.9 184.1 L225.3 186.8 L218.4 192.9 L196.8 195.2 L200.1 223.2 L200.5 258.5 L211.0 270.0 L250.0 301.7 L293.8 354.4 L296.1 370.1 L301.0 378.5 L315.7 379.5 L328.6 400.8 L342.1 429.2 L355.5 442.4 L358.0 451.5 L366.7 460.5 L370.6 482.4 L385.2 543.9 L387.6 565.5 L395.2 570.9 L400.0 567.2 L406.2 566.7 L414.0 572.1 L421.9 585.3 L441.0 600.8 L447.1 601.4 L451.5 609.8 L486.6 630.6 L484.6 636.5 L501.3 645.5 L546.9 656.0 L551.8 653.1 L567.1 657.5 L575.1 663.0 L588.4 689.0 L593.5 710.7 L597.1 715.8 L612.9 718.2 L624.6 713.9 L639.3 719.9 L655.2 718.7 L669.6 723.8 L685.2 734.0 L698.8 768.9 L710.7 773.0 L740.4 784.7 L753.3 780.6 L764.2 763.4 L781.8 747.0 L795.1 750.5 L811.9 745.4 L828.1 754.4 L839.2 750.2 L856.0 723.6 L878.8 721.7 L903.4 724.5 L912.7 712.1 L920.7 716.4 L936.3 708.3 L941.5 758.9 L954.0 758.3 L959.7 749.6 L970.0 753.9 L983.2 758.4 L995.2 737.6 L1015.6 738.6 L1029.1 760.5 L1044.4 774.2 L1059.6 775.8 L1066.5 763.7 L1078.8 756.8 L1094.1 765.7 L1112.4 763.5 L1117.0 750.0 L1128.4 745.8 L1139.5 728.3 L1154.8 732.2 L1168.3 725.6 L1181.5 705.8 L1162.2 697.5 L1154.4 690.2 L1142.8 680.3 L1129.4 699.7 L1119.0 693.5 L1121.2 661.4 L1132.0 655.5 L1135.3 644.1 L1135.5 634.2 L1128.4 618.3 L1131.0 603.2 L1119.9 589.8 L1123.8 582.3 L1130.7 574.7 L1143.0 575.3 L1147.2 570.8 L1144.5 544.1 L1134.9 530.0 L1142.4 521.1 L1134.6 504.5 L1143.4 491.6 L1125.9 474.8 L1116.3 471.9 L1123.0 466.2 L1130.8 451.8 L1118.4 439.1 L1105.8 429.3 L1120.6 417.6 L1101.1 393.5 L1097.8 375.6 L1083.1 365.6 L1079.4 353.6 L1084.0 335.1 L1087.5 323.9 L1098.3 317.9 L1079.7 305.6 L1062.6 295.9 L1048.5 284.4 L1028.8 251.0 L1018.5 245.1 L1028.1 229.4 L1034.1 214.1 L1021.8 203.1 L1008.3 195.9 L992.8 182.6 L1000.3 177.5 L990.4 166.8 L981.0 167.7 L979.0 165.3 Z"/>
-      <path class="vo" d="M162.9 96.2 L162.7 80.3 L142.5 65.3 L129.7 63.8 L113.8 65.1 L118.2 79.7 L111.9 90.8 L111.6 97.1 L121.8 105.0 L131.3 122.0 L138.7 127.2 L146.8 122.1 L159.6 123.0 L173.5 136.4 L184.2 152.4 L191.4 177.0 L196.3 185.4 L198.9 187.2 L200.2 184.4 L202.8 149.3 L197.1 137.9 L159.7 114.0 L153.6 113.3 L151.3 107.9 L153.6 96.6 L151.8 94.2 L145.9 95.6 L151.9 93.3 L160.3 98.1 L162.9 96.2 Z"/>
-      <path class="vo" d="M66.7 332.0 L51.4 326.9 L46.6 326.9 L41.5 330.8 L35.5 333.0 L34.9 334.4 L34.8 336.0 L35.2 340.9 L37.8 346.9 L43.9 351.9 L44.5 356.6 L50.5 356.0 L55.6 362.0 L58.9 362.4 L62.8 365.1 L67.6 364.5 L73.8 371.4 L84.0 367.1 L87.0 363.5 L100.8 367.4 L104.4 370.4 L105.1 369.0 L103.5 364.5 L97.2 355.2 L89.1 348.0 L84.4 341.4 L71.8 339.9 L66.7 332.0 Z"/>
-      <!-- glow traces -->
-      <path class="vg" id="gp0" d="M979.0 165.3 L985.6 160.7 L980.5 146.3 L972.3 142.2 L960.4 130.7 L956.5 135.3 L944.8 138.5 L934.3 123.2 L928.8 124.1 L919.2 116.0 L909.7 131.6 L888.0 128.4 L880.0 123.6 L874.0 124.5 L864.1 118.7 L852.0 117.3 L833.1 108.5 L828.9 103.8 L799.5 93.0 L792.1 83.7 L787.6 80.0 L780.0 70.2 L768.7 65.1 L757.5 50.3 L754.5 51.2 L751.2 56.0 L745.5 56.7 L742.9 62.1 L744.3 73.2 L736.2 84.8 L735.1 87.5 L737.7 88.8 L736.0 94.2 L724.0 93.9 L713.1 84.5 L707.4 82.7 L706.0 88.2 L696.6 87.3 L687.9 96.2 L692.8 107.6 L693.3 116.9 L693.9 120.0 L686.1 133.1 L695.8 140.7 L694.6 149.7 L690.1 153.9 L690.3 162.6 L685.5 166.5 L682.9 164.9 L674.7 169.7 L659.1 172.1 L631.5 187.4 L623.5 180.3 L632.8 159.9 L626.2 149.3 L623.8 136.8 L625.9 131.0 L631.9 129.0 L632.2 123.2 L628.8 118.2 L626.1 100.1 L627.7 91.4 L623.2 87.3 L619.8 82.7 L614.1 81.2 L611.5 81.8 L598.3 94.7 L589.3 96.2 L576.4 103.2 L582.6 113.7 L577.3 124.7 L574.6 136.1 L580.8 152.0 L579.9 155.0 L585.7 165.8 L592.9 171.5 L593.5 177.6 L589.0 185.6 L577.0 184.7 L586.1 200.9 L601.8 215.6 L602.8 224.4 L586.0 232.2 L580.0 230.4 L574.0 232.2 L571.9 243.9 L553.9 238.2 L540.1 230.3 L534.6 231.5 L515.8 223.8 L506.4 223.2 L500.8 226.4 L485.1 211.5 L466.5 215.3 L460.9 212.1 L457.3 204.3 L458.1 190.4 L452.7 183.3 L454.3 180.8 L450.3 172.7 L431.7 176.3 L427.0 172.2 L420.9 173.0 L399.6 168.0 L403.2 163.2 L404.7 154.1 L401.4 149.0 L376.2 147.5 L362.2 140.0 L351.6 128.6 L348.9 116.3 L350.5 110.4 L339.4 106.8 L336.7 108.3 L330.4 101.3 L322.3 80.0 L318.1 75.2 L313.0 74.6 L302.9 82.2 L282.4 90.3 L270.4 116.0 L269.4 128.3 L260.5 141.6 L250.8 149.9 L251.4 156.0 L246.3 153.5 L227.7 170.6 L219.9 184.1 L225.3 186.8 L218.4 192.9 L196.8 195.2 L200.1 223.2 L200.5 258.5 L211.0 270.0 L250.0 301.7 L293.8 354.4 L296.1 370.1 L301.0 378.5 L315.7 379.5 L328.6 400.8 L342.1 429.2 L355.5 442.4 L358.0 451.5 L366.7 460.5 L370.6 482.4 L385.2 543.9 L387.6 565.5 L395.2 570.9 L400.0 567.2 L406.2 566.7 L414.0 572.1 L421.9 585.3 L441.0 600.8 L447.1 601.4 L451.5 609.8 L486.6 630.6 L484.6 636.5 L501.3 645.5 L546.9 656.0 L551.8 653.1 L567.1 657.5 L575.1 663.0 L588.4 689.0 L593.5 710.7 L597.1 715.8 L612.9 718.2 L624.6 713.9 L639.3 719.9 L655.2 718.7 L669.6 723.8 L685.2 734.0 L698.8 768.9 L710.7 773.0 L740.4 784.7 L753.3 780.6 L764.2 763.4 L781.8 747.0 L795.1 750.5 L811.9 745.4 L828.1 754.4 L839.2 750.2 L856.0 723.6 L878.8 721.7 L903.4 724.5 L912.7 712.1 L920.7 716.4 L936.3 708.3 L941.5 758.9 L954.0 758.3 L959.7 749.6 L970.0 753.9 L983.2 758.4 L995.2 737.6 L1015.6 738.6 L1029.1 760.5 L1044.4 774.2 L1059.6 775.8 L1066.5 763.7 L1078.8 756.8 L1094.1 765.7 L1112.4 763.5 L1117.0 750.0 L1128.4 745.8 L1139.5 728.3 L1154.8 732.2 L1168.3 725.6 L1181.5 705.8 L1162.2 697.5 L1154.4 690.2 L1142.8 680.3 L1129.4 699.7 L1119.0 693.5 L1121.2 661.4 L1132.0 655.5 L1135.3 644.1 L1135.5 634.2 L1128.4 618.3 L1131.0 603.2 L1119.9 589.8 L1123.8 582.3 L1130.7 574.7 L1143.0 575.3 L1147.2 570.8 L1144.5 544.1 L1134.9 530.0 L1142.4 521.1 L1134.6 504.5 L1143.4 491.6 L1125.9 474.8 L1116.3 471.9 L1123.0 466.2 L1130.8 451.8 L1118.4 439.1 L1105.8 429.3 L1120.6 417.6 L1101.1 393.5 L1097.8 375.6 L1083.1 365.6 L1079.4 353.6 L1084.0 335.1 L1087.5 323.9 L1098.3 317.9 L1079.7 305.6 L1062.6 295.9 L1048.5 284.4 L1028.8 251.0 L1018.5 245.1 L1028.1 229.4 L1034.1 214.1 L1021.8 203.1 L1008.3 195.9 L992.8 182.6 L1000.3 177.5 L990.4 166.8 L981.0 167.7 L979.0 165.3 Z"/>
-      <path class="vg" id="gp1" d="M162.9 96.2 L162.7 80.3 L142.5 65.3 L129.7 63.8 L113.8 65.1 L118.2 79.7 L111.9 90.8 L111.6 97.1 L121.8 105.0 L131.3 122.0 L138.7 127.2 L146.8 122.1 L159.6 123.0 L173.5 136.4 L184.2 152.4 L191.4 177.0 L196.3 185.4 L198.9 187.2 L200.2 184.4 L202.8 149.3 L197.1 137.9 L159.7 114.0 L153.6 113.3 L151.3 107.9 L153.6 96.6 L151.8 94.2 L145.9 95.6 L151.9 93.3 L160.3 98.1 L162.9 96.2 Z"/>
-      <path class="vg" id="gp2" d="M66.7 332.0 L51.4 326.9 L46.6 326.9 L41.5 330.8 L35.5 333.0 L34.9 334.4 L34.8 336.0 L35.2 340.9 L37.8 346.9 L43.9 351.9 L44.5 356.6 L50.5 356.0 L55.6 362.0 L58.9 362.4 L62.8 365.1 L67.6 364.5 L73.8 371.4 L84.0 367.1 L87.0 363.5 L100.8 367.4 L104.4 370.4 L105.1 369.0 L103.5 364.5 L97.2 355.2 L89.1 348.0 L84.4 341.4 L71.8 339.9 L66.7 332.0 Z"/>
-      <!-- sharp traces -->
-      <path class="vt" id="tp0" d="M979.0 165.3 L985.6 160.7 L980.5 146.3 L972.3 142.2 L960.4 130.7 L956.5 135.3 L944.8 138.5 L934.3 123.2 L928.8 124.1 L919.2 116.0 L909.7 131.6 L888.0 128.4 L880.0 123.6 L874.0 124.5 L864.1 118.7 L852.0 117.3 L833.1 108.5 L828.9 103.8 L799.5 93.0 L792.1 83.7 L787.6 80.0 L780.0 70.2 L768.7 65.1 L757.5 50.3 L754.5 51.2 L751.2 56.0 L745.5 56.7 L742.9 62.1 L744.3 73.2 L736.2 84.8 L735.1 87.5 L737.7 88.8 L736.0 94.2 L724.0 93.9 L713.1 84.5 L707.4 82.7 L706.0 88.2 L696.6 87.3 L687.9 96.2 L692.8 107.6 L693.3 116.9 L693.9 120.0 L686.1 133.1 L695.8 140.7 L694.6 149.7 L690.1 153.9 L690.3 162.6 L685.5 166.5 L682.9 164.9 L674.7 169.7 L659.1 172.1 L631.5 187.4 L623.5 180.3 L632.8 159.9 L626.2 149.3 L623.8 136.8 L625.9 131.0 L631.9 129.0 L632.2 123.2 L628.8 118.2 L626.1 100.1 L627.7 91.4 L623.2 87.3 L619.8 82.7 L614.1 81.2 L611.5 81.8 L598.3 94.7 L589.3 96.2 L576.4 103.2 L582.6 113.7 L577.3 124.7 L574.6 136.1 L580.8 152.0 L579.9 155.0 L585.7 165.8 L592.9 171.5 L593.5 177.6 L589.0 185.6 L577.0 184.7 L586.1 200.9 L601.8 215.6 L602.8 224.4 L586.0 232.2 L580.0 230.4 L574.0 232.2 L571.9 243.9 L553.9 238.2 L540.1 230.3 L534.6 231.5 L515.8 223.8 L506.4 223.2 L500.8 226.4 L485.1 211.5 L466.5 215.3 L460.9 212.1 L457.3 204.3 L458.1 190.4 L452.7 183.3 L454.3 180.8 L450.3 172.7 L431.7 176.3 L427.0 172.2 L420.9 173.0 L399.6 168.0 L403.2 163.2 L404.7 154.1 L401.4 149.0 L376.2 147.5 L362.2 140.0 L351.6 128.6 L348.9 116.3 L350.5 110.4 L339.4 106.8 L336.7 108.3 L330.4 101.3 L322.3 80.0 L318.1 75.2 L313.0 74.6 L302.9 82.2 L282.4 90.3 L270.4 116.0 L269.4 128.3 L260.5 141.6 L250.8 149.9 L251.4 156.0 L246.3 153.5 L227.7 170.6 L219.9 184.1 L225.3 186.8 L218.4 192.9 L196.8 195.2 L200.1 223.2 L200.5 258.5 L211.0 270.0 L250.0 301.7 L293.8 354.4 L296.1 370.1 L301.0 378.5 L315.7 379.5 L328.6 400.8 L342.1 429.2 L355.5 442.4 L358.0 451.5 L366.7 460.5 L370.6 482.4 L385.2 543.9 L387.6 565.5 L395.2 570.9 L400.0 567.2 L406.2 566.7 L414.0 572.1 L421.9 585.3 L441.0 600.8 L447.1 601.4 L451.5 609.8 L486.6 630.6 L484.6 636.5 L501.3 645.5 L546.9 656.0 L551.8 653.1 L567.1 657.5 L575.1 663.0 L588.4 689.0 L593.5 710.7 L597.1 715.8 L612.9 718.2 L624.6 713.9 L639.3 719.9 L655.2 718.7 L669.6 723.8 L685.2 734.0 L698.8 768.9 L710.7 773.0 L740.4 784.7 L753.3 780.6 L764.2 763.4 L781.8 747.0 L795.1 750.5 L811.9 745.4 L828.1 754.4 L839.2 750.2 L856.0 723.6 L878.8 721.7 L903.4 724.5 L912.7 712.1 L920.7 716.4 L936.3 708.3 L941.5 758.9 L954.0 758.3 L959.7 749.6 L970.0 753.9 L983.2 758.4 L995.2 737.6 L1015.6 738.6 L1029.1 760.5 L1044.4 774.2 L1059.6 775.8 L1066.5 763.7 L1078.8 756.8 L1094.1 765.7 L1112.4 763.5 L1117.0 750.0 L1128.4 745.8 L1139.5 728.3 L1154.8 732.2 L1168.3 725.6 L1181.5 705.8 L1162.2 697.5 L1154.4 690.2 L1142.8 680.3 L1129.4 699.7 L1119.0 693.5 L1121.2 661.4 L1132.0 655.5 L1135.3 644.1 L1135.5 634.2 L1128.4 618.3 L1131.0 603.2 L1119.9 589.8 L1123.8 582.3 L1130.7 574.7 L1143.0 575.3 L1147.2 570.8 L1144.5 544.1 L1134.9 530.0 L1142.4 521.1 L1134.6 504.5 L1143.4 491.6 L1125.9 474.8 L1116.3 471.9 L1123.0 466.2 L1130.8 451.8 L1118.4 439.1 L1105.8 429.3 L1120.6 417.6 L1101.1 393.5 L1097.8 375.6 L1083.1 365.6 L1079.4 353.6 L1084.0 335.1 L1087.5 323.9 L1098.3 317.9 L1079.7 305.6 L1062.6 295.9 L1048.5 284.4 L1028.8 251.0 L1018.5 245.1 L1028.1 229.4 L1034.1 214.1 L1021.8 203.1 L1008.3 195.9 L992.8 182.6 L1000.3 177.5 L990.4 166.8 L981.0 167.7 L979.0 165.3 Z"/>
-      <path class="vt" id="tp1" d="M162.9 96.2 L162.7 80.3 L142.5 65.3 L129.7 63.8 L113.8 65.1 L118.2 79.7 L111.9 90.8 L111.6 97.1 L121.8 105.0 L131.3 122.0 L138.7 127.2 L146.8 122.1 L159.6 123.0 L173.5 136.4 L184.2 152.4 L191.4 177.0 L196.3 185.4 L198.9 187.2 L200.2 184.4 L202.8 149.3 L197.1 137.9 L159.7 114.0 L153.6 113.3 L151.3 107.9 L153.6 96.6 L151.8 94.2 L145.9 95.6 L151.9 93.3 L160.3 98.1 L162.9 96.2 Z"/>
-      <path class="vt" id="tp2" d="M66.7 332.0 L51.4 326.9 L46.6 326.9 L41.5 330.8 L35.5 333.0 L34.9 334.4 L34.8 336.0 L35.2 340.9 L37.8 346.9 L43.9 351.9 L44.5 356.6 L50.5 356.0 L55.6 362.0 L58.9 362.4 L62.8 365.1 L67.6 364.5 L73.8 371.4 L84.0 367.1 L87.0 363.5 L100.8 367.4 L104.4 370.4 L105.1 369.0 L103.5 364.5 L97.2 355.2 L89.1 348.0 L84.4 341.4 L71.8 339.9 L66.7 332.0 Z"/>
-      <circle class="vdot" id="vd" r="5" cx="979" cy="165"/>
-    </svg>
-
-    <!-- Navigation spheres (positioned as % of map container, injected by JS) -->
-    <div class="sphere" id="s-invisibles" style="left:81%;top:37%" onclick="openPanel('p-invisibles')">
-      <div class="sphere-ring"></div><div class="sphere-core"></div>
-      <div class="sphere-label">Les Invisibles</div>
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <canvas id="stars"></canvas>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Bienvenue dans la Zone · Vendée 85</p>
+    <h1 class="hero-title">L'esprit<br/><em>Vendée</em></h1>
+    <p class="hero-sub">La plateforme des Zonautes — explorateurs, passionnés, locaux.</p>
+    <div class="map-wrap">
+      <svg id="map-svg" viewBox="25 45 1165 760" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="trace-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#D4A853" stop-opacity=".3"/>
+            <stop offset="55%" stop-color="#D4A853"/>
+            <stop offset="100%" stop-color="#ea5649"/>
+          </linearGradient>
+          <filter id="glow-f" x="-80%" y="-80%" width="260%" height="260%">
+            <feGaussianBlur stdDeviation="8" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="b"/></feMerge>
+          </filter>
+          <filter id="dot-f" x="-500%" y="-500%" width="1100%" height="1100%">
+            <feGaussianBlur stdDeviation="7" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <path class="vf" d="M979.0 165.3 L985.6 160.7 L980.5 146.3 L972.3 142.2 L960.4 130.7 L956.5 135.3 L944.8 138.5 L934.3 123.2 L928.8 124.1 L919.2 116.0 L909.7 131.6 L888.0 128.4 L880.0 123.6 L874.0 124.5 L864.1 118.7 L852.0 117.3 L833.1 108.5 L828.9 103.8 L799.5 93.0 L792.1 83.7 L787.6 80.0 L780.0 70.2 L768.7 65.1 L757.5 50.3 L754.5 51.2 L751.2 56.0 L745.5 56.7 L742.9 62.1 L744.3 73.2 L736.2 84.8 L736.0 94.2 L724.0 93.9 L713.1 84.5 L707.4 82.7 L706.0 88.2 L696.6 87.3 L687.9 96.2 L692.8 107.6 L693.9 120.0 L686.1 133.1 L695.8 140.7 L694.6 149.7 L690.3 162.6 L685.5 166.5 L674.7 169.7 L659.1 172.1 L631.5 187.4 L623.5 180.3 L632.8 159.9 L626.2 149.3 L626.1 100.1 L614.1 81.2 L598.3 94.7 L576.4 103.2 L577.3 124.7 L580.8 152.0 L585.7 165.8 L589.0 185.6 L577.0 184.7 L586.1 200.9 L602.8 224.4 L586.0 232.2 L571.9 243.9 L553.9 238.2 L534.6 231.5 L500.8 226.4 L485.1 211.5 L466.5 215.3 L457.3 204.3 L458.1 190.4 L450.3 172.7 L431.7 176.3 L399.6 168.0 L401.4 149.0 L376.2 147.5 L362.2 140.0 L348.9 116.3 L330.4 101.3 L313.0 74.6 L282.4 90.3 L270.4 116.0 L260.5 141.6 L246.3 153.5 L218.4 192.9 L196.8 195.2 L200.5 258.5 L211.0 270.0 L250.0 301.7 L293.8 354.4 L301.0 378.5 L315.7 379.5 L328.6 400.8 L342.1 429.2 L358.0 451.5 L366.7 460.5 L370.6 482.4 L387.6 565.5 L395.2 570.9 L406.2 566.7 L421.9 585.3 L441.0 600.8 L451.5 609.8 L486.6 630.6 L501.3 645.5 L546.9 656.0 L567.1 657.5 L575.1 663.0 L588.4 689.0 L597.1 715.8 L624.6 713.9 L655.2 718.7 L685.2 734.0 L698.8 768.9 L710.7 773.0 L740.4 784.7 L764.2 763.4 L781.8 747.0 L795.1 750.5 L811.9 745.4 L828.1 754.4 L856.0 723.6 L903.4 724.5 L912.7 712.1 L936.3 708.3 L941.5 758.9 L959.7 749.6 L970.0 753.9 L983.2 758.4 L995.2 737.6 L1029.1 760.5 L1044.4 774.2 L1059.6 775.8 L1078.8 756.8 L1094.1 765.7 L1117.0 750.0 L1139.5 728.3 L1168.3 725.6 L1181.5 705.8 L1154.4 690.2 L1129.4 699.7 L1119.0 693.5 L1121.2 661.4 L1135.5 634.2 L1131.0 603.2 L1119.9 589.8 L1130.7 574.7 L1147.2 570.8 L1144.5 544.1 L1134.9 530.0 L1142.4 521.1 L1143.4 491.6 L1125.9 474.8 L1123.0 466.2 L1130.8 451.8 L1118.4 439.1 L1105.8 429.3 L1120.6 417.6 L1097.8 375.6 L1083.1 365.6 L1079.4 353.6 L1084.0 335.1 L1098.3 317.9 L1079.7 305.6 L1062.6 295.9 L1048.5 284.4 L1028.8 251.0 L1018.5 245.1 L1028.1 229.4 L1034.1 214.1 L1021.8 203.1 L1008.3 195.9 L990.4 166.8 L981.0 167.7 L979.0 165.3 Z"/>
+        <path class="vf" d="M162.9 96.2 L142.5 65.3 L113.8 65.1 L111.9 90.8 L121.8 105.0 L138.7 127.2 L173.5 136.4 L196.3 185.4 L202.8 149.3 L197.1 137.9 L159.7 114.0 L162.9 96.2 Z"/>
+        <path class="vf" d="M66.7 332.0 L41.5 330.8 L34.8 336.0 L37.8 346.9 L44.5 356.6 L55.6 362.0 L67.6 364.5 L84.0 367.1 L100.8 367.4 L103.5 364.5 L89.1 348.0 L66.7 332.0 Z"/>
+        <path class="vo" d="M979.0 165.3 L985.6 160.7 L980.5 146.3 L972.3 142.2 L960.4 130.7 L956.5 135.3 L944.8 138.5 L934.3 123.2 L928.8 124.1 L919.2 116.0 L909.7 131.6 L888.0 128.4 L880.0 123.6 L874.0 124.5 L864.1 118.7 L852.0 117.3 L833.1 108.5 L828.9 103.8 L799.5 93.0 L792.1 83.7 L787.6 80.0 L780.0 70.2 L768.7 65.1 L757.5 50.3 L754.5 51.2 L751.2 56.0 L745.5 56.7 L742.9 62.1 L744.3 73.2 L736.2 84.8 L735.1 87.5 L737.7 88.8 L736.0 94.2 L724.0 93.9 L713.1 84.5 L707.4 82.7 L706.0 88.2 L696.6 87.3 L687.9 96.2 L692.8 107.6 L693.3 116.9 L693.9 120.0 L686.1 133.1 L695.8 140.7 L694.6 149.7 L690.1 153.9 L690.3 162.6 L685.5 166.5 L682.9 164.9 L674.7 169.7 L659.1 172.1 L631.5 187.4 L623.5 180.3 L632.8 159.9 L626.2 149.3 L623.8 136.8 L625.9 131.0 L631.9 129.0 L632.2 123.2 L628.8 118.2 L626.1 100.1 L627.7 91.4 L623.2 87.3 L619.8 82.7 L614.1 81.2 L611.5 81.8 L598.3 94.7 L589.3 96.2 L576.4 103.2 L582.6 113.7 L577.3 124.7 L574.6 136.1 L580.8 152.0 L579.9 155.0 L585.7 165.8 L592.9 171.5 L593.5 177.6 L589.0 185.6 L577.0 184.7 L586.1 200.9 L601.8 215.6 L602.8 224.4 L586.0 232.2 L580.0 230.4 L574.0 232.2 L571.9 243.9 L553.9 238.2 L540.1 230.3 L534.6 231.5 L515.8 223.8 L506.4 223.2 L500.8 226.4 L485.1 211.5 L466.5 215.3 L460.9 212.1 L457.3 204.3 L458.1 190.4 L452.7 183.3 L454.3 180.8 L450.3 172.7 L431.7 176.3 L427.0 172.2 L420.9 173.0 L399.6 168.0 L403.2 163.2 L404.7 154.1 L401.4 149.0 L376.2 147.5 L362.2 140.0 L351.6 128.6 L348.9 116.3 L350.5 110.4 L339.4 106.8 L336.7 108.3 L330.4 101.3 L322.3 80.0 L318.1 75.2 L313.0 74.6 L302.9 82.2 L282.4 90.3 L270.4 116.0 L269.4 128.3 L260.5 141.6 L250.8 149.9 L251.4 156.0 L246.3 153.5 L227.7 170.6 L219.9 184.1 L225.3 186.8 L218.4 192.9 L196.8 195.2 L200.1 223.2 L200.5 258.5 L211.0 270.0 L250.0 301.7 L293.8 354.4 L296.1 370.1 L301.0 378.5 L315.7 379.5 L328.6 400.8 L342.1 429.2 L355.5 442.4 L358.0 451.5 L366.7 460.5 L370.6 482.4 L385.2 543.9 L387.6 565.5 L395.2 570.9 L400.0 567.2 L406.2 566.7 L414.0 572.1 L421.9 585.3 L441.0 600.8 L447.1 601.4 L451.5 609.8 L486.6 630.6 L484.6 636.5 L501.3 645.5 L546.9 656.0 L551.8 653.1 L567.1 657.5 L575.1 663.0 L588.4 689.0 L593.5 710.7 L597.1 715.8 L612.9 718.2 L624.6 713.9 L639.3 719.9 L655.2 718.7 L669.6 723.8 L685.2 734.0 L698.8 768.9 L710.7 773.0 L740.4 784.7 L753.3 780.6 L764.2 763.4 L781.8 747.0 L795.1 750.5 L811.9 745.4 L828.1 754.4 L839.2 750.2 L856.0 723.6 L878.8 721.7 L903.4 724.5 L912.7 712.1 L920.7 716.4 L936.3 708.3 L941.5 758.9 L954.0 758.3 L959.7 749.6 L970.0 753.9 L983.2 758.4 L995.2 737.6 L1015.6 738.6 L1029.1 760.5 L1044.4 774.2 L1059.6 775.8 L1066.5 763.7 L1078.8 756.8 L1094.1 765.7 L1112.4 763.5 L1117.0 750.0 L1128.4 745.8 L1139.5 728.3 L1154.8 732.2 L1168.3 725.6 L1181.5 705.8 L1162.2 697.5 L1154.4 690.2 L1142.8 680.3 L1129.4 699.7 L1119.0 693.5 L1121.2 661.4 L1132.0 655.5 L1135.3 644.1 L1135.5 634.2 L1128.4 618.3 L1131.0 603.2 L1119.9 589.8 L1123.8 582.3 L1130.7 574.7 L1143.0 575.3 L1147.2 570.8 L1144.5 544.1 L1134.9 530.0 L1142.4 521.1 L1134.6 504.5 L1143.4 491.6 L1125.9 474.8 L1116.3 471.9 L1123.0 466.2 L1130.8 451.8 L1118.4 439.1 L1105.8 429.3 L1120.6 417.6 L1101.1 393.5 L1097.8 375.6 L1083.1 365.6 L1079.4 353.6 L1084.0 335.1 L1087.5 323.9 L1098.3 317.9 L1079.7 305.6 L1062.6 295.9 L1048.5 284.4 L1028.8 251.0 L1018.5 245.1 L1028.1 229.4 L1034.1 214.1 L1021.8 203.1 L1008.3 195.9 L992.8 182.6 L1000.3 177.5 L990.4 166.8 L981.0 167.7 L979.0 165.3 Z"/>
+        <path class="vo" d="M162.9 96.2 L162.7 80.3 L142.5 65.3 L129.7 63.8 L113.8 65.1 L118.2 79.7 L111.9 90.8 L111.6 97.1 L121.8 105.0 L131.3 122.0 L138.7 127.2 L146.8 122.1 L159.6 123.0 L173.5 136.4 L184.2 152.4 L191.4 177.0 L196.3 185.4 L198.9 187.2 L200.2 184.4 L202.8 149.3 L197.1 137.9 L159.7 114.0 L153.6 113.3 L151.3 107.9 L153.6 96.6 L151.8 94.2 L145.9 95.6 L151.9 93.3 L160.3 98.1 L162.9 96.2 Z"/>
+        <path class="vo" d="M66.7 332.0 L51.4 326.9 L46.6 326.9 L41.5 330.8 L35.5 333.0 L34.9 334.4 L34.8 336.0 L35.2 340.9 L37.8 346.9 L43.9 351.9 L44.5 356.6 L50.5 356.0 L55.6 362.0 L58.9 362.4 L62.8 365.1 L67.6 364.5 L73.8 371.4 L84.0 367.1 L87.0 363.5 L100.8 367.4 L104.4 370.4 L105.1 369.0 L103.5 364.5 L97.2 355.2 L89.1 348.0 L84.4 341.4 L71.8 339.9 L66.7 332.0 Z"/>
+        <path class="vg" id="gp0" d="M979.0 165.3 L985.6 160.7 L980.5 146.3 L972.3 142.2 L960.4 130.7 L956.5 135.3 L944.8 138.5 L934.3 123.2 L928.8 124.1 L919.2 116.0 L909.7 131.6 L888.0 128.4 L880.0 123.6 L874.0 124.5 L864.1 118.7 L852.0 117.3 L833.1 108.5 L828.9 103.8 L799.5 93.0 L792.1 83.7 L787.6 80.0 L780.0 70.2 L768.7 65.1 L757.5 50.3 L754.5 51.2 L751.2 56.0 L745.5 56.7 L742.9 62.1 L744.3 73.2 L736.2 84.8 L735.1 87.5 L737.7 88.8 L736.0 94.2 L724.0 93.9 L713.1 84.5 L707.4 82.7 L706.0 88.2 L696.6 87.3 L687.9 96.2 L692.8 107.6 L693.3 116.9 L693.9 120.0 L686.1 133.1 L695.8 140.7 L694.6 149.7 L690.1 153.9 L690.3 162.6 L685.5 166.5 L682.9 164.9 L674.7 169.7 L659.1 172.1 L631.5 187.4 L623.5 180.3 L632.8 159.9 L626.2 149.3 L623.8 136.8 L625.9 131.0 L631.9 129.0 L632.2 123.2 L628.8 118.2 L626.1 100.1 L627.7 91.4 L623.2 87.3 L619.8 82.7 L614.1 81.2 L611.5 81.8 L598.3 94.7 L589.3 96.2 L576.4 103.2 L582.6 113.7 L577.3 124.7 L574.6 136.1 L580.8 152.0 L579.9 155.0 L585.7 165.8 L592.9 171.5 L593.5 177.6 L589.0 185.6 L577.0 184.7 L586.1 200.9 L601.8 215.6 L602.8 224.4 L586.0 232.2 L580.0 230.4 L574.0 232.2 L571.9 243.9 L553.9 238.2 L540.1 230.3 L534.6 231.5 L515.8 223.8 L506.4 223.2 L500.8 226.4 L485.1 211.5 L466.5 215.3 L460.9 212.1 L457.3 204.3 L458.1 190.4 L452.7 183.3 L454.3 180.8 L450.3 172.7 L431.7 176.3 L427.0 172.2 L420.9 173.0 L399.6 168.0 L403.2 163.2 L404.7 154.1 L401.4 149.0 L376.2 147.5 L362.2 140.0 L351.6 128.6 L348.9 116.3 L350.5 110.4 L339.4 106.8 L336.7 108.3 L330.4 101.3 L322.3 80.0 L318.1 75.2 L313.0 74.6 L302.9 82.2 L282.4 90.3 L270.4 116.0 L269.4 128.3 L260.5 141.6 L250.8 149.9 L251.4 156.0 L246.3 153.5 L227.7 170.6 L219.9 184.1 L225.3 186.8 L218.4 192.9 L196.8 195.2 L200.1 223.2 L200.5 258.5 L211.0 270.0 L250.0 301.7 L293.8 354.4 L296.1 370.1 L301.0 378.5 L315.7 379.5 L328.6 400.8 L342.1 429.2 L355.5 442.4 L358.0 451.5 L366.7 460.5 L370.6 482.4 L385.2 543.9 L387.6 565.5 L395.2 570.9 L400.0 567.2 L406.2 566.7 L414.0 572.1 L421.9 585.3 L441.0 600.8 L447.1 601.4 L451.5 609.8 L486.6 630.6 L484.6 636.5 L501.3 645.5 L546.9 656.0 L551.8 653.1 L567.1 657.5 L575.1 663.0 L588.4 689.0 L593.5 710.7 L597.1 715.8 L612.9 718.2 L624.6 713.9 L639.3 719.9 L655.2 718.7 L669.6 723.8 L685.2 734.0 L698.8 768.9 L710.7 773.0 L740.4 784.7 L753.3 780.6 L764.2 763.4 L781.8 747.0 L795.1 750.5 L811.9 745.4 L828.1 754.4 L839.2 750.2 L856.0 723.6 L878.8 721.7 L903.4 724.5 L912.7 712.1 L920.7 716.4 L936.3 708.3 L941.5 758.9 L954.0 758.3 L959.7 749.6 L970.0 753.9 L983.2 758.4 L995.2 737.6 L1015.6 738.6 L1029.1 760.5 L1044.4 774.2 L1059.6 775.8 L1066.5 763.7 L1078.8 756.8 L1094.1 765.7 L1112.4 763.5 L1117.0 750.0 L1128.4 745.8 L1139.5 728.3 L1154.8 732.2 L1168.3 725.6 L1181.5 705.8 L1162.2 697.5 L1154.4 690.2 L1142.8 680.3 L1129.4 699.7 L1119.0 693.5 L1121.2 661.4 L1132.0 655.5 L1135.3 644.1 L1135.5 634.2 L1128.4 618.3 L1131.0 603.2 L1119.9 589.8 L1123.8 582.3 L1130.7 574.7 L1143.0 575.3 L1147.2 570.8 L1144.5 544.1 L1134.9 530.0 L1142.4 521.1 L1134.6 504.5 L1143.4 491.6 L1125.9 474.8 L1116.3 471.9 L1123.0 466.2 L1130.8 451.8 L1118.4 439.1 L1105.8 429.3 L1120.6 417.6 L1101.1 393.5 L1097.8 375.6 L1083.1 365.6 L1079.4 353.6 L1084.0 335.1 L1087.5 323.9 L1098.3 317.9 L1079.7 305.6 L1062.6 295.9 L1048.5 284.4 L1028.8 251.0 L1018.5 245.1 L1028.1 229.4 L1034.1 214.1 L1021.8 203.1 L1008.3 195.9 L992.8 182.6 L1000.3 177.5 L990.4 166.8 L981.0 167.7 L979.0 165.3 Z"/>
+        <path class="vg" id="gp1" d="M162.9 96.2 L162.7 80.3 L142.5 65.3 L129.7 63.8 L113.8 65.1 L118.2 79.7 L111.9 90.8 L111.6 97.1 L121.8 105.0 L131.3 122.0 L138.7 127.2 L146.8 122.1 L159.6 123.0 L173.5 136.4 L184.2 152.4 L191.4 177.0 L196.3 185.4 L198.9 187.2 L200.2 184.4 L202.8 149.3 L197.1 137.9 L159.7 114.0 L153.6 113.3 L151.3 107.9 L153.6 96.6 L151.8 94.2 L145.9 95.6 L151.9 93.3 L160.3 98.1 L162.9 96.2 Z"/>
+        <path class="vg" id="gp2" d="M66.7 332.0 L51.4 326.9 L46.6 326.9 L41.5 330.8 L35.5 333.0 L34.9 334.4 L34.8 336.0 L35.2 340.9 L37.8 346.9 L43.9 351.9 L44.5 356.6 L50.5 356.0 L55.6 362.0 L58.9 362.4 L62.8 365.1 L67.6 364.5 L73.8 371.4 L84.0 367.1 L87.0 363.5 L100.8 367.4 L104.4 370.4 L105.1 369.0 L103.5 364.5 L97.2 355.2 L89.1 348.0 L84.4 341.4 L71.8 339.9 L66.7 332.0 Z"/>
+        <path class="vt" id="tp0" d="M979.0 165.3 L985.6 160.7 L980.5 146.3 L972.3 142.2 L960.4 130.7 L956.5 135.3 L944.8 138.5 L934.3 123.2 L928.8 124.1 L919.2 116.0 L909.7 131.6 L888.0 128.4 L880.0 123.6 L874.0 124.5 L864.1 118.7 L852.0 117.3 L833.1 108.5 L828.9 103.8 L799.5 93.0 L792.1 83.7 L787.6 80.0 L780.0 70.2 L768.7 65.1 L757.5 50.3 L754.5 51.2 L751.2 56.0 L745.5 56.7 L742.9 62.1 L744.3 73.2 L736.2 84.8 L735.1 87.5 L737.7 88.8 L736.0 94.2 L724.0 93.9 L713.1 84.5 L707.4 82.7 L706.0 88.2 L696.6 87.3 L687.9 96.2 L692.8 107.6 L693.3 116.9 L693.9 120.0 L686.1 133.1 L695.8 140.7 L694.6 149.7 L690.1 153.9 L690.3 162.6 L685.5 166.5 L682.9 164.9 L674.7 169.7 L659.1 172.1 L631.5 187.4 L623.5 180.3 L632.8 159.9 L626.2 149.3 L623.8 136.8 L625.9 131.0 L631.9 129.0 L632.2 123.2 L628.8 118.2 L626.1 100.1 L627.7 91.4 L623.2 87.3 L619.8 82.7 L614.1 81.2 L611.5 81.8 L598.3 94.7 L589.3 96.2 L576.4 103.2 L582.6 113.7 L577.3 124.7 L574.6 136.1 L580.8 152.0 L579.9 155.0 L585.7 165.8 L592.9 171.5 L593.5 177.6 L589.0 185.6 L577.0 184.7 L586.1 200.9 L601.8 215.6 L602.8 224.4 L586.0 232.2 L580.0 230.4 L574.0 232.2 L571.9 243.9 L553.9 238.2 L540.1 230.3 L534.6 231.5 L515.8 223.8 L506.4 223.2 L500.8 226.4 L485.1 211.5 L466.5 215.3 L460.9 212.1 L457.3 204.3 L458.1 190.4 L452.7 183.3 L454.3 180.8 L450.3 172.7 L431.7 176.3 L427.0 172.2 L420.9 173.0 L399.6 168.0 L403.2 163.2 L404.7 154.1 L401.4 149.0 L376.2 147.5 L362.2 140.0 L351.6 128.6 L348.9 116.3 L350.5 110.4 L339.4 106.8 L336.7 108.3 L330.4 101.3 L322.3 80.0 L318.1 75.2 L313.0 74.6 L302.9 82.2 L282.4 90.3 L270.4 116.0 L269.4 128.3 L260.5 141.6 L250.8 149.9 L251.4 156.0 L246.3 153.5 L227.7 170.6 L219.9 184.1 L225.3 186.8 L218.4 192.9 L196.8 195.2 L200.1 223.2 L200.5 258.5 L211.0 270.0 L250.0 301.7 L293.8 354.4 L296.1 370.1 L301.0 378.5 L315.7 379.5 L328.6 400.8 L342.1 429.2 L355.5 442.4 L358.0 451.5 L366.7 460.5 L370.6 482.4 L385.2 543.9 L387.6 565.5 L395.2 570.9 L400.0 567.2 L406.2 566.7 L414.0 572.1 L421.9 585.3 L441.0 600.8 L447.1 601.4 L451.5 609.8 L486.6 630.6 L484.6 636.5 L501.3 645.5 L546.9 656.0 L551.8 653.1 L567.1 657.5 L575.1 663.0 L588.4 689.0 L593.5 710.7 L597.1 715.8 L612.9 718.2 L624.6 713.9 L639.3 719.9 L655.2 718.7 L669.6 723.8 L685.2 734.0 L698.8 768.9 L710.7 773.0 L740.4 784.7 L753.3 780.6 L764.2 763.4 L781.8 747.0 L795.1 750.5 L811.9 745.4 L828.1 754.4 L839.2 750.2 L856.0 723.6 L878.8 721.7 L903.4 724.5 L912.7 712.1 L920.7 716.4 L936.3 708.3 L941.5 758.9 L954.0 758.3 L959.7 749.6 L970.0 753.9 L983.2 758.4 L995.2 737.6 L1015.6 738.6 L1029.1 760.5 L1044.4 774.2 L1059.6 775.8 L1066.5 763.7 L1078.8 756.8 L1094.1 765.7 L1112.4 763.5 L1117.0 750.0 L1128.4 745.8 L1139.5 728.3 L1154.8 732.2 L1168.3 725.6 L1181.5 705.8 L1162.2 697.5 L1154.4 690.2 L1142.8 680.3 L1129.4 699.7 L1119.0 693.5 L1121.2 661.4 L1132.0 655.5 L1135.3 644.1 L1135.5 634.2 L1128.4 618.3 L1131.0 603.2 L1119.9 589.8 L1123.8 582.3 L1130.7 574.7 L1143.0 575.3 L1147.2 570.8 L1144.5 544.1 L1134.9 530.0 L1142.4 521.1 L1134.6 504.5 L1143.4 491.6 L1125.9 474.8 L1116.3 471.9 L1123.0 466.2 L1130.8 451.8 L1118.4 439.1 L1105.8 429.3 L1120.6 417.6 L1101.1 393.5 L1097.8 375.6 L1083.1 365.6 L1079.4 353.6 L1084.0 335.1 L1087.5 323.9 L1098.3 317.9 L1079.7 305.6 L1062.6 295.9 L1048.5 284.4 L1028.8 251.0 L1018.5 245.1 L1028.1 229.4 L1034.1 214.1 L1021.8 203.1 L1008.3 195.9 L992.8 182.6 L1000.3 177.5 L990.4 166.8 L981.0 167.7 L979.0 165.3 Z"/>
+        <path class="vt" id="tp1" d="M162.9 96.2 L162.7 80.3 L142.5 65.3 L129.7 63.8 L113.8 65.1 L118.2 79.7 L111.9 90.8 L111.6 97.1 L121.8 105.0 L131.3 122.0 L138.7 127.2 L146.8 122.1 L159.6 123.0 L173.5 136.4 L184.2 152.4 L191.4 177.0 L196.3 185.4 L198.9 187.2 L200.2 184.4 L202.8 149.3 L197.1 137.9 L159.7 114.0 L153.6 113.3 L151.3 107.9 L153.6 96.6 L151.8 94.2 L145.9 95.6 L151.9 93.3 L160.3 98.1 L162.9 96.2 Z"/>
+        <path class="vt" id="tp2" d="M66.7 332.0 L51.4 326.9 L46.6 326.9 L41.5 330.8 L35.5 333.0 L34.9 334.4 L34.8 336.0 L35.2 340.9 L37.8 346.9 L43.9 351.9 L44.5 356.6 L50.5 356.0 L55.6 362.0 L58.9 362.4 L62.8 365.1 L67.6 364.5 L73.8 371.4 L84.0 367.1 L87.0 363.5 L100.8 367.4 L104.4 370.4 L105.1 369.0 L103.5 364.5 L97.2 355.2 L89.1 348.0 L84.4 341.4 L71.8 339.9 L66.7 332.0 Z"/>
+        <circle class="vdot" id="vd" r="6" cx="979" cy="165"/>
+      </svg>
     </div>
-    <div class="sphere" id="s-rando" style="left:22%;top:47%" onclick="openPanel('p-rando')">
-      <div class="sphere-ring"></div><div class="sphere-core"></div>
-      <div class="sphere-label">RandoZones</div>
-    </div>
-    <div class="sphere" id="s-quizz" style="left:52%;top:57%" onclick="openPanel('p-quizz')">
-      <div class="sphere-ring"></div><div class="sphere-core"></div>
-      <div class="sphere-label">Quizz</div>
-    </div>
-    <div class="sphere" id="s-meteo" style="left:12%;top:12%" onclick="openPanel('p-meteo')">
-      <div class="sphere-ring"></div><div class="sphere-core"></div>
-      <div class="sphere-label">Météo</div>
-    </div>
-    <div class="sphere" id="s-patois" style="left:74%;top:75%" onclick="openPanel('p-patois')">
-      <div class="sphere-ring"></div><div class="sphere-core"></div>
-      <div class="sphere-label">Patois</div>
-    </div>
-    <div class="sphere" id="s-zonautes" style="left:36%;top:32%" onclick="openPanel('p-zonautes')">
-      <div class="sphere-ring"></div><div class="sphere-core"></div>
-      <div class="sphere-label">Zonautes</div>
+    <div class="hero-actions">
+      <a href="#invisibles" class="hero-btn hero-btn-primary">Découvrir les Invisibles</a>
+      <a href="#zonautes" class="hero-btn hero-btn-secondary">Devenir Zonaute</a>
     </div>
   </div>
-
-  <p class="world-hint">Cliquez sur une sphère pour explorer</p>
-</div>
-
-<!-- ══════════════════════════════════
-     PANELS
-══════════════════════════════════ -->
+  <div class="hero-scroll"><span>Défiler</span><div class="scroll-line"></div></div>
+</section>
 
 <!-- LES INVISIBLES -->
-<div class="panel" id="p-invisibles">
-  <button class="panel-close" onclick="closePanel('p-invisibles')">✕</button>
-  <div class="inv-scene">
-    <div class="inv-left">
-      <div class="inv-eyebrow">Jeu événement · Vendée 2025</div>
+<section id="invisibles">
+  <div class="inv-grid">
+    <div class="reveal">
+      <span class="s-label" style="color:var(--gold)">Jeu événement · Vendée 2025</span>
       <h2 class="inv-title">LES<br/><span class="glitch" data-t="INVISIBLES">INVISIBLES</span></h2>
-      <p class="inv-desc">Un jeu grandeur nature inédit créé par ZONE85. Des énigmes cachées à travers tout le territoire vendéen. Des indices, des lieux secrets, des rencontres improbables. Serez-vous assez curieux pour devenir l'un des Invisibles ?</p>
-      <div class="inv-count-row">
-        <div class="inv-c"><div class="inv-c-n" id="ij">--</div><div class="inv-c-l">Jours</div></div>
-        <div class="inv-c"><div class="inv-c-n" id="ih">--</div><div class="inv-c-l">Heures</div></div>
-        <div class="inv-c"><div class="inv-c-n" id="im">--</div><div class="inv-c-l">Min</div></div>
-        <div class="inv-c"><div class="inv-c-n" id="is">--</div><div class="inv-c-l">Sec</div></div>
+      <p class="inv-desc">Un jeu grandeur nature inédit créé par ZONE85. Des énigmes cachées à travers tout le territoire vendéen. Serez-vous assez curieux pour devenir l'un des Invisibles ?</p>
+      <div class="countdown">
+        <div class="cd-unit"><div class="cd-n" id="ij">--</div><div class="cd-l">Jours</div></div>
+        <div class="cd-unit"><div class="cd-n" id="ih">--</div><div class="cd-l">Heures</div></div>
+        <div class="cd-unit"><div class="cd-n" id="im">--</div><div class="cd-l">Min</div></div>
+        <div class="cd-unit"><div class="cd-n" id="is">--</div><div class="cd-l">Sec</div></div>
       </div>
-      <button class="inv-btn">Je veux en savoir plus →</button>
+      <a href="#" class="btn-coral">En savoir plus →</a>
     </div>
-    <div class="inv-right-panel">
-      <div class="inv-mystery-box">
-        <p class="inv-mystery-quote">"Ils sont parmi vous. Ils ne parlent pas. Ils observent. Et le 21 septembre 2025, ils se révèlent dans les recoins secrets de la Vendée…"</p>
-        <div class="inv-mystery-sig">— Les Invisibles · ZONE85</div>
+    <div class="inv-mystery reveal" style="transition-delay:.2s">
+      <p class="inv-mystery-quote">"Ils sont parmi vous. Ils ne parlent pas. Ils observent. Et le 21 septembre 2025, ils se révèlent dans les recoins secrets de la Vendée…"</p>
+      <div class="inv-mystery-sig">— Les Invisibles · ZONE85</div>
+      <div class="inv-date">
+        <div class="inv-date-icon">📅</div>
+        <div class="inv-date-info"><strong>21 septembre 2025 · 10h00</strong>Partout en Vendée — département 85</div>
       </div>
     </div>
   </div>
-</div>
+</section>
 
 <!-- RANDOZONES -->
-<div class="panel" id="p-rando">
-  <button class="panel-close" onclick="closePanel('p-rando')">✕</button>
-  <div class="rando-scene">
-    <div class="rando-eyebrow">Les Zonautes ont marché pour toi</div>
-    <h2 class="rando-title">Rando<span>Zones</span></h2>
-    <div class="rando-cards">
-      <div class="rc"><div class="rc-img c1"><span class="rc-tag">🌊 Côte · Facile</span></div><div class="rc-body"><div class="rc-name">La Côte de Lumière</div><div class="rc-meta"><span>📍 Saint-Jean-de-Monts</span><span>⏱ 3h30</span><span>📏 14 km</span></div><p class="rc-desc">Entre dunes et pinèdes, ce sentier longe l'Atlantique avec des panoramas époustouflants au coucher du soleil.</p><a href="#" class="rc-link">Refaire cette rando →</a></div></div>
-      <div class="rc"><div class="rc-img c2"><span class="rc-tag">🌿 Bocage · Moyen</span></div><div class="rc-body"><div class="rc-name">Les Chemins du Bocage</div><div class="rc-meta"><span>📍 Pouzauges</span><span>⏱ 4h</span><span>📏 16 km</span></div><p class="rc-desc">Haies, chemins creux et petits ponts de pierre. Le bocage vendéen dans toute son intimité.</p><a href="#" class="rc-link">Refaire cette rando →</a></div></div>
-      <div class="rc"><div class="rc-img c3"><span class="rc-tag">🦢 Marais · Facile</span></div><div class="rc-body"><div class="rc-name">Le Marais Breton au Lever</div><div class="rc-meta"><span>📍 Beauvoir-sur-Mer</span><span>⏱ 2h</span><span>📏 8 km</span></div><p class="rc-desc">Partir à l'aube dans le marais breton vendéen — brume sur les canaux, aigrettes blanches, silence absolu.</p><a href="#" class="rc-link">Refaire cette rando →</a></div></div>
-    </div>
-  </div>
-</div>
-
-<!-- QUIZZ -->
-<div class="panel" id="p-quizz">
-  <button class="panel-close" onclick="closePanel('p-quizz')">✕</button>
-  <div class="quizz-scene">
-    <div class="qz-eyebrow">Pour les vrais Zonautes</div>
-    <h2 class="qz-title">Tu connais ta <span>Vendée</span> ?</h2>
-    <div class="qz-box">
-      <div class="qz-bar"><div class="qz-bar-fill" id="qbar" style="width:0%"></div></div>
-      <div id="qarea"><div class="qz-q" id="qq"></div><div class="qz-opts" id="qopts"></div><div class="qz-footer"><span class="qz-sc" id="qsc">0 / 5</span><button class="qz-next" id="qnxt" onclick="qNext()">Suivant →</button></div></div>
-      <div id="qres" class="qz-result" style="display:none"><div class="qz-res-num" id="qrn"></div><div class="qz-res-msg" id="qrm"></div><button class="qz-restart" onclick="qStart()">Recommencer</button></div>
-    </div>
-  </div>
-</div>
-
-<!-- MÉTÉO -->
-<div class="panel" id="p-meteo">
-  <button class="panel-close" onclick="closePanel('p-meteo')">✕</button>
-  <div class="meteo-scene">
-    <div class="mt-eyebrow">La semaine en Vendée</div>
-    <h2 class="mt-title">Météo<span>85</span></h2>
-    <div class="mt-today">
-      <div class="mt-today-icon">☀️</div>
+<section id="rando">
+  <div class="rando-inner">
+    <div class="rando-header reveal">
       <div>
-        <div class="mt-today-temp">23°C</div>
-        <div class="mt-today-cond">Ensoleillé · Vent O 15 km/h · Hum. 62%</div>
-        <div class="mt-quip">"Tché bé temps ! On sort les vélos Zonautes !"</div>
+        <span class="s-label">Les Zonautes ont marché pour toi</span>
+        <h2 class="s-title">Rando<span style="color:var(--coral)">Zones</span></h2>
+      </div>
+      <a href="#" class="btn-coral" style="white-space:nowrap;flex-shrink:0">Toutes les randos →</a>
+    </div>
+    <div class="rando-cards">
+      <div class="rc reveal" style="transition-delay:.05s">
+        <div class="rc-thumb g1"><span class="rc-badge">🌊 Côte · Facile · 14 km</span></div>
+        <div class="rc-body">
+          <div class="rc-name">La Côte de Lumière</div>
+          <div class="rc-meta"><span>📍 Saint-Jean-de-Monts</span><span>⏱ 3h30</span></div>
+          <p class="rc-desc">Entre dunes et pinèdes, ce sentier longe l'Atlantique avec des panoramas époustouflants au coucher du soleil.</p>
+          <a href="#" class="rc-link">Refaire cette rando →</a>
+        </div>
+      </div>
+      <div class="rc reveal" style="transition-delay:.1s">
+        <div class="rc-thumb g2"><span class="rc-badge">🌿 Bocage · Moyen · 16 km</span></div>
+        <div class="rc-body">
+          <div class="rc-name">Les Chemins du Bocage</div>
+          <div class="rc-meta"><span>📍 Pouzauges</span><span>⏱ 4h</span></div>
+          <p class="rc-desc">Haies, chemins creux et petits ponts de pierre. Le bocage vendéen dans toute son intimité sauvage.</p>
+          <a href="#" class="rc-link">Refaire cette rando →</a>
+        </div>
+      </div>
+      <div class="rc reveal" style="transition-delay:.15s">
+        <div class="rc-thumb g3"><span class="rc-badge">🦢 Marais · Facile · 8 km</span></div>
+        <div class="rc-body">
+          <div class="rc-name">Le Marais Breton au Lever</div>
+          <div class="rc-meta"><span>📍 Beauvoir-sur-Mer</span><span>⏱ 2h</span></div>
+          <p class="rc-desc">Partir à l'aube dans le marais breton vendéen — brume sur les canaux, aigrettes blanches, silence absolu.</p>
+          <a href="#" class="rc-link">Refaire cette rando →</a>
+        </div>
       </div>
     </div>
-    <div class="mt-week">
-      <div class="mt-day"><div class="mt-day-n">Mer</div><div class="mt-day-i">🌤️</div><div class="mt-day-t">21°</div><div class="mt-day-m">14°</div></div>
-      <div class="mt-day"><div class="mt-day-n">Jeu</div><div class="mt-day-i">⛅</div><div class="mt-day-t">18°</div><div class="mt-day-m">12°</div></div>
-      <div class="mt-day"><div class="mt-day-n">Ven</div><div class="mt-day-i">🌧️</div><div class="mt-day-t">16°</div><div class="mt-day-m">11°</div></div>
-      <div class="mt-day"><div class="mt-day-n">Sam</div><div class="mt-day-i">🌦️</div><div class="mt-day-t">19°</div><div class="mt-day-m">13°</div></div>
-      <div class="mt-day"><div class="mt-day-n">Dim</div><div class="mt-day-i">☀️</div><div class="mt-day-t">24°</div><div class="mt-day-m">15°</div></div>
+  </div>
+</section>
+
+<!-- QUIZZ -->
+<section id="quizz">
+  <div class="quizz-inner">
+    <div class="qz-info reveal">
+      <span class="s-label" style="color:var(--gold)">Pour les vrais Zonautes</span>
+      <h2 class="s-title" style="color:#fff">Tu connais ta<br/><span style="color:var(--gold)">Vendée ?</span></h2>
+      <p style="font-size:.9rem;color:rgba(255,255,255,.45);line-height:1.9;max-width:380px;margin-top:1rem">5 questions, un score, et peut-être enfin le titre de Vrai Zonaute. La Vendée est plus secrète qu'elle n'y paraît.</p>
+    </div>
+    <div class="reveal" style="transition-delay:.2s">
+      <div class="qz-card">
+        <div class="qz-prog"><div class="qz-prog-fill" id="qbar" style="width:0%"></div></div>
+        <div id="qarea">
+          <div class="qz-q" id="qq"></div>
+          <div class="qz-opts" id="qopts"></div>
+          <div class="qz-foot">
+            <span class="qz-sc" id="qsc">0 / 5</span>
+            <button class="qz-next" id="qnxt" onclick="qNext()">Suivant →</button>
+          </div>
+        </div>
+        <div id="qres" class="qz-result" style="display:none">
+          <div class="qz-res-n" id="qrn"></div>
+          <div class="qz-res-m" id="qrm"></div>
+          <button class="qz-restart" onclick="qStart()">Recommencer</button>
+        </div>
+      </div>
     </div>
   </div>
-</div>
+</section>
+
+<!-- MÉTÉO -->
+<section id="meteo">
+  <div class="meteo-inner">
+    <div class="meteo-header reveal">
+      <span class="s-label">La semaine en Vendée</span>
+      <h2 class="s-title">Météo<span style="color:var(--coral)">85</span></h2>
+    </div>
+    <div class="meteo-grid reveal" style="transition-delay:.15s">
+      <div class="mt-now">
+        <div class="mt-now-top">
+          <div class="mt-icon">☀️</div>
+          <div><div class="mt-temp">23°C</div><div class="mt-cond">Ensoleillé · Vent O 15 km/h</div></div>
+        </div>
+        <div class="mt-quip">"Tché bé temps ! On sort les vélos Zonautes !"</div>
+        <div class="mt-details">
+          <div class="mt-det"><div class="mt-det-l">Humidité</div><div class="mt-det-v">62%</div></div>
+          <div class="mt-det"><div class="mt-det-l">UV</div><div class="mt-det-v">6</div></div>
+          <div class="mt-det"><div class="mt-det-l">Pression</div><div class="mt-det-v">1018 hPa</div></div>
+          <div class="mt-det"><div class="mt-det-l">Visibilité</div><div class="mt-det-v">Excellente</div></div>
+        </div>
+      </div>
+      <div class="mt-week">
+        <div class="mt-day"><div class="mt-day-n">Mer</div><div class="mt-day-i">🌤️</div><div class="mt-day-h">21°</div><div class="mt-day-l">14°</div></div>
+        <div class="mt-day"><div class="mt-day-n">Jeu</div><div class="mt-day-i">⛅</div><div class="mt-day-h">18°</div><div class="mt-day-l">12°</div></div>
+        <div class="mt-day"><div class="mt-day-n">Ven</div><div class="mt-day-i">🌧️</div><div class="mt-day-h">16°</div><div class="mt-day-l">11°</div></div>
+        <div class="mt-day"><div class="mt-day-n">Sam</div><div class="mt-day-i">🌦️</div><div class="mt-day-h">19°</div><div class="mt-day-l">13°</div></div>
+        <div class="mt-day"><div class="mt-day-n">Dim</div><div class="mt-day-i">☀️</div><div class="mt-day-h">24°</div><div class="mt-day-l">15°</div></div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- PATOIS -->
-<div class="panel" id="p-patois">
-  <button class="panel-close" onclick="closePanel('p-patois')">✕</button>
-  <div class="patois-scene">
-    <div class="pa-eyebrow">Parler local · Expressions vendéennes</div>
-    <h2 class="pa-title">Chez nous<br/>on ne dit pas… <span>on dit ça !</span></h2>
-    <div class="pa-cards">
-      <div class="pc"><div class="pc-visual" style="background:#0d1a26"><div class="pc-tag">Expression vendéenne</div><div class="pc-word">"pétaï de volàie"</div><div class="pc-emoji">🐄</div><div class="pc-badge">ZONE85</div></div><div class="pc-body"><p class="pc-text">Allez, on parle de talent ! "Pétaï de volàie", ce n'est pas juste faire du bruit, non ! C'est une vraie maîtrise, régulière, presque artistique… Regard droit, air innocent. Et puis : <em>"Bon d'là… i en pète de volàie !"</em> — En Vendée, on assume… mais toujours après le suspense 🤪</p><div class="pc-tags"><span>#vendée</span><span>#parlerlocal</span><span>#zone85</span></div></div></div>
-      <div class="pc"><div class="pc-visual" style="background:#1a2d0a"><div class="pc-tag">Expression vendéenne</div><div class="pc-word">"tché bé temps"</div><div class="pc-emoji">☀️</div><div class="pc-badge">ZONE85</div></div><div class="pc-body"><p class="pc-text">Le Vendéen ne dit pas "quel beau temps !" Non. Il lève les yeux au ciel, hoche la tête avec satisfaction et lâche simplement : <em>"Tché bé temps !"</em> C'est la même chose… mais en mieux. Plus sincère. Plus ancré 🌞</p><div class="pc-tags"><span>#vendée</span><span>#parlerlocal</span><span>#zone85</span></div></div></div>
-      <div class="pc"><div class="pc-visual" style="background:#1a0a0a"><div class="pc-tag">Expression vendéenne</div><div class="pc-word">"i fait frette"</div><div class="pc-emoji">🥶</div><div class="pc-badge">ZONE85</div></div><div class="pc-body"><p class="pc-text">En Vendée, on ne dit pas "il fait froid". On dit <em>"i fait frette"</em>. C'est pas juste une info météo — c'est un ressenti, un frisson partagé. Ce matin, le givre est sur les feuilles et le café va être encore meilleur 🫖</p><div class="pc-tags"><span>#vendée</span><span>#parlerlocal</span><span>#zone85</span></div></div></div>
+<section id="patois">
+  <div class="patois-inner">
+    <div class="patois-header reveal">
+      <span class="s-label" style="color:var(--gold)">Parler local · Expressions vendéennes</span>
+      <h2 class="s-title" style="color:#fff;margin-bottom:.8rem">Chez nous on ne dit pas… <span style="color:var(--coral)">on dit ça !</span></h2>
+      <p style="font-size:.85rem;color:rgba(255,255,255,.4);line-height:1.9;max-width:500px">Le patois vendéen, c'est une façon d'être, un rythme, une identité. Un mot à la fois.</p>
+    </div>
+    <div class="pc-grid">
+      <div class="pc reveal" style="transition-delay:.05s">
+        <div class="pc-top pc-bg1"><div class="pc-emoji">🐄</div><div class="pc-tag-s">Expression vendéenne</div><div class="pc-word">"pétaï de volàie"</div></div>
+        <div class="pc-bottom"><p class="pc-text">Allez, on parle de talent ! "Pétaï de volàie", ce n'est pas juste faire du bruit — c'est une vraie maîtrise. <em>"Bon d'là… i en pète de volàie !"</em> En Vendée, on assume 🤪</p><div class="pc-pills"><span class="pc-pill">#vendée</span><span class="pc-pill">#parlerlocal</span><span class="pc-pill">#zone85</span></div></div>
+      </div>
+      <div class="pc reveal" style="transition-delay:.1s">
+        <div class="pc-top pc-bg2"><div class="pc-emoji">☀️</div><div class="pc-tag-s">Expression vendéenne</div><div class="pc-word">"tché bé temps"</div></div>
+        <div class="pc-bottom"><p class="pc-text">Le Vendéen ne dit pas "quel beau temps !" Il lève les yeux au ciel et lâche simplement : <em>"Tché bé temps !"</em> C'est la même chose… mais en mieux 🌞</p><div class="pc-pills"><span class="pc-pill">#vendée</span><span class="pc-pill">#parlerlocal</span><span class="pc-pill">#zone85</span></div></div>
+      </div>
+      <div class="pc reveal" style="transition-delay:.15s">
+        <div class="pc-top pc-bg3"><div class="pc-emoji">🥶</div><div class="pc-tag-s">Expression vendéenne</div><div class="pc-word">"i fait frette"</div></div>
+        <div class="pc-bottom"><p class="pc-text">On ne dit pas "il fait froid" — on dit <em>"i fait frette"</em>. C'est pas une info météo, c'est un frisson partagé. Ce matin, le givre est sur les feuilles 🫖</p><div class="pc-pills"><span class="pc-pill">#vendée</span><span class="pc-pill">#parlerlocal</span><span class="pc-pill">#zone85</span></div></div>
+      </div>
     </div>
   </div>
-</div>
+</section>
 
 <!-- ZONAUTES -->
-<div class="panel" id="p-zonautes">
-  <button class="panel-close" onclick="closePanel('p-zonautes')">✕</button>
-  <div class="zon-scene">
-    <div class="zon-badge"><div class="dot"></div><span>Communauté active</span></div>
-    <h2 class="zon-title">LES<em>ZONAUTES</em></h2>
-    <p class="zon-desc">Une tribu de passionnés de la Vendée. Des gens qui aiment leur territoire, qui le parcourent, qui le racontent. Pas des touristes — des Zonautes. Rejoins-nous.</p>
-    <div class="zon-stats">
-      <div class="zon-stat"><div class="zon-stat-n">4<span>k+</span></div><div class="zon-stat-l">Zonautes</div></div>
-      <div class="zon-stat"><div class="zon-stat-n"><span>+</span>120</div><div class="zon-stat-l">Randos partagées</div></div>
-      <div class="zon-stat"><div class="zon-stat-n">85<span>!</span></div><div class="zon-stat-l">Le département</div></div>
+<section id="zonautes">
+  <div class="zon-inner">
+    <div class="zon-left reveal">
+      <span class="s-label">Espace Zonautes</span>
+      <h2 class="s-title">Rejoins la<br/><span style="color:var(--coral)">tribu</span></h2>
+      <p class="zon-desc">Les Zonautes, ce sont les passionnés de la Vendée. Des gens qui aiment leur territoire, qui le parcourent, qui le racontent. Pas des touristes — des locaux dans l'âme.</p>
+      <div class="zon-stats">
+        <div class="zon-stat"><div class="zon-stat-n">4k<sup>+</sup></div><div class="zon-stat-l">Zonautes</div></div>
+        <div class="zon-stat"><div class="zon-stat-n">120<sup>+</sup></div><div class="zon-stat-l">Randos</div></div>
+        <div class="zon-stat"><div class="zon-stat-n">85<sup>!</sup></div><div class="zon-stat-l">Département</div></div>
+      </div>
+      <div class="zon-perks">
+        <div class="zon-perk"><div class="zon-perk-icon">🗺️</div><div class="zon-perk-text"><h4>Randos exclusives</h4><p>Itinéraires secrets partagés par la communauté.</p></div></div>
+        <div class="zon-perk"><div class="zon-perk-icon">🎮</div><div class="zon-perk-text"><h4>Priority Les Invisibles</h4><p>Inscriptions prioritaires et indices en avant-première.</p></div></div>
+        <div class="zon-perk"><div class="zon-perk-icon">📱</div><div class="zon-perk-text"><h4>Défis hebdomadaires</h4><p>Classements et récompenses pour les plus curieux.</p></div></div>
+      </div>
     </div>
-    <button class="zon-cta">Devenir Zonaute →</button>
+    <div class="reveal" style="transition-delay:.2s">
+      <div class="zon-card">
+        <div class="zon-card-badge"><div class="zon-badge-dot"></div><span>Inscriptions ouvertes</span></div>
+        <h3>Crée ton compte<br/>Zonaute</h3>
+        <p class="zon-card-desc">Rejoins la communauté et accède à tous les contenus exclusifs ZONE85.</p>
+        <div class="zon-form">
+          <input class="zon-input" type="text" placeholder="Ton prénom"/>
+          <input class="zon-input" type="email" placeholder="Ton adresse email"/>
+          <input class="zon-input" type="password" placeholder="Mot de passe"/>
+          <button class="zon-submit">Devenir Zonaute →</button>
+        </div>
+        <p class="zon-sep">— déjà membre ? —</p>
+        <a href="#" class="zon-login">Se connecter à mon espace</a>
+        <p class="zon-note">En rejoignant, tu acceptes de recevoir les news ZONE85.</p>
+      </div>
+    </div>
   </div>
-</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <svg viewBox="0 0 340.157 340.157" xmlns="http://www.w3.org/2000/svg">
+        <path transform="matrix(1,0,0,-1,0,340.157)" d="M0 0H340.158V340.158H0Z" fill="#11314e"/>
+        <defs><clipPath id="fcl"><path transform="matrix(1,0,0,-1,0,340.157)" d="M0 340.157H340.157V0H0Z"/></clipPath></defs>
+        <g clip-path="url(#fcl)">
+          <path transform="matrix(1,0,0,-1,70.878,155.01451)" d="M0 0C5.001 2.447 9.718 3.689 14.021 3.695 10.684 8.792 2.848 11.98-9.487 5.945-15.118 3.189-33.267-12.827-33.267-12.827H-17.073C-11.218-7.899-3.607-1.765 0 0" fill="#ea5649"/>
+          <path transform="matrix(1,0,0,-1,84.9302,155.33112)" d="M0 0C-3.425 0-7.52-.955-12.288-3.288-17.919-6.043-36.069-22.06-36.069-22.06H5.539C5.539-22.06 10.339-20.747 12.542-14.747 14.67-8.948 10.479 0 0 0" fill="#ea5649"/>
+          <path transform="matrix(1,0,0,-1,135.1704,144.73252)" d="M0 0V-5.861L-16.737-25.136H.544V-32.508L-28.339-32.447V-26.586L-11.601-7.311-27.734-7.25V0Z" fill="#ffffff"/>
+          <path transform="matrix(1,0,0,-1,255.783,152.91942)" d="M0 0C0-2.283 1.57-3.568 4.425-3.568 7.326-3.568 8.896-2.283 8.896 0 8.896 2.378 7.326 3.663 4.425 3.663 1.57 3.663 0 2.378 0 0M-.808-14.081C-.808-16.792 1.047-18.267 4.425-18.267 7.849-18.267 9.752-16.792 9.752-14.081 9.752-11.417 7.849-9.942 4.472-9.942 1.047-9.942-.808-11.417-.808-14.081M16.174.476C16.174-2.331 14.652-4.947 12.178-6.375 15.651-7.944 17.886-11.131 17.886-14.842 17.886-20.835 12.606-24.641 4.425-24.641-3.709-24.641-8.942-20.883-8.942-14.984-8.942-11.226-6.564-7.944-2.853-6.375-5.565-4.805-7.278-2.093-7.278.713-7.278 6.089-2.663 9.514 4.376 9.514 11.607 9.514 16.174 5.994 16.174.476" fill="#ea5649"/>
+          <path transform="matrix(1,0,0,-1,289.6086,155.86882)" d="M0 0C7.848 0 12.938-4.139 12.938-10.085 12.938-17.125 7.564-21.692-.666-21.692-5.137-21.692-10.275-20.027-13.89-17.505L-10.418-10.751C-7.801-13.51-4.757-14.937-1.712-14.937 1.665-14.937 3.568-13.415 3.568-10.703 3.568-8.182 1.665-6.755-1.665-6.755-3.425-6.755-8.896-6.802-10.988-6.945V12.083H11.416V5.042H-2.997V-.048C-2.284 0-.666 0 0 0" fill="#ea5649"/>
+        </g>
+      </svg>
+      <p>La plateforme des passionnés de la Vendée. Pour les Zonautes, par les Zonautes.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Explorer</h4>
+      <a href="#invisibles">Les Invisibles</a>
+      <a href="#rando">RandoZones</a>
+      <a href="#quizz">Quizz</a>
+      <a href="#meteo">Météo 85</a>
+    </div>
+    <div class="footer-col">
+      <h4>Communauté</h4>
+      <a href="#zonautes">Espace Zonautes</a>
+      <a href="#patois">Patois vendéen</a>
+      <a href="#">Newsletter</a>
+      <a href="#">Partenaires</a>
+    </div>
+    <div class="footer-col">
+      <h4>ZONE85</h4>
+      <a href="#">À propos</a>
+      <a href="#">Contact</a>
+      <a href="#">Mentions légales</a>
+      <a href="#">zone85.fr</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 ZONE85 — L'Esprit Vendée</span>
+    <div class="footer-socials">
+      <a href="#">Instagram</a>
+      <a href="#">Facebook</a>
+      <a href="#">TikTok</a>
+    </div>
+  </div>
+</footer>
 
 <script>
-/* ── CURSOR ─────────────────────────── */
-const cur=document.getElementById('cursor');
-const cr=cur.querySelector('.ring'),cd=cur.querySelector('.dot');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cd.style.left=mx+'px';cd.style.top=my+'px'});
-document.querySelectorAll('button,a,.sphere,.enter-btn').forEach(el=>{
-  el.addEventListener('mouseenter',()=>document.body.classList.add('hovering'));
-  el.addEventListener('mouseleave',()=>document.body.classList.remove('hovering'));
-});
-(function trackRing(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;cr.style.left=rx+'px';cr.style.top=ry+'px';requestAnimationFrame(trackRing)})();
-
-/* ── STARS ──────────────────────────── */
+/* STARS */
 (()=>{
   const cv=document.getElementById('stars'),cx=cv.getContext('2d');
   let W,H,stars=[];
-  const resize=()=>{W=cv.width=innerWidth;H=cv.height=innerHeight;stars=Array.from({length:120},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.2+.2,a:Math.random(),sp:Math.random()*.015+.003}))};
+  const resize=()=>{
+    const hero=document.getElementById('hero');
+    W=cv.width=hero.offsetWidth;H=cv.height=hero.offsetHeight;
+    stars=Array.from({length:100},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.1+.2,a:Math.random(),sp:Math.random()*.012+.003}));
+  };
   resize();addEventListener('resize',resize);
   const draw=()=>{
     cx.clearRect(0,0,W,H);
-    stars.forEach(s=>{
-      s.a+=s.sp;const a=Math.sin(s.a)*.5+.5;
-      cx.save();cx.globalAlpha=a*.25;cx.fillStyle='#fff';cx.beginPath();cx.arc(s.x,s.y,s.r,0,Math.PI*2);cx.fill();cx.restore();
-    });
+    stars.forEach(s=>{s.a+=s.sp;const a=Math.sin(s.a)*.5+.5;cx.save();cx.globalAlpha=a*.2;cx.fillStyle='#fff';cx.beginPath();cx.arc(s.x,s.y,s.r,0,Math.PI*2);cx.fill();cx.restore()});
     requestAnimationFrame(draw);
   };draw();
 })();
 
-/* ── ENTER WORLD ────────────────────── */
-function enterWorld(){
-  document.getElementById('intro').classList.add('gone');
-  const world=document.getElementById('world');
-  setTimeout(()=>{world.classList.add('active');startMapTrace()},800);
-}
-
-/* ── MAP TRACE ──────────────────────── */
+/* MAP TRACE */
 (()=>{
-  const ps=[
+  const paths=[
     {t:document.getElementById('tp0'),g:document.getElementById('gp0')},
     {t:document.getElementById('tp1'),g:document.getElementById('gp1')},
     {t:document.getElementById('tp2'),g:document.getElementById('gp2')},
   ];
   const dot=document.getElementById('vd');
-  const spheres=document.querySelectorAll('.sphere');
-
-  const hide=()=>{
-    ps.forEach(({t,g})=>{const l=t.getTotalLength();[t,g].forEach(p=>{p.style.strokeDasharray=l;p.style.strokeDashoffset=l})});
+  const init=()=>{
+    paths.forEach(({t,g})=>{
+      const l=t.getTotalLength();
+      [t,g].forEach(p=>{p.style.strokeDasharray=l;p.style.strokeDashoffset=l});
+      g.style.opacity='0';
+    });
     dot.style.opacity='0';
-    spheres.forEach(s=>s.classList.remove('visible'));
   };
-
   const animPath=(idx,onDone)=>{
-    const {t,g}=ps[idx];const len=t.getTotalLength();
-    const dur=idx===0?5200:1400;let st=null;
+    const {t,g}=paths[idx];
+    const len=t.getTotalLength();
+    const dur=idx===0?5000:1200;
+    let st=null;
+    g.style.opacity='.5';
     const step=ts=>{
-      if(!st)st=ts;const p=Math.min((ts-st)/dur,1);
-      const e=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;const d=e*len;
-      t.style.strokeDashoffset=len-d;g.style.strokeDashoffset=len-d;
+      if(!st)st=ts;
+      const p=Math.min((ts-st)/dur,1);
+      const e=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
+      const d=e*len;
+      t.style.strokeDashoffset=len-d;
+      g.style.strokeDashoffset=len-d;
       const pt=t.getPointAtLength(d);
       dot.style.opacity='1';dot.setAttribute('cx',pt.x);dot.setAttribute('cy',pt.y);
       if(p<1)requestAnimationFrame(step);else onDone();
-    };requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
   };
-
-  const showSpheres=()=>{
-    dot.style.transition='opacity .8s';dot.style.opacity='0';
-    spheres.forEach((s,i)=>setTimeout(()=>s.classList.add('visible'),(i+1)*180));
-    setTimeout(()=>dot.style.transition='',1000);
-  };
-
-  window.startMapTrace=()=>{
-    hide();
-    setTimeout(()=>{
-      animPath(0,()=>animPath(1,()=>animPath(2,showSpheres)));
-    },400);
-  };
+  const finish=()=>{dot.style.transition='opacity 1s';dot.style.opacity='0';setTimeout(()=>dot.style.transition='',1200)};
+  init();
+  setTimeout(()=>animPath(0,()=>animPath(1,()=>animPath(2,finish))),600);
 })();
 
-/* ── PANELS ─────────────────────────── */
-function openPanel(id){
-  document.getElementById(id).classList.add('open');
-  document.body.style.overflow='';
-}
-function closePanel(id){
-  document.getElementById(id).classList.remove('open');
-}
+/* SCROLL REVEAL */
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');obs.unobserve(e.target)}});
+},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 
-/* ── COUNTDOWN ──────────────────────── */
+/* COUNTDOWN */
 (()=>{
   const tgt=new Date('2025-09-21T10:00:00');
   const upd=()=>{
     const d=tgt-new Date();
-    if(d<=0)return;
+    if(d<=0){['ij','ih','im','is'].forEach(id=>document.getElementById(id).textContent='00');return}
     document.getElementById('ij').textContent=String(Math.floor(d/864e5)).padStart(2,'0');
     document.getElementById('ih').textContent=String(Math.floor(d%864e5/36e5)).padStart(2,'0');
     document.getElementById('im').textContent=String(Math.floor(d%36e5/6e4)).padStart(2,'0');
@@ -551,7 +631,7 @@ function closePanel(id){
   };upd();setInterval(upd,1000);
 })();
 
-/* ── QUIZ ───────────────────────────── */
+/* QUIZ */
 const QS=[
   {q:"Quel est le chef-lieu de la Vendée ?",opts:["La Roche-sur-Yon","Les Sables-d'Olonne","Fontenay-le-Comte","Challans"],a:0},
   {q:"Quelle île vendéenne est la plus éloignée du continent ?",opts:["Noirmoutier","L'île d'Yeu","Belle-Île","Ré"],a:1},
